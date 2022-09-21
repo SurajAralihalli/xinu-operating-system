@@ -573,7 +573,30 @@ _Xint46:
 	movl 	%esp, %ebx
 	movl 	%ecx, %esp
 	pushl   %ebx
-	call    getpid
+
+	cmp		20, %eax
+	je		callGETPID
+
+	cmp		21, %eax
+	je		callMEMGET		
+
+	cmp  	22, %eax
+	je		callCHPRIO
+	
+
+callGETPID:
+	call getpid
+	jmp continueDispatching
+	
+callMEMGET:
+	call getmem
+	jmp continueDispatching
+
+callCHPRIO:
+	call chprio
+	jmp continueDispatching
+
+continueDispatching:
 	popl 	%esp
 
 	popl 	%edi
@@ -585,16 +608,6 @@ _Xint46:
 	movl    (%esp),%ebp
     add     $4,%esp
 	iret
-
-callGETPID:
-	call getpid
-
-callMEMGET:
-	call getmem
-
-callCHPRIO:
-	call chprio
-
 	
 
 /*------------------------------------------------------------------------

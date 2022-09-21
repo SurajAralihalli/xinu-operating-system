@@ -629,3 +629,9 @@ extern process myhello(void);
 
 /* in file getpidx.c */
 extern pid32 getpidx(void);
+
+/* in file chpriox.c */
+extern pri16 chpriox(pid32 pid, pri16 newprio);
+
+/* in file getmemx.c */
+extern char* getmemx(uint32 nbytes);

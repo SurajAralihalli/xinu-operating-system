@@ -9,7 +9,7 @@
 pid32	getpidx(void)
 {
     pid32 pid;
-    asm("movl 20, %eax");
+    asm("movl $20, %eax");
 	asm("int $46");
     asm("movl %%eax, %0"
         : "=r"(pid)
