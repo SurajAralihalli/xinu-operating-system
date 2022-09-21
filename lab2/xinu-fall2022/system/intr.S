@@ -589,11 +589,17 @@ callGETPID:
 	jmp continueDispatching
 	
 callMEMGET:
+	pushl 16(%ebp)
 	call getmem
+	popl %ecx
 	jmp continueDispatching
 
 callCHPRIO:
+	pushl 20(%ebp)
+	pushl 16(%ebp)
 	call chprio
+	popl %ecx
+	popl %ecx
 	jmp continueDispatching
 
 continueDispatching:
