@@ -58,5 +58,16 @@ struct procent {		/* Entry in the process table		*/
 #define	STACKMAGIC	0x0A0AAAA9
 
 extern	struct	procent proctab[];
+extern	uint32* kstack[];
 extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
+
+
+#define XINUTEST 1
+// #define XINUDEBUG 1
+
+#define SYSGETPID 20
+#define SYSMEMGET 21
+#define SYSCHPRIO 22
+
+

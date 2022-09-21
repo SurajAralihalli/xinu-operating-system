@@ -561,11 +561,41 @@ _Xint45:
 _Xint46:
 	pushl	%ebp
 	movl	%esp,%ebp
-	pushal
-	movl	%esp, %eax
-	pushl	%eax
-	pushl	$46
-	jmp	Xtrap
+
+	pushl   %ecx
+	pushl 	%edx
+	pushl 	%ebx
+	pushl	%esi
+	pushl 	%edi
+
+	movl 	currpid, %ebx
+	movl 	kstack(,%ebx,4), %ecx
+	movl 	%esp, %ebx
+	movl 	%ecx, %esp
+	pushl   %ebx
+	call    getpid
+	popl 	%esp
+
+	popl 	%edi
+	popl	%esi
+	popl 	%ebx
+	popl	%edx
+	popl	%ecx
+
+	movl    (%esp),%ebp
+    add     $4,%esp
+	iret
+
+callGETPID:
+	call getpid
+
+callMEMGET:
+	call getmem
+
+callCHPRIO:
+	call chprio
+
+	
 
 /*------------------------------------------------------------------------
  * _Xint? - array of exception/interrupt entry points that are

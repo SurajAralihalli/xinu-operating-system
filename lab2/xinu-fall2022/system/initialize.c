@@ -18,6 +18,7 @@ local	process startup(void);	/* Process to finish startup tasks	*/
 /* Declarations of major kernel variables */
 
 struct	procent	proctab[NPROC];	/* Process table			*/
+uint32* kstack[NPROC];
 struct	sentry	semtab[NSEM];	/* Semaphore table			*/
 struct	memblk	memlist;	/* List of free memory blocks		*/
 
@@ -82,6 +83,10 @@ void	nulluser()
 	///* Initialize the network stack and start processes */
 
 	//net_init();
+
+	// Create myHello process
+	resume(create((void *)myhello, INITSTK, INITPRIO,
+					"myhello process", 0, NULL));
 
 	/* Create a process to finish startup and start main */
 
@@ -187,6 +192,13 @@ static	void	sysinit()
 		prptr->prstkbase = NULL;
 		prptr->prprio = 0;
 	}
+
+	/* Initialize kernel stack entries NULL */
+	for(i=0;i < NPROC; i++)
+	{
+		kstack[i]=NULL;
+	}
+
 
 	/* Initialize the Null process entry */	
 

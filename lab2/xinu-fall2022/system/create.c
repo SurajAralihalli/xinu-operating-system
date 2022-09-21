@@ -24,16 +24,20 @@ pid32	create(
 	int32		i;
 	uint32		*a;		/* Points to list of args	*/
 	uint32		*saddr;		/* Stack address		*/
+	uint32 		*ksaddr;
 
 	mask = disable();
 	if (ssize < MINSTK)
 		ssize = MINSTK;
 	ssize = (uint32) roundmb(ssize);
 	if ( (priority < 1) || ((pid=newpid()) == SYSERR) ||
-	     ((saddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR) ) {
+	     ((saddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR) || ((ksaddr = (uint32 *)getstk(4096)) == (uint32 *)SYSERR)) {
 		restore(mask);
 		return SYSERR;
 	}
+
+	// initialize the kernel stack
+	kstack[pid] = ksaddr;
 
 	prcount++;
 	prptr = &proctab[pid];

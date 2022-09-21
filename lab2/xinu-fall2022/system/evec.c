@@ -35,6 +35,8 @@ uint16	girmask;
 
 #define NID		48	/* Number of interrupt descriptors	*/
 #define	IGDT_TRAPG	15	/* Trap Gate				*/
+#define	IGDT_INTERRUPTG	0xE	/* INTERRUPT Gate (14)				*/
+
 
 void	setirmask(void);	/* Set interrupt mask			*/
 
@@ -96,7 +98,16 @@ int32	set_evec(uint32 xnum, uint32 handler)
 	pidt->igd_loffset = handler;
 	pidt->igd_segsel = 0x8;		/* Kernel code segment */
 	pidt->igd_mbz = 0;
-	pidt->igd_type = IGDT_TRAPG;
+	// Interrupt gates
+	if(xnum == 32 || xnum == 46)
+	{
+		pidt->igd_type = IGDT_INTERRUPTG;
+	}
+	// Trap gates
+	else
+	{
+		pidt->igd_type = IGDT_TRAPG;
+	}
 	pidt->igd_dpl = 0;
 	pidt->igd_present = 1;
 	pidt->igd_hoffset = handler >> 16;

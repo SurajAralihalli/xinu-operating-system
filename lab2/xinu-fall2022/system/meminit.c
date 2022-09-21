@@ -43,8 +43,12 @@ struct sd gdt_copy[NGD] = {
 {       0xffff,          0,           0,      0x9a,         0xcf,        0, },
 /* 2nd, Kernel Data Segment */
 {       0xffff,          0,           0,      0x92,         0xcf,        0, },
-/* 3rd, Kernel Stack Segment */
+/* not 3rd anymore, Kernel Stack Segment */
 {       0xffff,          0,           0,      0x92,         0xcf,        0, },
+// /* 4th, Kernel Code Segment */
+// {       0xffff,          0,           0,      0x9a,         0xcf,        0, },
+// /* 5th, Kernel Data Segment */
+// {       0xffff,          0,           0,      0x92,         0xcf,        0, },
 };
 
 extern	struct	sd gdt[];	/* Global segment table			*/
