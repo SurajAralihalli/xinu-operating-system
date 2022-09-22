@@ -11,11 +11,27 @@ pri16	chpriox(
 	  pri16		newprio		/* New priority			*/
 	)
 {
-	pri16 oldprio=10;
-    // asm("movl $22, %eax");
-	// asm("int $46");
-    // asm("movl %%eax, %0"
-    //     : "=r"(oldprio)
-    // );
+	pri16 oldprio= (pri16) SYSERR;
+
+	// push arguments
+    asm("push %0"
+        :
+        : "r"(newprio));
+	asm("pushl %0"
+        :
+        : "r"(pid));
+
+    // call chprio
+    asm("movl $22, %eax");
+
+	// call interrupt
+	asm("int $46");
+    asm("mov %%ax, %0"
+        : "=r"(oldprio)
+    );
+
+	//pop arguments
+    asm("popl %ecx");
+    asm("popl %ecx");
 	return oldprio;
 }

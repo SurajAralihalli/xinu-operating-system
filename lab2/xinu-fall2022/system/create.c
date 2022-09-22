@@ -37,7 +37,7 @@ pid32	create(
 	}
 
 	// initialize the kernel stack
-	kstack[pid] = ksaddr;
+	kstack[pid] = (uint32 *)ksaddr;
 
 	prcount++;
 	prptr = &proctab[pid];

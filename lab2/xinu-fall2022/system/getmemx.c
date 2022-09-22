@@ -12,13 +12,16 @@ char* getmemx(
 	)
 {
     char *curr;
-    asm("movl $21, %eax");
-
+    
     //push arguments
     asm("pushl %0"
         :
         : "r"(nbytes));
 
+    // call getmem
+    asm("movl $21, %eax");
+    
+    // call interrupt
 	asm("int $46");
     asm("movl %%eax, %0"
         : "=r"(curr)

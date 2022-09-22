@@ -572,18 +572,18 @@ _Xint46:
 	movl 	kstack(,%ebx,4), %ecx
 	movl 	%esp, %ebx
 	movl 	%ecx, %esp
-	pushl   %ebx
+	pushl   %ebx	
 
-	cmp		20, %eax
+	cmp		$20, %eax
 	je		callGETPID
 
-	cmp		21, %eax
+	cmp		$21, %eax
 	je		callMEMGET		
 
-	cmp  	22, %eax
+	cmp  	$22, %eax
 	je		callCHPRIO
-	
 
+	
 callGETPID:
 	call getpid
 	jmp continueDispatching
@@ -595,12 +595,13 @@ callMEMGET:
 	jmp continueDispatching
 
 callCHPRIO:
-	pushl 20(%ebp)
+	push 20(%ebp)
 	pushl 16(%ebp)
 	call chprio
 	popl %ecx
 	popl %ecx
 	jmp continueDispatching
+
 
 continueDispatching:
 	popl 	%esp
