@@ -64,7 +64,7 @@ extern	pid32	currpid;	/* Currently executing process		*/
 
 
 #define XINUTEST 1
-// #define XINUDEBUG 1
+#define XINUDEBUG 1
 
 #define SYSGETPID 20
 #define SYSMEMGET 21

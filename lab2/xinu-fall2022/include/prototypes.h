@@ -635,3 +635,6 @@ extern pri16 chpriox(pid32 pid, pri16 newprio);
 
 /* in file getmemx.c */
 extern char* getmemx(uint32 nbytes);
+
+/* in file mytests.c */
+extern void lab2Tests();
