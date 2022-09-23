@@ -47,7 +47,7 @@
 #define	MULTIBOOT_HEADER_FLAGS  0x00010003
 #define MULTIBOOT_SIGNATURE	0x2BADB002	/* Multiboot signature verification	*/
 #define MULTIBOOT_BOOTINFO_MMAP	0x00000040	/* mmap_length mmap_addr valid		*/
-#define	GDT_ENTRIES		4
+#define	GDT_ENTRIES		5
 #define	GDT_ENTRY_SIZE		8
 #define	GDT_BYTES		(GDT_ENTRIES * GDT_ENTRY_SIZE)
 #define	IDT_ENTRIES		256
@@ -209,8 +209,7 @@ gdt1:
 	movw	%ax, %es
 	movw	%ax, %fs
 	movw	%ax, %gs
-	movl	$0x18, %eax	/* SS descriptor 3 */
-	movw	%ax, %ss
+	movw 	%ax, %ss   /* make ss->ds */
 	
 	/*
 	 * Call the nulluser to initialize the system

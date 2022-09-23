@@ -96,7 +96,18 @@ int32	set_evec(uint32 xnum, uint32 handler)
 
 	pidt = &idt[xnum];
 	pidt->igd_loffset = handler;
-	pidt->igd_segsel = 0x8;		/* Kernel code segment */
+
+	// Second Kernel code segment
+	if(xnum == 46)
+	{
+		pidt->igd_segsel = 0x18;
+	}
+	// First Kernel code segment
+	else
+	{
+		pidt->igd_segsel = 0x8;		/* Kernel code segment */
+	}
+	
 	pidt->igd_mbz = 0;
 	// Interrupt gates
 	if(xnum == 32 || xnum == 46)

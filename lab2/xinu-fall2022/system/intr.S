@@ -568,6 +568,10 @@ _Xint46:
 	pushl	%esi
 	pushl 	%edi
 
+	movl	$0x20, %ecx	/* change ss and ds to kernel ds 2 */
+	movw	%cx, %ds
+	movw	%cx, %ss
+
 	movl 	currpid, %ebx
 	movl 	kstack(,%ebx,4), %ecx
 	movl 	%esp, %ebx
@@ -604,6 +608,11 @@ callCHPRIO:
 
 
 continueDispatching:
+
+	movl	$0x10, %ecx	/* change ss and ds to kernel ds 1 */
+	movw	%cx, %ds
+	movw	%cx, %ss
+
 	popl 	%esp
 
 	popl 	%edi
