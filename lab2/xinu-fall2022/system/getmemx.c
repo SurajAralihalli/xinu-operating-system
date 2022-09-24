@@ -1,4 +1,4 @@
-/* chpriox.c - chpriox */
+/* getmemx.c - getmemx */
 
 #include <xinu.h>
 

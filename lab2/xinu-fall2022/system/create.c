@@ -58,6 +58,7 @@ pid32	create(
 	prptr->prdesc[0] = CONSOLE;
 	prptr->prdesc[1] = CONSOLE;
 	prptr->prdesc[2] = CONSOLE;
+	prptr->prusercpu = 0; /* initialized to 0 upon process creation */
 
 	/* Initialize stack as if the process was called		*/
 

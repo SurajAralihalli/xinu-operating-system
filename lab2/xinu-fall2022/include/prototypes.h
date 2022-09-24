@@ -638,3 +638,12 @@ extern char* getmemx(uint32 nbytes);
 
 /* in file mytests.c */
 extern void lab2Tests();
+
+/* in file usercpu.c */
+extern syscall usercpu(pid32);
+
+/* in file cpuutil.c */
+extern uint16 cpuutil(void);
+
+/* in file usercpux.c */
+extern int32 usercpux(pid32);

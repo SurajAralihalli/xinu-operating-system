@@ -576,7 +576,7 @@ _Xint46:
 	movl 	kstack(,%ebx,4), %ecx
 	movl 	%esp, %ebx
 	movl 	%ecx, %esp
-	pushl   %ebx	
+	pushl   %ebx	    /* push user stack %esp to kernel stack	*/
 
 	cmp		$20, %eax
 	je		callGETPID
@@ -586,6 +586,9 @@ _Xint46:
 
 	cmp  	$22, %eax
 	je		callCHPRIO
+
+	cmp  	$23, %eax
+	je		callUSERCPU
 
 	
 callGETPID:
@@ -606,6 +609,11 @@ callCHPRIO:
 	popl %ecx
 	jmp continueDispatching
 
+callUSERCPU:
+	pushl 16(%ebp)
+	call usercpu
+	popl %ecx
+	jmp continueDispatching
 
 continueDispatching:
 
@@ -613,7 +621,7 @@ continueDispatching:
 	movw	%cx, %ds
 	movw	%cx, %ss
 
-	popl 	%esp
+	popl 	%esp         /* restore user stack %esp */
 
 	popl 	%edi
 	popl	%esi

@@ -52,6 +52,7 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint32  prusercpu;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
@@ -66,8 +67,11 @@ extern	pid32	currpid;	/* Currently executing process		*/
 #define XINUTEST 1
 #define XINUDEBUG 1
 
+extern int userCpuTime[NPROC];
+
 #define SYSGETPID 20
 #define SYSMEMGET 21
 #define SYSCHPRIO 22
+#define SYSUSERCPU 23
 
 
