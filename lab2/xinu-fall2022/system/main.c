@@ -4,6 +4,6 @@
 
 process	main(void)
 {	
-    lab2Tests();
+    // lab2Tests();
 	return OK;
 }
