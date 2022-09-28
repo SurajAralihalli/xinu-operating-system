@@ -21,7 +21,7 @@ syscall	usercpu(
 	
     // fetch pid's prusercpu
     struct	procent	*prptr;
-	prptr = &proctab[currpid];
+	prptr = &proctab[pid];
 	timems = prptr->prusercpu;
 
 	restore(mask);

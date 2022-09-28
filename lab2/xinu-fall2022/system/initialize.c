@@ -209,6 +209,7 @@ static	void	sysinit()
 	prptr->prstkbase = getstk(NULLSTK);
 	prptr->prstklen = NULLSTK;
 	prptr->prstkptr = 0;
+	prptr->prusercpu = 0; /* initialized to 0 upon process creation */
 	currpid = NULLPROC;
 	
 	/* Initialize semaphores */

@@ -562,21 +562,21 @@ _Xint46:
 	pushl	%ebp
 	movl	%esp,%ebp
 
-	pushl   %ecx
+	pushl   %ecx            /* store user state	*/
 	pushl 	%edx
 	pushl 	%ebx
 	pushl	%esi
 	pushl 	%edi
 
-	movl	$0x20, %ecx	/* change ss and ds to kernel ds 2 */
+	movl	$0x20, %ecx	    /* change ss and ds to kernel ds 2 */
 	movw	%cx, %ds
 	movw	%cx, %ss
 
 	movl 	currpid, %ebx
-	movl 	kstack(,%ebx,4), %ecx
+	movl 	kstack(,%ebx,4), %ecx     /* fetch kernel stack address from kstack	*/
 	movl 	%esp, %ebx
-	movl 	%ecx, %esp
-	pushl   %ebx	    /* push user stack %esp to kernel stack	*/
+	movl 	%ecx, %esp      /* switch %esp to kernel stack	*/
+	pushl   %ebx	        /* push user stack %esp to kernel stack	*/
 
 	cmp		$20, %eax
 	je		callGETPID
@@ -596,13 +596,13 @@ callGETPID:
 	jmp continueDispatching
 	
 callMEMGET:
-	pushl 16(%ebp)
+	pushl 16(%ebp)             /* push arguments from user to kernel stack */
 	call getmem
 	popl %ecx
 	jmp continueDispatching
 
 callCHPRIO:
-	push 20(%ebp)
+	push 20(%ebp)              /* push arguments from user to kernel stack (use push instead of pushl) */
 	pushl 16(%ebp)
 	call chprio
 	popl %ecx
@@ -610,20 +610,20 @@ callCHPRIO:
 	jmp continueDispatching
 
 callUSERCPU:
-	pushl 16(%ebp)
+	pushl 16(%ebp)             /* push arguments from user to kernel stack */
 	call usercpu
 	popl %ecx
 	jmp continueDispatching
 
 continueDispatching:
 
-	movl	$0x10, %ecx	/* change ss and ds to kernel ds 1 */
+	movl	$0x10, %ecx	 /* change ss and ds to kernel ds 1 */
 	movw	%cx, %ds
 	movw	%cx, %ss
 
 	popl 	%esp         /* restore user stack %esp */
 
-	popl 	%edi
+	popl 	%edi		 /* restore user state	*/
 	popl	%esi
 	popl 	%ebx
 	popl	%edx

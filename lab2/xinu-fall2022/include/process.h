@@ -65,9 +65,12 @@ extern	pid32	currpid;	/* Currently executing process		*/
 
 
 #define XINUTEST 1
-#define XINUDEBUG 1
+// #define XINUDEBUG 1
 
-extern int userCpuTime[NPROC];
+extern int userCpuTime[4];
+extern int iter[4];
+extern int endTime[4];
+extern int breakLoop;
 
 #define SYSGETPID 20
 #define SYSMEMGET 21

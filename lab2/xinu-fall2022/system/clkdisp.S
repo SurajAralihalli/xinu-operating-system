@@ -9,13 +9,13 @@
 		.globl	clkdisp		# Clock interrupt dispatcher
 clkdisp:
 		pushal			# Save registers
-		cli			# Disable further interrupts
+		cli			# Disable further interrupts (Can be removed as it will be done by hardware)
 		movb	$EOI,%al	# Reset interrupt
 		outb	%al,$OCW1_2
 
 		call	clkhandler	# Call high level handler
 		INCL    vfineclkcounter
 
-		sti			# Restore interrupt status
+		sti			# Restore interrupt status (Can be removed as it will be done by hardware)
 		popal			# Restore registers
 		iret			# Return from interrupt

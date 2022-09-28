@@ -30,7 +30,8 @@ syscall	kill(
 		close(prptr->prdesc[i]);
 	}
 	freestk(prptr->prstkbase, prptr->prstklen);
-
+	// uncomment below line to free kernel stack
+	// freestk((char *)kstack[pid], 4096);
 	switch (prptr->prstate) {
 	case PR_CURR:
 		prptr->prstate = PR_FREE;	/* Suicide */
