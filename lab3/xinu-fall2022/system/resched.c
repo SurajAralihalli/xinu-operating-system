@@ -2,6 +2,7 @@
 
 #include <xinu.h>
 
+
 struct	defer	Defer;
 
 /*------------------------------------------------------------------------
@@ -34,7 +35,7 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		insert(currpid, readylist, ptold->prprio);
 	}
 
-	// Update currstop for all processes (suspended or ready)
+	// Update currstop for all processes (suspended or curr)
 	currstop = getticks();
 	// set curpid's prtotalcpu
 	ptold->prtotalcpu += (currstop - currstart) / (double)389;
@@ -44,13 +45,20 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	currpid = dequeue(readylist);
 	ptnew = &proctab[currpid];
 	ptnew->prstate = PR_CURR;
-	ptnew->prcurrcount++;
+	ptnew->prcurrcount++;  // increment when process context swithes in
 	preempt = QUANTUM;		/* Reset time slice for process	*/
-	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
-	
+
 	// update currstart
 	currstart = getticks();
+	// kprintf("\n%s currstart:%d\n",ptnew->prname,currstop);
+	// update prtotalresponse in system time
+	ptnew->prtotalresponse += (currstart - ptnew->prreadystart);
+	// update prmaxresponse in millisec
+	uint32 newResponseTime = (currstart - ptnew->prreadystart) / (double)(389 * 1000);
+	ptnew->prmaxresponse = newResponseTime > ptnew->prmaxresponse ? newResponseTime : ptnew->prmaxresponse; 
 
+	// context switch
+	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 	/* Old process returns here when resumed */
 
 	return;

@@ -28,10 +28,16 @@ syscall	totcpu(
 
 	// if the process has not context switched for a long time
 	// here currstop was set by previous process
-	if(currstop > currstart)
+	if(currstop >= currstart)
 	{
-		timeMicroSec += (getticks() - currstart) / (double)389;
+		kprintf("\ncurrstop:%d > currstart:%d \n",currstop,currstart);
 	}
+	else
+	{
+		kprintf("\n[BUG] currstart:%d > currstop:%d \n",currstart,currstop);
+	}
+
+	timeMicroSec += (getticks() - currstart) / (double)389;
 
 	timeMilliSec = timeMicroSec / (double)1000;
 	restore(mask);

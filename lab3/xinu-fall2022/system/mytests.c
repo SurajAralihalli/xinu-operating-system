@@ -70,6 +70,54 @@ void test2()
     resume(create(process2,1024,45,"process2", 0));
 }
 
+void process3a()
+{
+    // fetch pid's prusercpu
+    struct	procent	*prptr;
+    prptr = &proctab[currpid];
+
+    uint32 totalresponseMs = prptr->prtotalresponse / (double)(389 * 1000);
+
+    if(resptime(currpid) == totalresponseMs)
+    {
+        kprintf("\n PASS avgresptime == totalresponseMs (%d) \n",totalresponseMs);
+    }
+    else
+    {
+        kprintf("\n FAIL avgresptime == totalresponseMs (%d) \n",totalresponseMs);
+    }
+
+    if(prptr->prmaxresponse == totalresponseMs)
+    {
+        kprintf("\n PASS maxresponse == totalresponseMs (%d) \n",totalresponseMs);
+    }
+    else
+    {
+        kprintf("\n FAIL maxresponse == totalresponseMs (%d) \n",totalresponseMs);
+    }
+
+    int i=0;
+    while(i!=99999999)
+    {
+        i++;
+    }
+}
+
+void process3b()
+{
+    resume(create(process3a,1024,35,"process3a", 1, 1));
+    int i=0;
+    while(i!=99999999)
+    {
+        i++;
+    }
+}
+
+void test3()
+{
+    resume(create(process3b,1024,45,"process3b", 0));
+}
+
 void lab3Tests()
 {
     #ifdef XINUDEBUG
@@ -78,6 +126,9 @@ void lab3Tests()
     sleep(1);
     kprintf("\n###test2####\n");
     test2();
+    sleep(1);
+    kprintf("\n###test3####\n");
+    test3();
     sleep(1);
     #endif
 }

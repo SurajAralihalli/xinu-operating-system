@@ -85,6 +85,8 @@ void	nulluser()
 
 	//net_init();
 
+	// setup currstop
+	currstop = (uint64)0;
 	// setup currstart
 	currstart = getticks();
 
@@ -207,8 +209,11 @@ static	void	sysinit()
 	prptr->prstklen = NULLSTK;
 	prptr->prstkptr = 0;
 	prptr->prusercpu = 0; /* initialized to 0 upon process creation */
-	prptr->prtotalcpu = 0;
-	prptr->prcurrcount = 1;
+	prptr->prtotalcpu = 0; /* initialized to 0 upon process creation */
+	prptr->prcurrcount = 1; 
+	prptr->prreadystart = getticks();
+	prptr->prtotalresponse = 0; /* initialized to 0 upon process creation */
+	prptr->prmaxresponse = 0;
 	currpid = NULLPROC;
 	
 	/* Initialize semaphores */

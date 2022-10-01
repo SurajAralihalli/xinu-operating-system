@@ -23,6 +23,8 @@ status	ready(
 	prptr = &proctab[pid];
 	prptr->prstate = PR_READY;
 	insert(pid, readylist, prptr->prprio);
+	// set prptr->prreadystart when process becomes ready
+	prptr->prreadystart = getticks();
 	resched();
 
 	return OK;

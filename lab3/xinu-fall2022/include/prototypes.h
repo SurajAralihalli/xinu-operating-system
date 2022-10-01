@@ -635,3 +635,6 @@ extern syscall usercpu(pid32);
 
 /* in file totcpu.c */
 extern syscall totcpu(pid32);
+
+/* in file resptime.c */
+extern syscall resptime(pid32);

@@ -52,9 +52,12 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
-	uint32  prusercpu;
-	uint32  prtotalcpu;
-	uint16  prcurrcount;
+	uint32  prusercpu;  /* cpu time in user mode */ 
+	uint32  prtotalcpu; /* total cpu time in user mode + kernel mode */ 
+	uint16  prcurrcount; /* number of times process context switches in */ 
+	uint64  prreadystart; /* latest getticks() time when process goes into ready state*/ 
+	uint64  prtotalresponse; /* total (currstart - prreadystart) in system time */ 
+	uint32  prmaxresponse;   /* max response time in ms */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
