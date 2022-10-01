@@ -23,6 +23,11 @@ void	clkhandler()
 		count1000 = 1000;
 	}
 
+	// increment prusercpu of current process
+	struct	procent	*prptr;
+	prptr = &proctab[currpid];
+	prptr->prusercpu++;
+
 	/* Handle sleeping processes if any exist */
 
 	if(!isempty(sleepq)) {

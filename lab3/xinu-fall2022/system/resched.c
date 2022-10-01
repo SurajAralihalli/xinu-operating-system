@@ -30,11 +30,15 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		}
 
 		/* Old process will no longer remain current */
-
 		ptold->prstate = PR_READY;
 		insert(currpid, readylist, ptold->prprio);
 	}
 
+	// Update currstop for all processes (suspended or ready)
+	currstop = getticks();
+	// set curpid's prtotalcpu
+	ptold->prtotalcpu += (currstop - currstart) / (double)389;
+		
 	/* Force context switch to highest priority ready process */
 
 	currpid = dequeue(readylist);
@@ -42,6 +46,9 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
+	
+	// update currstart
+	currstart = getticks();
 
 	/* Old process returns here when resumed */
 

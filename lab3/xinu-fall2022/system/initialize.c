@@ -25,6 +25,8 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
+uint64 currstart;
+uint64 currstop; 
 
 /* Control sequence to reset the console colors and cusor positiion	*/
 
@@ -82,6 +84,13 @@ void	nulluser()
 	///* Initialize the network stack and start processes */
 
 	//net_init();
+
+	// setup currstart
+	currstart = getticks();
+
+	// Create myHello process
+	resume(create((void *)myhello, INITSTK, INITPRIO,
+					"myhello process", 0, NULL));
 
 	/* Create a process to finish startup and start main */
 
@@ -197,6 +206,8 @@ static	void	sysinit()
 	prptr->prstkbase = getstk(NULLSTK);
 	prptr->prstklen = NULLSTK;
 	prptr->prstkptr = 0;
+	prptr->prusercpu = 0; /* initialized to 0 upon process creation */
+	prptr->prtotalcpu = 0;
 	currpid = NULLPROC;
 	
 	/* Initialize semaphores */
