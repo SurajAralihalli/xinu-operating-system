@@ -25,8 +25,8 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
-uint64 currstart;
-uint64 currstop; 
+uint64  currstart;
+uint64  currstop; 
 
 /* Control sequence to reset the console colors and cusor positiion	*/
 
@@ -208,6 +208,7 @@ static	void	sysinit()
 	prptr->prstkptr = 0;
 	prptr->prusercpu = 0; /* initialized to 0 upon process creation */
 	prptr->prtotalcpu = 0;
+	prptr->prcurrcount = 1;
 	currpid = NULLPROC;
 	
 	/* Initialize semaphores */
