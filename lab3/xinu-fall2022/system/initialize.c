@@ -214,6 +214,8 @@ static	void	sysinit()
 	prptr->prreadystart = getticks();
 	prptr->prtotalresponse = 0; /* initialized to 0 upon process creation */
 	prptr->prmaxresponse = 0;
+	prptr->prpreemptcount1 = 0; /* initialized to 0 upon process creation */
+	prptr->prpreemptcount2 = 0; /* initialized to 0 upon process creation */
 	currpid = NULLPROC;
 	
 	/* Initialize semaphores */

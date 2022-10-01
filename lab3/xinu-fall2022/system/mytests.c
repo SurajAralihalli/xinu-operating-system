@@ -118,6 +118,29 @@ void test3()
     resume(create(process3b,1024,45,"process3b", 0));
 }
 
+void process4()
+{
+    int i=0;
+    while(i!=999999999)
+    {
+        i++;
+    }
+    struct	procent	*prptr;
+    prptr = &proctab[currpid];
+    if(prptr->prpreemptcount1 + prptr->prpreemptcount2 <= prptr->prcurrcount)
+    {
+        kprintf("\n PASS prpreemptcount1(%d) + prpreemptcount2(%d) <= prcurrcount(%d) \n",prptr->prpreemptcount1,prptr->prpreemptcount2,prptr->prcurrcount);
+    }
+    else
+    {
+        kprintf("\n FAIL prpreemptcount1(%d) + prpreemptcount2(%d) <= prcurrcount(%d) \n",prptr->prpreemptcount1,prptr->prpreemptcount2,prptr->prcurrcount);
+    }
+}
+
+void test4()
+{
+    resume(create(process4,1024,20,"process4", 0));
+}
 void lab3Tests()
 {
     #ifdef XINUDEBUG
@@ -129,6 +152,9 @@ void lab3Tests()
     sleep(1);
     kprintf("\n###test3####\n");
     test3();
+    sleep(1);
+    kprintf("\n###test4####\n");
+    test4();
     sleep(1);
     #endif
 }

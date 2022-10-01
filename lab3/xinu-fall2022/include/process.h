@@ -58,6 +58,8 @@ struct procent {		/* Entry in the process table		*/
 	uint64  prreadystart; /* latest getticks() time when process goes into ready state*/ 
 	uint64  prtotalresponse; /* total (currstart - prreadystart) in system time */ 
 	uint32  prmaxresponse;   /* max response time in ms */
+	uint16  prpreemptcount1; /* preemption count when time slice is depleted*/
+	uint16  prpreemptcount2; /* preemption count when high priority process takes over*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

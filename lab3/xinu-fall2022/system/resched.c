@@ -30,6 +30,15 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 			return;
 		}
 
+		// fresh quantum was assigned because prev quantum was depleted - type 1 preemption
+		if(preempt==QUANTUM)
+		{
+			ptold->prpreemptcount1++;
+		}
+		else
+		{
+			ptold->prpreemptcount2++;
+		}
 		/* Old process will no longer remain current */
 		ptold->prstate = PR_READY;
 		insert(currpid, readylist, ptold->prprio);
