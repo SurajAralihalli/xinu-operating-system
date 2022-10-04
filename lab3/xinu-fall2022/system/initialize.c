@@ -85,11 +85,6 @@ void	nulluser()
 
 	//net_init();
 
-	// setup currstop
-	currstop = (uint64)0;
-	// setup currstart
-	currstart = getticks();
-
 	// Create myHello process
 	resume(create((void *)myhello, INITSTK, INITPRIO,
 					"myhello process", 0, NULL));
@@ -101,6 +96,11 @@ void	nulluser()
 
 	/* Become the Null process (i.e., guarantee that the CPU has	*/
 	/*  something to run when no other process is ready to execute)	*/
+	
+	// setup currstop
+	currstop = (uint64)0;
+	// setup currstart
+	currstart = getticks();
 
 	while (TRUE) {
 		;		/* Do nothing */

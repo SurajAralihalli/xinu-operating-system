@@ -12,7 +12,6 @@ syscall	totcpu(
 {
 	intmask	mask;			/* Saved interrupt mask		*/
 	uint32	timeMilliSec;			/* Priority to return		*/
-	uint32	timeMicroSec;
 
 	mask = disable();
 	if (isbadpid(pid)) {
@@ -24,22 +23,10 @@ syscall	totcpu(
     struct	procent	*prptr;
 	prptr = &proctab[pid];
 
-	timeMicroSec = prptr->prtotalcpu;
-
 	// if the process has not context switched for a long time
-	// here currstop was set by previous process
-	if(currstop >= currstart)
-	{
-		kprintf("\ncurrstop:%d > currstart:%d \n",currstop,currstart);
-	}
-	else
-	{
-		kprintf("\n[BUG] currstart:%d > currstop:%d \n",currstart,currstop);
-	}
+	// here currstop was set by previous process so currstart>=currstop
+	timeMilliSec = prptr->prtotalcpu / (double)1000;
 
-	timeMicroSec += (getticks() - currstart) / (double)389;
-
-	timeMilliSec = timeMicroSec / (double)1000;
 	restore(mask);
 	return (syscall)timeMilliSec;
 }

@@ -27,6 +27,12 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
 		if (ptold->prprio > firstkey(readylist)) {
+			// Update currstop 
+			currstop = getticks();
+			// set curpid's prtotalcpu
+			ptold->prtotalcpu += (uint32)(currstop - currstart) / (double)389;
+			// Update currstart
+			currstart = getticks();
 			return;
 		}
 
@@ -47,7 +53,7 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	// Update currstop for all processes (suspended or curr)
 	currstop = getticks();
 	// set curpid's prtotalcpu
-	ptold->prtotalcpu += (currstop - currstart) / (double)389;
+	ptold->prtotalcpu += (uint32)(currstop - currstart) / (double)389;
 		
 	/* Force context switch to highest priority ready process */
 
@@ -61,9 +67,9 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	currstart = getticks();
 	// kprintf("\n%s currstart:%d\n",ptnew->prname,currstop);
 	// update prtotalresponse in system time
-	ptnew->prtotalresponse += (currstart - ptnew->prreadystart);
+	ptnew->prtotalresponse += (uint32)(currstart - ptnew->prreadystart);
 	// update prmaxresponse in millisec
-	uint32 newResponseTime = (currstart - ptnew->prreadystart) / (double)(389 * 1000);
+	uint32 newResponseTime = (uint32)(currstart - ptnew->prreadystart) / (double)(389 * 1000);
 	ptnew->prmaxresponse = newResponseTime > ptnew->prmaxresponse ? newResponseTime : ptnew->prmaxresponse; 
 
 	// context switch
