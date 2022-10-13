@@ -33,18 +33,25 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 			ptold->prtotalcpu += (uint32)(currstop - currstart) / (double)389;
 			// Update currstart
 			currstart = getticks();
+
+			// Reset preemptionType flag (if other processes became ready but the process still has highest priority and was not preempted)
+			preemptionType =0;
 			return;
 		}
 
-		// fresh quantum was assigned because prev quantum was depleted - type 1 preemption
-		if(preempt==QUANTUM)
+		// check preemptionType
+		if(preemptionType == 1)
 		{
 			ptold->prpreemptcount1++;
 		}
-		else
+		else if(preemptionType == 2)
 		{
 			ptold->prpreemptcount2++;
 		}
+
+		// Reset preemptionType flag
+		preemptionType =0;
+
 		/* Old process will no longer remain current */
 		ptold->prstate = PR_READY;
 		insert(currpid, readylist, ptold->prprio);

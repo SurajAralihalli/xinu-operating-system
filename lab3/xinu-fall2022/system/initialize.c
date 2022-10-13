@@ -26,7 +26,9 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
 uint64  currstart;
-uint64  currstop; 
+uint64  currstop;
+
+int preemptionType;
 
 /* Control sequence to reset the console colors and cusor positiion	*/
 
@@ -84,6 +86,9 @@ void	nulluser()
 	///* Initialize the network stack and start processes */
 
 	//net_init();
+
+	// set preemptionType 
+	preemptionType =0;
 
 	// Create myHello process
 	resume(create((void *)myhello, INITSTK, INITPRIO,

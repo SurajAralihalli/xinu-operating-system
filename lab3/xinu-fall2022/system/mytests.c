@@ -139,7 +139,7 @@ void process4()
 
 void test4()
 {
-    resume(create(process4,1024,20,"process4", 0));
+    resume(create(process4,1024,25,"process4", 0));
 }
 void lab3Tests()
 {

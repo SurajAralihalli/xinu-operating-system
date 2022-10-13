@@ -36,7 +36,17 @@ void	clkhandler()
 		/*   sleep queue, and awaken if the count reaches zero	*/
 
 		if((--queuetab[firstid(sleepq)].qkey) <= 0) {
+			// type 2 preemption
+			if(preempt!=0)
+			{
+				preemptionType = 2;
+			}
+			else
+			{
+				preemptionType = 1;
+			}
 			wakeup();
+			preemptionType = 0;
 		}
 	}
 
@@ -44,7 +54,9 @@ void	clkhandler()
 	/*   remaining time reaches zero			     */
 
 	if((--preempt) <= 0) {
+		preemptionType = 1;
 		preempt = QUANTUM;
 		resched();
+		preemptionType = 0;
 	}
 }
