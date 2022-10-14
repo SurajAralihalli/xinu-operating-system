@@ -638,3 +638,21 @@ extern syscall totcpu(pid32);
 
 /* in file resptime.c */
 extern syscall resptime(pid32);
+
+/* in file createtsx.c */
+extern	pid32	createtsx(void *, uint32, char *, uint32, ...);
+
+/* in file initializeDynqueue.c */
+extern void initializeDynqueue();
+
+/* in file initializeDyndisp.c */
+extern void initializeDyndisp();
+
+/* in file insertdynq.c */
+extern short insertdynq(pri16, pid32);
+
+/* in file extractdynq.c */
+extern pid32 extractdynq(void);
+
+/* in file inspectmaxprio.c */
+extern pri16 inspectmaxprio(void);

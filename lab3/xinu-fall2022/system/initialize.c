@@ -29,6 +29,8 @@ uint64  currstart;
 uint64  currstop;
 
 int preemptionType;
+struct tsx_disp dyndisp[10];
+struct mfeedbqx dynqueue[10];
 
 /* Control sequence to reset the console colors and cusor positiion	*/
 
@@ -56,6 +58,9 @@ void	nulluser()
 	/* Initialize the system */
 
 	sysinit();
+
+	/* Initialize the  dyndisp table*/
+	initializeDyndisp();
 
 	/* Output Xinu memory layout */
 	free_mem = 0;
@@ -208,7 +213,7 @@ static	void	sysinit()
 
 	prptr = &proctab[NULLPROC];
 	prptr->prstate = PR_CURR;
-	prptr->prprio = 0;
+	prptr->prprio = -1;
 	strncpy(prptr->prname, "prnull", 7);
 	prptr->prstkbase = getstk(NULLSTK);
 	prptr->prstklen = NULLSTK;
@@ -262,4 +267,28 @@ int32	delay(int n)
 {
 	DELAY(n);
 	return OK;
+}
+
+void initializeDyndisp()
+{
+	int i=0;
+	while(i!=10)
+	{
+		dyndisp[i].tqexp = 0 > i-1 ? 0 : i-1;
+		dyndisp[i].slpret = 9 < i+1 ? 9 : i+1;
+		dyndisp[i].quantum = 100 - 10*i;
+		i++;
+	}
+}
+
+void initializeDynqueue()
+{
+	int i=0;
+	while(i!=10)
+	{
+		dynqueue[i].count = 0;
+		dynqueue[i].head = 0;
+		dynqueue[i].tail = 0;
+		i++;
+	}
 }

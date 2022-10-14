@@ -76,4 +76,3 @@ extern uint64 currstart;    /* will record the time in unit of processor tick */
 extern uint64 currstop;
 
 extern int preemptionType;  /* 0 -> no preemption, 1 -> type 1 preemption, 2 -> type 2 preemption */
-
