@@ -141,20 +141,39 @@ void test4()
 {
     resume(create(process4,1024,25,"process4", 0));
 }
+
+void process5()
+{
+    int i=0;
+    while(i!=9999999)
+    {
+        i++;
+        // kprintf("\ni:%d, pri: %d, quantum:%d\n", i, proctab[currpid].prprio, proctab[currpid].quantumLeft);
+    }
+}
+
+void test5()
+{
+    resume(create(process5,1024,9,"process5", 0));
+}
+
 void lab3Tests()
 {
     #ifdef XINUDEBUG
-    kprintf("\n###test1####\n");
-    test1();
-    sleep(1);
-    kprintf("\n###test2####\n");
-    test2();
-    sleep(1);
-    kprintf("\n###test3####\n");
-    test3();
-    sleep(1);
-    kprintf("\n###test4####\n");
-    test4();
+    // kprintf("\n###test1####\n");
+    // test1();
+    // sleep(1);
+    // kprintf("\n###test2####\n");
+    // test2();
+    // sleep(1);
+    // kprintf("\n###test3####\n");
+    // test3();
+    // sleep(1);
+    // kprintf("\n###test4####\n");
+    // test4();
+    // sleep(1);
+    kprintf("\n###test5####\n");
+    test5();
     sleep(1);
     #endif
 }

@@ -61,6 +61,7 @@ pid32	create(
 	prptr->prmaxresponse = 0; /* initialized to 0 upon process creation */
 	prptr->prpreemptcount1 = 0; /* initialized to 0 upon process creation */
 	prptr->prpreemptcount2 = 0; /* initialized to 0 upon process creation */
+	prptr->quantumLeft  = dyndisp[prptr->prprio].quantum;
 
 	/* Initialize stack as if the process was called		*/
 

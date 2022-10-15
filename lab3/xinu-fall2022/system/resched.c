@@ -26,13 +26,16 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	ptold = &proctab[currpid];
 
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
-		if (ptold->prprio > firstkey(readylist)) {
+		if (ptold->prprio > inspectmaxprio()) {
 			// Update currstop 
 			currstop = getticks();
 			// set curpid's prtotalcpu
 			ptold->prtotalcpu += (uint32)(currstop - currstart) / (double)389;
 			// Update currstart
 			currstart = getticks();
+
+			// ptold->quantumLeft can be fresh or old (2 cases possible)
+			preempt = ptold->quantumLeft;
 
 			// Reset preemptionType flag (if other processes became ready but the process still has highest priority and was not preempted)
 			preemptionType =0;
@@ -43,10 +46,12 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		if(preemptionType == 1)
 		{
 			ptold->prpreemptcount1++;
+			// ptptr->quantumLeft = dyndisp[prptr->prprio].quantum; // redundant as this step is already done in clkhandler
 		}
 		else if(preemptionType == 2)
 		{
 			ptold->prpreemptcount2++;
+			// ptptr->quantumLeft = preempt; // redundant as this step is already done in clkhandler
 		}
 
 		// Reset preemptionType flag
@@ -54,7 +59,8 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 		/* Old process will no longer remain current */
 		ptold->prstate = PR_READY;
-		insert(currpid, readylist, ptold->prprio);
+		ptold->prreadystart = getticks();
+		if(currpid!=0) insertdynq(ptold->prprio, currpid); // insert only if currpid is not 0
 	}
 
 	// Update currstop for all processes (suspended or curr)
@@ -64,11 +70,13 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		
 	/* Force context switch to highest priority ready process */
 
-	currpid = dequeue(readylist);
-	ptnew = &proctab[currpid];
+	currpid = extractdynq();
+	currpid = MAX(currpid,0); // if extractdynq() returns -1, make it 0
+	kprintf("\n new curpid %d, process pri: %d \n",currpid, proctab[currpid].prprio);
+	ptnew = &proctab[currpid];  // currpid is -1 when no other process is in queue
 	ptnew->prstate = PR_CURR;
 	ptnew->prcurrcount++;  // increment when process context swithes in
-	preempt = QUANTUM;		/* Reset time slice for process	*/
+	preempt = ptnew->quantumLeft;		/* Reset time slice for process	*/
 
 	// update currstart
 	currstart = getticks();

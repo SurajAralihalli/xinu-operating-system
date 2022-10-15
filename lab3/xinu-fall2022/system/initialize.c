@@ -113,7 +113,7 @@ void	nulluser()
 	currstart = getticks();
 
 	while (TRUE) {
-		;		/* Do nothing */
+		/* Do nothing */
 	}
 
 }
@@ -226,6 +226,7 @@ static	void	sysinit()
 	prptr->prmaxresponse = 0;
 	prptr->prpreemptcount1 = 0; /* initialized to 0 upon process creation */
 	prptr->prpreemptcount2 = 0; /* initialized to 0 upon process creation */
+	prptr->quantumLeft  = 0xFFFFFFFF;
 	currpid = NULLPROC;
 	
 	/* Initialize semaphores */
@@ -274,8 +275,8 @@ void initializeDyndisp()
 	int i=0;
 	while(i!=10)
 	{
-		dyndisp[i].tqexp = 0 > i-1 ? 0 : i-1;
-		dyndisp[i].slpret = 9 < i+1 ? 9 : i+1;
+		dyndisp[i].tqexp = MAX(0, i-1);
+		dyndisp[i].slpret = MIN(9, i+1);
 		dyndisp[i].quantum = 100 - 10*i;
 		i++;
 	}

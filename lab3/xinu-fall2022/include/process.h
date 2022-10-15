@@ -25,7 +25,8 @@
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
-#define	INITPRIO	20	/* Initial process priority		*/
+// #define	INITPRIO	20	/* Initial process priority		*/
+#define	INITPRIO	4	/* Initial process priority		*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/
@@ -60,6 +61,7 @@ struct procent {		/* Entry in the process table		*/
 	uint32  prmaxresponse;   /* max response time in ms */
 	uint16  prpreemptcount1; /* preemption count when time slice is depleted*/
 	uint16  prpreemptcount2; /* preemption count when high priority process takes over*/
+	uint32  quantumLeft;   /* slice of quantum left*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
@@ -76,3 +78,7 @@ extern uint64 currstart;    /* will record the time in unit of processor tick */
 extern uint64 currstop;
 
 extern int preemptionType;  /* 0 -> no preemption, 1 -> type 1 preemption, 2 -> type 2 preemption */
+
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))

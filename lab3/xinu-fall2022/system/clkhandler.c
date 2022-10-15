@@ -36,15 +36,9 @@ void	clkhandler()
 		/*   sleep queue, and awaken if the count reaches zero	*/
 
 		if((--queuetab[firstid(sleepq)].qkey) <= 0) {
-			// type 2 preemption
-			if(preempt!=0)
-			{
-				preemptionType = 2;
-			}
-			else
-			{
-				preemptionType = 1;
-			}
+			// type 2 preemption i.e preempt!=0
+			preemptionType = 2;
+			// priority does not change - case 2
 			wakeup();
 			preemptionType = 0;
 		}
@@ -53,9 +47,19 @@ void	clkhandler()
 	/* Decrement the preemption counter, and reschedule when the */
 	/*   remaining time reaches zero			     */
 
-	if((--preempt) <= 0) {
+	preempt = currpid==0 ? 0xFFFFFFFF : preempt-1;
+	
+	prptr->quantumLeft = preempt;
+
+	if(preempt <= 0) {
+
 		preemptionType = 1;
-		preempt = QUANTUM;
+
+		// demote the priority - case 1
+		int old =  prptr->prprio;
+		prptr->prprio = MAX(0, prptr->prprio-1);
+		prptr->quantumLeft = dyndisp[prptr->prprio].quantum;
+		kprintf("\ncurrpid:%d, priOld: %d, priNew: %d, quantum:%d\n", currpid, old, proctab[currpid].prprio, proctab[currpid].quantumLeft);
 		resched();
 		preemptionType = 0;
 	}
