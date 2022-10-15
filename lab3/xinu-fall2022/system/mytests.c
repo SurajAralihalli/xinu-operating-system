@@ -174,6 +174,6 @@ void lab3Tests()
     // sleep(1);
     kprintf("\n###test5####\n");
     test5();
-    sleep(1);
+    sleep(3);
     #endif
 }

@@ -9,6 +9,7 @@
 void	clkhandler()
 {
 	static	uint32	count1000 = 1000;	/* Count to 1000 ms	*/
+	static  uint32  countsp = STARVATIONPERIOD;
 
 	/* Decrement the ms counter, and see if a second has passed */
 
@@ -21,6 +22,17 @@ void	clkhandler()
 		/* Reset the local ms counter for the next second */
 
 		count1000 = 1000;
+	}
+
+	if((--countsp) <= 0) {
+
+		/* One STARVATIONPERIOD has passed, so call preventstarvation */
+
+		if(STARVATIONPREVENT==1) preventstarvation();
+
+		/* Reset the local countsp counter for the next second */
+
+		countsp = STARVATIONPERIOD;
 	}
 
 	// increment prusercpu of current process

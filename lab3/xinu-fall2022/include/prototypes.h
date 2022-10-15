@@ -656,3 +656,6 @@ extern pid32 extractdynq(void);
 
 /* in file inspectmaxprio.c */
 extern pri16 inspectmaxprio(void);
+
+/* in file preventstarvation.c */
+extern void preventstarvation(void);
