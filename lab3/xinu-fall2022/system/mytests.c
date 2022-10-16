@@ -144,12 +144,6 @@ void test4()
 
 void process5()
 {
-    // int i=0;
-    // while(i!=9999999)
-    // {
-    //     i++;
-    // }
-
     uint32 start = vfineclkcounter;
     int i=0;
     while(i<999999999)
@@ -160,25 +154,30 @@ void process5()
         }
         i++;
     }
-    kprintf("iterations i:%d",i);
+    kprintf("\n &&&&&&&&& iterations i:%d &&&&&&&&& \n",i);
 }
 
 void test5()
 {
-    resume(create(process5,1024,9,"process5", 0));
+    resume(create(process5,1024,4,"cpu1", 0));
+    resume(create(process5,1024,4,"cpu2", 0));
+    resume(create(process5,1024,4,"cpu3", 0));
+}
+
+
+void process6()
+{
+   kprintf("\n before -> total resptime: %d, usercpu: %d \n", totcpu(currpid), proctab[currpid].prusercpu);
+   sleep(5);
+   kprintf("\n after -> total resptime: %d, usercpu: %d \n", totcpu(currpid), proctab[currpid].prusercpu);
 }
 
 void test6()
 {
-    resume(createtsx(cpubound,1024,"cpubound1", 0));
-    resume(createtsx(cpubound,1024,"cpubound2", 0));
-    resume(createtsx(cpubound,1024,"cpubound3", 0));
-    resume(createtsx(cpubound,1024,"cpubound4", 0));
-    resume(createtsx(cpubound,1024,"cpubound5", 0));
-    resume(createtsx(cpubound,1024,"cpubound6", 0));
-    resume(createtsx(cpubound,1024,"cpubound7", 0));
-    resume(createtsx(cpubound,1024,"cpubound8", 0));
+    resume(create(process6,1024,4,"cpu1", 0));
 }
+
+
 
 void lab3Tests()
 {
@@ -195,8 +194,8 @@ void lab3Tests()
     // kprintf("\n###test4####\n");
     // test4();
     // sleep(1);
-    kprintf("\n###test5####\n");
-    test5();
-    sleep(3);
+    // kprintf("\n### test6 ####\n");
+    // test6();
+    // sleep(3);
     #endif
 }

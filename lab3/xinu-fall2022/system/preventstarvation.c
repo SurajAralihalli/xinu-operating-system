@@ -14,7 +14,10 @@ void preventstarvation(void)
         if(dynqueue[priority].count>0)
         {
             pid32 pid = dynqueue[priority].head;
-            if(pid==0) continue;
+            
+            // skip
+            if(pid==0 || isbadpid(pid)) continue;
+
             struct	procent	*prptr = &proctab[pid];
             uint32 timeElapsedms = (uint32)(getticks() - prptr->prreadystart) / (double)(389 * 1000);
             if(timeElapsedms > STARVATIONTHRESHOLD)

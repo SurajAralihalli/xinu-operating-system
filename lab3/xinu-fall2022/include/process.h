@@ -90,4 +90,4 @@ extern int preemptionType;  /* 0 -> no preemption, 1 -> type 1 preemption, 2 -> 
 #define PRIOBOOST 3
 
 // Performance evaluation
-#define STOPTIME 1000
+#define STOPTIME 10000

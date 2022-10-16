@@ -28,7 +28,7 @@ void	clkhandler()
 
 		/* One STARVATIONPERIOD has passed, so call preventstarvation */
 
-		if(STARVATIONPREVENT==1) preventstarvation();
+		// if(STARVATIONPREVENT==1) preventstarvation();
 
 		/* Reset the local countsp counter for the next second */
 
@@ -68,10 +68,10 @@ void	clkhandler()
 		preemptionType = 1;
 
 		// demote the priority - case 1
-		int old =  prptr->prprio;
+		// int old =  prptr->prprio;
 		prptr->prprio = dyndisp[prptr->prprio].tqexp;
 		prptr->quantumLeft = dyndisp[prptr->prprio].quantum;
-		kprintf("\n $$$$$$ clkhandler -> currpid:%d, priOld: %d, priNew: %d, quantum:%d\n", currpid, old, proctab[currpid].prprio, proctab[currpid].quantumLeft);
+		// kprintf("\n $$$$$$ clkhandler -> currpid:%d, priOld: %d, priNew: %d, quantum:%d\n", currpid, old, proctab[currpid].prprio, proctab[currpid].quantumLeft);
 		resched();
 		preemptionType = 0;
 	}

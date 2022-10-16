@@ -6,17 +6,10 @@ void iobound(void)
 {
     while(1)
     {
-        int i=0;
         uint32 start = vfineclkcounter;
 
         // callibrated 2ms 
-        while(i<37608)
-        {
-            if(vfineclkcounter - start>=2)
-            {
-                break;
-            }
-            i++;
+        for(; vfineclkcounter < start + 2; ) {
         }
 
         sleepms(80);
@@ -29,5 +22,14 @@ void iobound(void)
 
     struct	procent	*prptr = &proctab[currpid];
 
-    kprintf("\niobound, pid:%d, cpu-usage:%d, user-cpu-usage:%d, average-response-time:%d, max-response-time:%d, number-context-switches:%d, preemption1-count:%d, preemption2-count:%d\n", currpid, prptr->prtotalcpu, prptr->prusercpu, resptime(currpid), prptr->prmaxresponse, prptr->prcurrcount, prptr->prpreemptcount1, prptr->prpreemptcount2);
+    intmask	mask;
+    mask = disable();
+
+    #ifdef XINUTEST
+    kprintf("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
+    kprintf("\niobound, pid:%d, cpu-usage:%d, user-cpu-usage:%d, average-response-time:%d, max-response-time:%d, number-context-switches:%d, preemption1-count:%d, preemption2-count:%d\n", currpid, totcpu(currpid), prptr->prusercpu, resptime(currpid), prptr->prmaxresponse, prptr->prcurrcount, prptr->prpreemptcount1, prptr->prpreemptcount2);
+    kprintf("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
+    #endif
+
+    restore(mask);
 }
