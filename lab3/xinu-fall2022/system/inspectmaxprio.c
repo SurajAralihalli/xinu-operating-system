@@ -12,7 +12,7 @@ pri16 inspectmaxprio(void)
     while(priority>=0)
     {
         // atleast one pid is in the queue
-        if(dynqueue[priority].count>=1)
+        if(dynqueue[priority].count>0)
         {
             break;
         }

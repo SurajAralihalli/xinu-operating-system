@@ -69,9 +69,9 @@ void	clkhandler()
 
 		// demote the priority - case 1
 		int old =  prptr->prprio;
-		prptr->prprio = MAX(0, prptr->prprio-1);
+		prptr->prprio = dyndisp[prptr->prprio].tqexp;
 		prptr->quantumLeft = dyndisp[prptr->prprio].quantum;
-		kprintf("\ncurrpid:%d, priOld: %d, priNew: %d, quantum:%d\n", currpid, old, proctab[currpid].prprio, proctab[currpid].quantumLeft);
+		kprintf("\n $$$$$$ clkhandler -> currpid:%d, priOld: %d, priNew: %d, quantum:%d\n", currpid, old, proctab[currpid].prprio, proctab[currpid].quantumLeft);
 		resched();
 		preemptionType = 0;
 	}

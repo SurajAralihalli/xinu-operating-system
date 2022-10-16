@@ -665,3 +665,6 @@ extern void cpubound(void);
 
 /* in file iobound.c */
 extern void iobound(void);
+
+/* in file extractdynq.c */
+extern void printHeads();

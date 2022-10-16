@@ -168,6 +168,18 @@ void test5()
     resume(create(process5,1024,9,"process5", 0));
 }
 
+void test6()
+{
+    resume(createtsx(cpubound,1024,"cpubound1", 0));
+    resume(createtsx(cpubound,1024,"cpubound2", 0));
+    resume(createtsx(cpubound,1024,"cpubound3", 0));
+    resume(createtsx(cpubound,1024,"cpubound4", 0));
+    resume(createtsx(cpubound,1024,"cpubound5", 0));
+    resume(createtsx(cpubound,1024,"cpubound6", 0));
+    resume(createtsx(cpubound,1024,"cpubound7", 0));
+    resume(createtsx(cpubound,1024,"cpubound8", 0));
+}
+
 void lab3Tests()
 {
     #ifdef XINUDEBUG

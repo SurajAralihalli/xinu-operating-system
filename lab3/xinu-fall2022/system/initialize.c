@@ -59,9 +59,6 @@ void	nulluser()
 
 	sysinit();
 
-	/* Initialize the  dyndisp table*/
-	initializeDyndisp();
-
 	/* Output Xinu memory layout */
 	free_mem = 0;
 	for (memptr = memlist.mnext; memptr != NULL;
@@ -96,12 +93,12 @@ void	nulluser()
 	preemptionType =0;
 
 	// Create myHello process
-	resume(create((void *)myhello, INITSTK, INITPRIO,
+	resume(create((void *)myhello, INITSTK, 9,
 					"myhello process", 0, NULL));
 
 	/* Create a process to finish startup and start main */
 
-	resume(create((void *)startup, INITSTK, INITPRIO,
+	resume(create((void *)startup, INITSTK, 8,
 					"Startup process", 0, NULL));
 
 	/* Become the Null process (i.e., guarantee that the CPU has	*/
@@ -151,7 +148,7 @@ local process	startup(void)
 
 	/* Create a process to execute function main() */
 
-	resume(create((void *)main, INITSTK, INITPRIO,
+	resume(create((void *)main, INITSTK, 9,
 					"Main process", 0, NULL));
 
 	/* Startup process exits at this point */
@@ -244,7 +241,11 @@ static	void	sysinit()
 
 	/* Create a ready list for processes */
 
-	readylist = newqueue();
+	// readylist = newqueue();
+	/* Initialize the  dyndisp table and Dynqueue */
+	initializeDyndisp();
+	initializeDynqueue();
+
 
 	/* Initialize the real time clock */
 

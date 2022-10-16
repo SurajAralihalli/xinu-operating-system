@@ -5,11 +5,11 @@
 short insertdynq(pri16 priority, pid32 pid)
 {
     intmask	mask;			/* Saved interrupt mask		*/
+	kprintf("\n######## insertdynq(), prname: %s, pid: %d, prprio: %d \n", proctab[pid].prname, pid, priority);
 
 	mask = disable();
-	if (isbadpid(pid) || priority<0 || priority>9) {
+	if (isbadpid(pid) || priority<0 || priority>9 || pid==0) {
 		restore(mask);
-		kprintf("\nreturned prname: %s, pid: %d, prprio: %d \n", proctab[pid].prname, pid, priority);
 		return SYSERR;
 	}
 

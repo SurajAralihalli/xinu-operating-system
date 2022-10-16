@@ -27,9 +27,8 @@ status	ready(
 	// insert(pid, readylist, prptr->prprio);
 
 	// using multilevel feedback queue
-	int h = insertdynq(prptr->prprio, pid);
-	kprintf("\ninsertdynq(prptr->prprio, pid): %d, prname: %s, pid: %d, prprio: %d \n",h, prptr->prname, pid, prptr->prprio);
-
+	insertdynq(prptr->prprio, pid);
+	
 	// set prptr->prreadystart when process becomes ready
 	prptr->prreadystart = getticks();
 	resched();
