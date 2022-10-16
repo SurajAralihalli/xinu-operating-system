@@ -144,12 +144,23 @@ void test4()
 
 void process5()
 {
+    // int i=0;
+    // while(i!=9999999)
+    // {
+    //     i++;
+    // }
+
+    uint32 start = vfineclkcounter;
     int i=0;
-    while(i!=9999999)
+    while(i<999999999)
     {
+        if(vfineclkcounter - start>=2)
+        {
+            break;
+        }
         i++;
-        // kprintf("\ni:%d, pri: %d, quantum:%d\n", i, proctab[currpid].prprio, proctab[currpid].quantumLeft);
     }
+    kprintf("iterations i:%d",i);
 }
 
 void test5()

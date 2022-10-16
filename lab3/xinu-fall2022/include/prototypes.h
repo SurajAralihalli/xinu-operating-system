@@ -659,3 +659,9 @@ extern pri16 inspectmaxprio(void);
 
 /* in file preventstarvation.c */
 extern void preventstarvation(void);
+
+/* in file cpubound.c */
+extern void cpubound(void);
+
+/* in file iobound.c */
+extern void iobound(void);

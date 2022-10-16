@@ -83,7 +83,11 @@ extern int preemptionType;  /* 0 -> no preemption, 1 -> type 1 preemption, 2 -> 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
+// Starvation prevention
 #define STARVATIONPREVENT 1
 #define STARVATIONPERIOD 100
 #define STARVATIONTHRESHOLD 500
 #define PRIOBOOST 3
+
+// Performance evaluation
+#define STOPTIME 10000
