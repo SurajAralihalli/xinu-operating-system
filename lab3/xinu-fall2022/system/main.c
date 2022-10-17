@@ -40,6 +40,6 @@ void benchmarkC()
 
 process	main(void)
 {	
-    benchmarkA();
+    benchmarkC();
 	return OK;
 }

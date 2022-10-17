@@ -73,7 +73,7 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	// printHeads();
 	currpid = extractdynq();
 	currpid = MAX(currpid,0); // if extractdynq() returns -1, make it 0
-	// kprintf("\n %%%% new curpid %d, pname:%s, process pri: %d %%%% \n",currpid, proctab[currpid].prname, proctab[currpid].prprio);
+	// kprintf("\n %%%% new curpid %d, pname:%s, process pri: %d, isbad(pid):%d %%%% \n",currpid, proctab[currpid].prname, proctab[currpid].prprio, isbadpid(currpid));
 	ptnew = &proctab[currpid];  // currpid is -1 when no other process is in queue
 	ptnew->prstate = PR_CURR;
 	ptnew->prcurrcount++;  // increment when process context swithes in
