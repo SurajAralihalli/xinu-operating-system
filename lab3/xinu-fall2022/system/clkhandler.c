@@ -27,11 +27,9 @@ void	clkhandler()
 	if((--countsp) <= 0) {
 
 		/* One STARVATIONPERIOD has passed, so call preventstarvation */
-
 		if(STARVATIONPREVENT==1) preventstarvation();
 
 		/* Reset the local countsp counter for the next second */
-
 		countsp = STARVATIONPERIOD;
 	}
 

@@ -4,9 +4,6 @@
 
 void preventstarvation(void)
 {
-    intmask	mask;			/* Saved interrupt mask		*/
-	mask = disable();
-
     pri16 priority;
 
     for(priority = 8; priority>=0; priority--)
@@ -40,6 +37,4 @@ void preventstarvation(void)
             }
         }
     }
-
-	restore(mask);
 }

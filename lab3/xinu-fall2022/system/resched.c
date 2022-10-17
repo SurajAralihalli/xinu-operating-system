@@ -46,12 +46,12 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		if(preemptionType == 1)
 		{
 			ptold->prpreemptcount1++;
-			// ptptr->quantumLeft = dyndisp[prptr->prprio].quantum; // redundant as this step is already done in clkhandler
+			// ptold->quantumLeft is given frest quantum in clkhandler
 		}
 		else if(preemptionType == 2)
 		{
 			ptold->prpreemptcount2++;
-			// ptptr->quantumLeft = preempt; // redundant as this step is already done in clkhandler
+			// ptold->quantumLeft retains leftover quantum in clkhandler
 		}
 
 		// Reset preemptionType flag

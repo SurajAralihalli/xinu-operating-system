@@ -4,10 +4,6 @@
 
 pri16 inspectmaxprio(void)
 {
-    intmask	mask;			/* Saved interrupt mask		*/
-
-	mask = disable();
-
     int priority = 9;
     while(priority>=0)
     {
@@ -18,7 +14,5 @@ pri16 inspectmaxprio(void)
         }
         priority--;
     }
-
-    restore(mask);
     return priority>=0?priority:SYSERR;
 }

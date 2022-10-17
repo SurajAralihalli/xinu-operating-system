@@ -5,10 +5,6 @@
 
 pid32 extractdynq(void)
 {
-    intmask	mask;			/* Saved interrupt mask		*/
-
-	mask = disable();
-
     pid32 pid = SYSERR;
     int priority = 9;
     while(priority>=0)
@@ -26,8 +22,6 @@ pid32 extractdynq(void)
         }
         priority--;
     }
-
-	restore(mask);
 	return pid;
 }
 

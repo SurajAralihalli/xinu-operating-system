@@ -177,6 +177,23 @@ void test6()
     resume(create(process6,1024,4,"cpu1", 0));
 }
 
+void process7()
+{
+        uint32 start = vfineclkcounter;
+        int i;
+        // callibrated 2ms 
+        for(i=0; vfineclkcounter < start + 2; i++) {
+        }
+
+        kprintf("\nnumber iterations: %d\n",i);
+
+
+}
+
+void test7()
+{
+    resume(create(process7,1024,8,"cpu1", 0));
+}
 
 
 void lab3Tests()
@@ -196,6 +213,9 @@ void lab3Tests()
     // sleep(1);
     // kprintf("\n### test6 ####\n");
     // test6();
+    // sleep(3);
+    kprintf("\n### test7 ####\n");
+    test7();
     // sleep(3);
     #endif
 }
