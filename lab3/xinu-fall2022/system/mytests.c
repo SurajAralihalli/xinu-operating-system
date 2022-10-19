@@ -214,8 +214,8 @@ void lab3Tests()
     // kprintf("\n### test6 ####\n");
     // test6();
     // sleep(3);
-    kprintf("\n### test7 ####\n");
-    test7();
+    // kprintf("\n### test7 ####\n");
+    // test7();
     // sleep(3);
     #endif
 }
