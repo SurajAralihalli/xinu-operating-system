@@ -4,7 +4,7 @@
 
 pri16 inspectmaxprio(void)
 {
-    int priority = 9;
+    int priority = 10;
     while(priority>=0)
     {
         // atleast one pid is in the queue

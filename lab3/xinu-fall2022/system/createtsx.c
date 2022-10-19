@@ -11,7 +11,7 @@ local	int newpid();
 pid32	createtsx(
 	  void		*funcaddr,	/* Address of the function	*/
 	  uint32	ssize,		/* Stack size in bytes		*/
-	//   pri16		priority,	/* Process priority > 0		*/
+	  pri16		priority,	/* Process priority > 0		*/
 	  char		*name,		/* Name (for debugging)		*/
 	  uint32	nargs,		/* Number of args that follow	*/
 	  ...
@@ -24,7 +24,6 @@ pid32	createtsx(
 	int32		i;
 	uint32		*a;		/* Points to list of args	*/
 	uint32		*saddr;		/* Stack address		*/
-    pri16		priority = TSXINIT;
 
 	mask = disable();
 	if (ssize < MINSTK)

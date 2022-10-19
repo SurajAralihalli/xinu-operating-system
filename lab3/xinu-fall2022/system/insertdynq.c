@@ -5,7 +5,7 @@
 short insertdynq(pri16 priority, pid32 pid)
 {
 	// kprintf("\n######## insertdynq(), prname: %s, pid: %d, prprio: %d \n", proctab[pid].prname, pid, priority);
-	if (isbadpid(pid) || priority<0 || priority>9 || pid==0) {
+	if (isbadpid(pid) || priority<0 || priority>10 || pid==0) {
 		return SYSERR;
 	}
 

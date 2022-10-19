@@ -640,7 +640,7 @@ extern syscall totcpu(pid32);
 extern syscall resptime(pid32);
 
 /* in file createtsx.c */
-extern	pid32	createtsx(void *, uint32, char *, uint32, ...);
+extern	pid32	createtsx(void *, uint32, pri16, char *, uint32, ...);
 
 /* in file initializeDynqueue.c */
 extern void initializeDynqueue();

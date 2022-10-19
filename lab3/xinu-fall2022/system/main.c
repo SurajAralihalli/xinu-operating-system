@@ -2,17 +2,17 @@
 
 #include <xinu.h>
 
-// void benchmarkA()
-// {
-//     resume(createtsx(cpubound,1024,"cpubound1", 0));
-//     resume(createtsx(cpubound,1024,"cpubound2", 0));
-//     resume(createtsx(cpubound,1024,"cpubound3", 0));
-//     resume(createtsx(cpubound,1024,"cpubound4", 0));
-//     resume(createtsx(cpubound,1024,"cpubound5", 0));
-//     resume(createtsx(cpubound,1024,"cpubound6", 0));
-//     resume(createtsx(cpubound,1024,"cpubound7", 0));
-//     resume(createtsx(cpubound,1024,"cpubound8", 0));
-// }
+void benchmarkA()
+{
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound1", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound2", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound3", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound4", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound5", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound6", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound7", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound8", 0));
+}
 
 // void benchmarkB()
 // {
@@ -118,6 +118,6 @@
 
 process	main(void)
 {	
-    // benchmarkD();
+    benchmarkA();
 	return OK;
 }

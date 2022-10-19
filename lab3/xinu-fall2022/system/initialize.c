@@ -29,8 +29,8 @@ uint64  currstart;
 uint64  currstop;
 
 int preemptionType;
-struct tsx_disp dyndisp[10];
-struct mfeedbqx dynqueue[10];
+struct tsx_disp dyndisp[11];
+struct mfeedbqx dynqueue[11];
 
 /* Control sequence to reset the console colors and cusor positiion	*/
 
@@ -148,7 +148,7 @@ local process	startup(void)
 
 	/* Create a process to execute function main() */
 
-	resume(create((void *)main, INITSTK, 9,
+	resume(create((void *)main, INITSTK, 10,
 					"Main process", 0, NULL));
 
 	/* Startup process exits at this point */
@@ -281,12 +281,19 @@ void initializeDyndisp()
 		dyndisp[i].quantum = 100 - 10*i;
 		i++;
 	}
+
+	// i = 10
+	dyndisp[10].tqexp = 10;
+	dyndisp[10].slpret = 10;
+	dyndisp[10].quantum = 25;
+
+
 }
 
 void initializeDynqueue()
 {
 	int i=0;
-	while(i!=10)
+	while(i!=11)
 	{
 		dynqueue[i].count = 0;
 		dynqueue[i].head = 0;

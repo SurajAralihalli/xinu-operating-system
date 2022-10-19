@@ -70,7 +70,6 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		
 	/* Force context switch to highest priority ready process */
 
-	// printHeads();
 	currpid = extractdynq();
 	currpid = MAX(currpid,0); // if extractdynq() returns -1, make it 0
 	// kprintf("\n %%%% new curpid %d, pname:%s, process pri: %d, isbad(pid):%d %%%% \n",currpid, proctab[currpid].prname, proctab[currpid].prprio, isbadpid(currpid));
