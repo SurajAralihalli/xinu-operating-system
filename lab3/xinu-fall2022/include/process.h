@@ -72,7 +72,7 @@ extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
 
 #define XINUTEST 1
-#define XINUDEBUG 1
+#define XINUDEBUG 0
 
 extern uint64 currstart;    /* will record the time in unit of processor tick */
 extern uint64 currstop;
