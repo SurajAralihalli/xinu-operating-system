@@ -22,7 +22,16 @@ status	ready(
 
 	prptr = &proctab[pid];
 	prptr->prstate = PR_READY;
-	insert(pid, readylist, prptr->prprio);
+
+	// using default queue
+	// insert(pid, readylist, prptr->prprio);
+
+	// using multilevel feedback queue
+	insertdynq(prptr->prprio, pid);
+	
+	// set prptr->prreadystart when process becomes ready
+	prptr->prreadystart = getticks();
+
 	resched();
 
 	return OK;

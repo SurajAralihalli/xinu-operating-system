@@ -25,22 +25,68 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	ptold = &proctab[currpid];
 
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
-		if (ptold->prprio > firstkey(readylist)) {
+		if (ptold->prprio > inspectmaxprio()) {
+			// Update currstop 
+			currstop = getticks();
+			// set curpid's prtotalcpu
+			ptold->prtotalcpu += (uint32)(currstop - currstart) / (double)389;
+			// Update currstart
+			currstart = getticks();
+
+			// ptold->quantumLeft can be fresh or old (2 cases possible)
+			preempt = ptold->quantumLeft;
+
+			// Reset preemptionType flag (if other processes became ready but the process still has highest priority and was not preempted)
+			preemptionType =0;
 			return;
 		}
 
-		/* Old process will no longer remain current */
+		// check preemptionType
+		if(preemptionType == 1)
+		{
+			ptold->prpreemptcount1++;
+			// ptold->quantumLeft is given frest quantum in clkhandler
+		}
+		else if(preemptionType == 2)
+		{
+			ptold->prpreemptcount2++;
+			// ptold->quantumLeft retains leftover quantum in clkhandler
+		}
 
+		// Reset preemptionType flag
+		preemptionType =0;
+
+		/* Old process will no longer remain current */
 		ptold->prstate = PR_READY;
-		insert(currpid, readylist, ptold->prprio);
+		ptold->prreadystart = getticks();
+		if(currpid!=0) insertdynq(ptold->prprio, currpid); // insert only if currpid is not 0
 	}
 
+	// Update currstop for all processes (suspended or curr)
+	currstop = getticks();
+	// set curpid's prtotalcpu
+	ptold->prtotalcpu += (uint32)(currstop - currstart) / (double)389;
+		
 	/* Force context switch to highest priority ready process */
 
-	currpid = dequeue(readylist);
-	ptnew = &proctab[currpid];
+	currpid = extractdynq();
+	currpid = MAX(currpid,0); // if extractdynq() returns -1, make it 0
+	// kprintf("\n %%%% new curpid %d, pname:%s, process pri: %d, isbad(pid):%d %%%% \n",currpid, proctab[currpid].prname, proctab[currpid].prprio, isbadpid(currpid));
+	ptnew = &proctab[currpid];  // currpid is -1 when no other process is in queue
 	ptnew->prstate = PR_CURR;
-	preempt = QUANTUM;		/* Reset time slice for process	*/
+	ptnew->prcurrcount++;  // increment when process context swithes in
+	preempt = ptnew->quantumLeft;		/* Reset time slice for process	*/
+
+	// update currstart
+	currstart = getticks();
+	// kprintf("\n%s currstart:%d\n",ptnew->prname,currstop);
+	// update prtotalresponse in system time
+	ptnew->prtotalresponse += (uint32)(currstart - ptnew->prreadystart);
+	// update prmaxresponse in millisec
+	uint32 newResponseTime = (uint32)(currstart - ptnew->prreadystart) / (double)(389 * 1000);
+	ptnew->prmaxresponse = newResponseTime > ptnew->prmaxresponse ? newResponseTime : ptnew->prmaxresponse; 
+
+	// context switch
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 
 	/* Old process returns here when resumed */

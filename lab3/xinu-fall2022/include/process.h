@@ -25,7 +25,10 @@
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
-#define	INITPRIO	20	/* Initial process priority		*/
+
+// #define	INITPRIO	20	/* Initial process priority		*/
+#define	INITPRIO	4	/* Initial process priority		*/
+
 #define	INITRET		userret	/* Address to which process returns	*/
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/
@@ -52,6 +55,16 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+
+	uint32  prusercpu;  /* cpu time in user mode */ 
+	uint32  prtotalcpu; /* total cpu time in user mode + kernel mode */ 
+	uint16  prcurrcount; /* number of times process context switches in */ 
+	uint64  prreadystart; /* latest getticks() time when process goes into ready state*/ 
+	uint64  prtotalresponse; /* total (currstart - prreadystart) in system time */ 
+	uint32  prmaxresponse;   /* max response time in ms */
+	uint16  prpreemptcount1; /* preemption count when time slice is depleted*/
+	uint16  prpreemptcount2; /* preemption count when high priority process takes over*/
+	uint32  quantumLeft;   /* slice of quantum left*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
@@ -60,3 +73,26 @@ struct procent {		/* Entry in the process table		*/
 extern	struct	procent proctab[];
 extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
+
+
+#define XINUTEST 1
+#define XINUDEBUG 0
+
+extern uint64 currstart;    /* will record the time in unit of processor tick */
+extern uint64 currstop;
+
+extern int preemptionType;  /* 0 -> no preemption, 1 -> type 1 preemption, 2 -> type 2 preemption */
+
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+// Starvation prevention
+#define STARVATIONPREVENT 1
+#define STARVATIONPERIOD 100
+#define STARVATIONTHRESHOLD 500
+#define PRIOBOOST 3
+
+// Performance evaluation
+#define STOPTIME 10000
+

@@ -5,10 +5,10 @@
 local	int newpid();
 
 /*------------------------------------------------------------------------
- *  create  -  Create a process to start running a function on x86
+ *  createtsx  -  Create a process to start running a function on x86
  *------------------------------------------------------------------------
  */
-pid32	create(
+pid32	createtsx(
 	  void		*funcaddr,	/* Address of the function	*/
 	  uint32	ssize,		/* Stack size in bytes		*/
 	  pri16		priority,	/* Process priority > 0		*/

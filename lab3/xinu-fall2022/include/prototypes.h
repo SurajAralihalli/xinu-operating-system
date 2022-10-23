@@ -620,3 +620,53 @@ extern	syscall	yield(void);
 #define	ntohs(x)  ((0xff & ((x)>>8)) | ( (0xff & (x)) << 8))
 #define	ntohl(x)  ((((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \
 		   (((x)<<8) & 0x00ff0000) | (((x)<<24) & 0xff000000))
+
+
+
+// Suraj created files
+
+/* in file myhello.c */
+extern process myhello(void);
+
+/* in file mytests.c */
+extern void lab3Tests();
+
+/* in file usercpu.c */
+extern syscall usercpu(pid32);
+
+/* in file totcpu.c */
+extern syscall totcpu(pid32);
+
+/* in file resptime.c */
+extern syscall resptime(pid32);
+
+/* in file createtsx.c */
+extern	pid32	createtsx(void *, uint32, pri16, char *, uint32, ...);
+
+/* in file initializeDynqueue.c */
+extern void initializeDynqueue();
+
+/* in file initializeDyndisp.c */
+extern void initializeDyndisp();
+
+/* in file insertdynq.c */
+extern short insertdynq(pri16, pid32);
+
+/* in file extractdynq.c */
+extern pid32 extractdynq(void);
+
+/* in file inspectmaxprio.c */
+extern pri16 inspectmaxprio(void);
+
+/* in file preventstarvation.c */
+extern void preventstarvation(void);
+
+/* in file cpubound.c */
+extern void cpubound(void);
+
+/* in file iobound.c */
+extern void iobound(void);
+
+/* in file extractdynq.c */
+extern void printHeads();
+
