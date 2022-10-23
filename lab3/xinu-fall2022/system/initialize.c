@@ -25,6 +25,13 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
+uint64  currstart;
+uint64  currstop;
+
+int preemptionType;
+struct tsx_disp dyndisp[11];
+struct mfeedbqx dynqueue[11];
+
 
 /* Control sequence to reset the console colors and cusor positiion	*/
 
@@ -83,16 +90,28 @@ void	nulluser()
 
 	//net_init();
 
+	// set preemptionType 
+	preemptionType =0;
+
+	// Create myHello process
+	resume(create((void *)myhello, INITSTK, 9,
+					"myhello process", 0, NULL));
+
 	/* Create a process to finish startup and start main */
 
-	resume(create((void *)startup, INITSTK, INITPRIO,
+	resume(create((void *)startup, INITSTK, 8,
+
 					"Startup process", 0, NULL));
 
 	/* Become the Null process (i.e., guarantee that the CPU has	*/
-	/*  something to run when no other process is ready to execute)	*/
+	/*  something to run when no other process is ready to execute)	*/	
+	// setup currstop
+	currstop = (uint64)0;
+	// setup currstart
+	currstart = getticks();
 
 	while (TRUE) {
-		;		/* Do nothing */
+		/* Do nothing */
 	}
 
 }
@@ -130,7 +149,7 @@ local process	startup(void)
 
 	/* Create a process to execute function main() */
 
-	resume(create((void *)main, INITSTK, INITPRIO,
+	resume(create((void *)main, INITSTK, 10,
 					"Main process", 0, NULL));
 
 	/* Startup process exits at this point */
@@ -192,11 +211,21 @@ static	void	sysinit()
 
 	prptr = &proctab[NULLPROC];
 	prptr->prstate = PR_CURR;
-	prptr->prprio = 0;
+	prptr->prprio = -1;
 	strncpy(prptr->prname, "prnull", 7);
 	prptr->prstkbase = getstk(NULLSTK);
 	prptr->prstklen = NULLSTK;
 	prptr->prstkptr = 0;
+	prptr->prusercpu = 0; /* initialized to 0 upon process creation */
+	prptr->prtotalcpu = 0; /* initialized to 0 upon process creation */
+	prptr->prcurrcount = 1; 
+	prptr->prreadystart = getticks();
+	prptr->prtotalresponse = 0; /* initialized to 0 upon process creation */
+	prptr->prmaxresponse = 0;
+	prptr->prpreemptcount1 = 0; /* initialized to 0 upon process creation */
+	prptr->prpreemptcount2 = 0; /* initialized to 0 upon process creation */
+	prptr->quantumLeft  = 0xFFFFFFFF;
+
 	currpid = NULLPROC;
 	
 	/* Initialize semaphores */
@@ -214,7 +243,11 @@ static	void	sysinit()
 
 	/* Create a ready list for processes */
 
-	readylist = newqueue();
+	// readylist = newqueue();
+	/* Initialize the  dyndisp table and Dynqueue */
+	initializeDyndisp();
+	initializeDynqueue();
+
 
 	/* Initialize the real time clock */
 
@@ -238,4 +271,35 @@ int32	delay(int n)
 {
 	DELAY(n);
 	return OK;
+}
+
+void initializeDyndisp()
+{
+	int i=0;
+	while(i!=10)
+	{
+		dyndisp[i].tqexp = MAX(0, i-1);
+		dyndisp[i].slpret = MIN(9, i+1);
+		dyndisp[i].quantum = 100 - 10*i;
+		i++;
+	}
+
+	// i = 10
+	dyndisp[10].tqexp = 10;
+	dyndisp[10].slpret = 10;
+	dyndisp[10].quantum = 25;
+
+
+}
+
+void initializeDynqueue()
+{
+	int i=0;
+	while(i!=11)
+	{
+		dynqueue[i].count = 0;
+		dynqueue[i].head = 0;
+		dynqueue[i].tail = 0;
+		i++;
+	}
 }

@@ -2,30 +2,121 @@
 
 #include <xinu.h>
 
-process	main(void)
+void benchmarkA()
 {
-    
-    	kprintf("\nHello World!\n");
-    	kprintf("\nI'm the first XINU app and running function main() in system/main.c.\n");
-    	kprintf("\nI was created by nulluser() in system/initialize.c using create().\n");
-    	kprintf("\nMy creator will turn itself into the do-nothing null process.\n");
-    	kprintf("\nI will create a second XINU app that runs shell() in shell/shell.c as an example.\n");
-    	kprintf("\nYou can do something else, or do nothing; it's completely up to you.\n");
-    	kprintf("\n...creating a shell\n");
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound1", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound2", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound3", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound4", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound5", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound6", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound7", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound8", 0));
+}
 
-	/* Run the Xinu shell */
+void benchmarkB()
+{
+    resume(createtsx(iobound,1024,TSXINIT,"iobound1", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound2", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound3", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound4", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound5", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound6", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound7", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound8", 0));
+}
 
-	recvclr();
-	resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
+void benchmarkC()
+{
+    resume(createtsx(iobound,1024,TSXINIT,"iobound5", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound6", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound7", 0));
+    resume(createtsx(iobound,1024,TSXINIT,"iobound8", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound1", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound2", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound3", 0));
+    resume(createtsx(cpubound,1024,TSXINIT,"cpubound4", 0));
+}
 
-	/* Wait for shell to exit and recreate it */
+// void benchmarkD()
+// {
 
-	while (TRUE) {
-		receive();
-		sleepms(200);
-		kprintf("\n\nMain process recreating shell\n\n");
-		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
-	}
+//     resume(createtsx(iobound,1024,"iobound1", 0));
+//     resume(createtsx(iobound,1024,"iobound2", 0));
+//     resume(createtsx(iobound,1024,"iobound3", 0));
+//     resume(createtsx(iobound,1024,"iobound4", 0));
+//     resume(createtsx(iobound,1024,"iobound5", 0));
+//     resume(createtsx(iobound,1024,"iobound6", 0));
+//     resume(createtsx(iobound,1024,"iobound7", 0));
+//     resume(createtsx(iobound,1024,"iobound8", 0));
+//     resume(createtsx(iobound,1024,"iobound9", 0));
+
+//     resume(createtsx(iobound,1024,"iobound1", 0));
+//     resume(createtsx(iobound,1024,"iobound2", 0));
+//     resume(createtsx(iobound,1024,"iobound3", 0));
+//     resume(createtsx(iobound,1024,"iobound4", 0));
+//     resume(createtsx(iobound,1024,"iobound5", 0));
+//     resume(createtsx(iobound,1024,"iobound6", 0));
+//     resume(createtsx(iobound,1024,"iobound7", 0));
+//     resume(createtsx(iobound,1024,"iobound8", 0));
+//     resume(createtsx(iobound,1024,"iobound9", 0));
+
+//     resume(createtsx(iobound,1024,"iobound1", 0));
+//     resume(createtsx(iobound,1024,"iobound2", 0));
+//     resume(createtsx(iobound,1024,"iobound3", 0));
+//     resume(createtsx(iobound,1024,"iobound4", 0));
+//     resume(createtsx(iobound,1024,"iobound5", 0));
+//     resume(createtsx(iobound,1024,"iobound6", 0));
+//     resume(createtsx(iobound,1024,"iobound7", 0));
+//     resume(createtsx(iobound,1024,"iobound8", 0));
+//     resume(createtsx(iobound,1024,"iobound9", 0));
+
+//     resume(createtsx(iobound,1024,"iobound1", 0));
+//     resume(createtsx(iobound,1024,"iobound2", 0));
+//     resume(createtsx(iobound,1024,"iobound3", 0));
+//     resume(createtsx(iobound,1024,"iobound4", 0));
+//     resume(createtsx(iobound,1024,"iobound5", 0));
+//     resume(createtsx(iobound,1024,"iobound6", 0));
+//     resume(createtsx(iobound,1024,"iobound7", 0));
+//     resume(createtsx(iobound,1024,"iobound8", 0));
+//     resume(createtsx(iobound,1024,"iobound9", 0));
+
+//     resume(createtsx(iobound,1024,"iobound1", 0));
+//     resume(createtsx(iobound,1024,"iobound2", 0));
+//     resume(createtsx(iobound,1024,"iobound3", 0));
+//     resume(createtsx(iobound,1024,"iobound4", 0));
+//     resume(createtsx(iobound,1024,"iobound5", 0));
+//     resume(createtsx(iobound,1024,"iobound6", 0));
+//     resume(createtsx(iobound,1024,"iobound7", 0));
+//     resume(createtsx(iobound,1024,"iobound8", 0));
+//     resume(createtsx(iobound,1024,"iobound9", 0));
+
+//     resume(createtsx(iobound,1024,"iobound1", 0));
+//     resume(createtsx(iobound,1024,"iobound2", 0));
+//     resume(createtsx(iobound,1024,"iobound3", 0));
+//     resume(createtsx(iobound,1024,"iobound4", 0));
+//     resume(createtsx(iobound,1024,"iobound5", 0));
+//     resume(createtsx(iobound,1024,"iobound6", 0));
+//     resume(createtsx(iobound,1024,"iobound7", 0));
+//     resume(createtsx(iobound,1024,"iobound8", 0));
+//     resume(createtsx(iobound,1024,"iobound9", 0));
+
+//     resume(createtsx(iobound,1024,"iobound1", 0));
+//     resume(createtsx(iobound,1024,"iobound2", 0));
+//     resume(createtsx(iobound,1024,"iobound3", 0));
+//     resume(createtsx(iobound,1024,"iobound4", 0));
+//     resume(createtsx(iobound,1024,"iobound5", 0));
+//     resume(createtsx(iobound,1024,"iobound6", 0));
+//     resume(createtsx(iobound,1024,"iobound7", 0));
+//     resume(createtsx(iobound,1024,"iobound8", 0));
+//     resume(createtsx(iobound,1024,"iobound9", 0));
+
+//     resume(createtsx(cpubound,1024,"cpubound1", 0));
+
+
+// }
+
+process	main(void)
+{	
 	return OK;
-    
 }

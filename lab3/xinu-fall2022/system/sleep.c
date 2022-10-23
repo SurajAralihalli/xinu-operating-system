@@ -47,6 +47,13 @@ syscall	sleepms(
 	}
 
 	proctab[currpid].prstate = PR_SLEEP;
+	// case 3: voluntarily relinquishes the CPU
+	if(proctab[currpid].quantumLeft!=0 && currpid!=0)
+	{
+		struct	procent	*ptrcur = &proctab[currpid];
+		ptrcur->prprio = dyndisp[ptrcur->prprio].slpret;
+		ptrcur->quantumLeft = dyndisp[ptrcur->prprio].quantum;
+	}
 	resched();
 	restore(mask);
 	return OK;
