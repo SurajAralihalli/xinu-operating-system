@@ -2,7 +2,6 @@
 
 #include <xinu.h>
 
-
 struct	defer	Defer;
 
 /*------------------------------------------------------------------------
@@ -89,6 +88,7 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	// context switch
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
+
 	/* Old process returns here when resumed */
 
 	return;

@@ -31,6 +31,7 @@ status	ready(
 	
 	// set prptr->prreadystart when process becomes ready
 	prptr->prreadystart = getticks();
+
 	resched();
 
 	return OK;

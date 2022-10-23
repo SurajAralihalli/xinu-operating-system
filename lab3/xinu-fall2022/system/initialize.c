@@ -32,6 +32,7 @@ int preemptionType;
 struct tsx_disp dyndisp[11];
 struct mfeedbqx dynqueue[11];
 
+
 /* Control sequence to reset the console colors and cusor positiion	*/
 
 #define	CONSOLE_RESET	" \033[0m\033[2J\033[;H"
@@ -99,11 +100,11 @@ void	nulluser()
 	/* Create a process to finish startup and start main */
 
 	resume(create((void *)startup, INITSTK, 8,
+
 					"Startup process", 0, NULL));
 
 	/* Become the Null process (i.e., guarantee that the CPU has	*/
-	/*  something to run when no other process is ready to execute)	*/
-	
+	/*  something to run when no other process is ready to execute)	*/	
 	// setup currstop
 	currstop = (uint64)0;
 	// setup currstart
@@ -224,6 +225,7 @@ static	void	sysinit()
 	prptr->prpreemptcount1 = 0; /* initialized to 0 upon process creation */
 	prptr->prpreemptcount2 = 0; /* initialized to 0 upon process creation */
 	prptr->quantumLeft  = 0xFFFFFFFF;
+
 	currpid = NULLPROC;
 	
 	/* Initialize semaphores */
