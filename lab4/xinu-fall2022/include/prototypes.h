@@ -629,3 +629,6 @@ extern process myhello(void);
 
 /* in file mytests.c */
 extern void lab4Tests();
+
+/* in file alarmx.c */
+extern syscall alarmx(uint32 timeval, void (* ftn) (void));

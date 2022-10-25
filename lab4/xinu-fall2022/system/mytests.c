@@ -8,7 +8,7 @@
  *------------------------------------------------------------------------
  */
 
-void lab3Tests()
+void lab4Tests()
 {
     #ifdef XINUDEBUG
     // kprintf("\n###test1####\n");

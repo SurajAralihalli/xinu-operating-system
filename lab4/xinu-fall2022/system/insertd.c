@@ -15,7 +15,7 @@ status	insertd(			/* Assumes interrupts disabled	*/
 	int32	next;			/* Runs through the delta list	*/
 	int32	prev;			/* Follows next through the list*/
 
-	if (isbadqid(q) || isbadpid(pid)) {
+	if (isbadqid(q) || isbadpidalarm(pid)) {
 		return SYSERR;
 	}
 

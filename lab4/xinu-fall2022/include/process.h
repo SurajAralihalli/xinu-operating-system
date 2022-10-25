@@ -34,6 +34,10 @@
 			  ((pid32)(x) >= NPROC) || \
 			  (proctab[(x)].prstate == PR_FREE))
 
+#define	isbadpidalarm(x)	( ((pid32)(x) < 0) || \
+			  ((pid32)(x) >= 3*NPROC) || \
+			  (proctab[(x)].prstate == PR_FREE))
+
 /* Number of device descriptors a process can have open */
 
 #define NDESC		5	/* must be odd to make procent 4N bytes	*/
@@ -52,6 +56,9 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint16 	prnumalarms;    /* Number of pending alarms	*/
+	void (* prcbftn) ();    /* handler function*/
+	uint16 prmakedetour;    /* indicates alarm is triggered*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
