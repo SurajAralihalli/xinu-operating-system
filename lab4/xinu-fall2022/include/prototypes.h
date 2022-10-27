@@ -632,3 +632,9 @@ extern void lab4Tests();
 
 /* in file alarmx.c */
 extern syscall alarmx(uint32 timeval, void (* ftn) (void));
+
+/* in file executedetour.c */
+extern void executedetour(void);
+
+/* in file restoreregs.S */
+extern void restoreregs(void);

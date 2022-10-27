@@ -23,19 +23,19 @@ syscall alarmx(uint32 timeval, void (* ftn) (void))
     // no previous alarms
     if(proctab[currpid].prnumalarms==0)
     {
-        pidalarm = NPROC + pid;
+        pidalarm = NPROC + currpid;
     }
     // one previous alarm
     else
     {
-        pidalarm =  2*NPROC + pid;
+        pidalarm =  2*NPROC + currpid;
     }
 
     // register the callback function
     prptr->prcbftn = ftn;
 
     //  add to sleepqueue
-    if (insertd(currpid, sleepq, delay) == SYSERR) {
+    if (insertd(pidalarm, sleepq, timeval) == SYSERR) {
 		restore(mask);
 		return SYSERR;
 	}

@@ -56,6 +56,7 @@ pid32	create(
 	prptr->prdesc[2] = CONSOLE;
 	prptr->prnumalarms = 0;
 	prptr->prcbftn = NULL;
+	prptr->prmakedetour = 0;
 
 	/* Initialize stack as if the process was called		*/
 
