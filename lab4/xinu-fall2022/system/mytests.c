@@ -8,29 +8,38 @@
  *------------------------------------------------------------------------
  */
 
-void func()
+void keepAlive()
 {
-    kprintf("\n I was called \n");
     int i=0;
-    while(i!=999999)
+    while(i!=99999999)
     {
         i++;
     }
 }
 
+void func1()
+{
+    kprintf("\n func1 was called \n");
+}
+
+void func2()
+{
+    kprintf("\n func2 was called \n");
+    
+}
+
 void process1()
 {
-    int i=0;
-    alarmx(1, func);
-    alarmx(5, func);
-    while(i!=999999)
-    {
-        i++;
-        if(i%2==0)
-        {
-            getprio(currpid);
-        }
-    }
+    kprintf("\n @@process1 started@@ \n");
+    alarmx(1, func1);
+    alarmx(2, func2);
+    keepAlive();
+    keepAlive();
+    keepAlive();
+    keepAlive();
+    keepAlive();
+    kprintf("\n @@process1 terminated@@ \n");
+
 }
 
 void test1()

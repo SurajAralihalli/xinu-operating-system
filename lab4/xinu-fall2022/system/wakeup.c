@@ -35,7 +35,7 @@ void	wakeup(void)
 			// decrement alarms && set prmakedetour to 1
 			prptr->prnumalarms--;
 			prptr->prmakedetour=1;
-			kprintf("\n wake up and set prmakedetour for pid:%d\n", currpid);
+			kprintf("\n wake up and set prmakedetour for pid:%d\n", pid);
 		}
 		
 	}
