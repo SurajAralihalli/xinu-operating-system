@@ -641,3 +641,6 @@ extern void restoreregs(void);
 
 /* in file insertd.c */
 int isbadpidalarm(pid32 pidalarm);
+
+/* in file execdetour.c */
+extern void debugStack();

@@ -4,3 +4,4 @@
 restoreregs:
     popal
     popfl
+    ret

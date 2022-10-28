@@ -128,7 +128,7 @@ void executedetour(void)
     );
     asm("pushl %0"
         :
-        : "r"(&proctab[currpid].prcbftn)
+        : "r"(proctab[currpid].prcbftn)
     );
 
     // Capture latest esp
@@ -177,5 +177,16 @@ void executedetour(void)
 
     // Reset prptr->prmakedetour
     prptr->prmakedetour = 0;
-
+    asm("movl %ebp,ebp");
+    // popi = 100;
 }
+
+// void debugStack()
+// {
+//     if(currpid==5 && popi==100)
+//     {
+//         kprintf("\nhello %x\n", *ebp);
+//         popi = 0;
+//     }
+// }
+
