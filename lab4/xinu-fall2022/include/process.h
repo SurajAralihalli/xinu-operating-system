@@ -54,7 +54,8 @@ struct procent {		/* Entry in the process table		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
 	uint16 	prnumalarms;    /* Number of pending alarms	*/
 	void (* prcbftn) ();    /* handler function*/
-	uint16 prmakedetour;    /* indicates alarm is triggered*/
+	uint16 	prmakedetour;    /* indicates alarm is triggered*/
+	pid32	lastpidalarm;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

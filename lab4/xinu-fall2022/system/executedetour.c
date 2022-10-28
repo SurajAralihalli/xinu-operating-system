@@ -177,8 +177,7 @@ void executedetour(void)
 
     // Reset prptr->prmakedetour
     prptr->prmakedetour = 0;
-    asm("movl %ebp,ebp");
-    // popi = 100;
+
 }
 
 // void debugStack()

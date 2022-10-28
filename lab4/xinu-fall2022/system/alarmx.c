@@ -28,7 +28,15 @@ syscall alarmx(uint32 timeval, void (* ftn) (void))
     // one previous alarm
     else
     {
-        pidalarm =  2*NPROC + currpid;
+        if(proctab[currpid].lastpidalarm == NPROC + currpid)
+        {
+            pidalarm =  2*NPROC + currpid;
+        }
+        else
+        {
+            pidalarm =  NPROC + currpid;
+        }
+        
     }
 
     // register the callback function
@@ -43,6 +51,8 @@ syscall alarmx(uint32 timeval, void (* ftn) (void))
 
     // icrement prnumalarms
     prptr->prnumalarms++;
+    // update lastpidalarm
+    prptr->lastpidalarm = pidalarm;
 
 	restore(mask);
 	return 0;

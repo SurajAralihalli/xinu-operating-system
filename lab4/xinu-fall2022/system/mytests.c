@@ -22,6 +22,7 @@ void process1()
 {
     int i=0;
     alarmx(1, func);
+    alarmx(5, func);
     while(i!=999999)
     {
         i++;

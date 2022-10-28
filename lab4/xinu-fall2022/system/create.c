@@ -57,6 +57,7 @@ pid32	create(
 	prptr->prnumalarms = 0;
 	prptr->prcbftn = NULL;
 	prptr->prmakedetour = 0;
+	prptr->lastpidalarm = -1;
 
 	/* Initialize stack as if the process was called		*/
 
