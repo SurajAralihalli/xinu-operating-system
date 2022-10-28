@@ -34,10 +34,6 @@
 			  ((pid32)(x) >= NPROC) || \
 			  (proctab[(x)].prstate == PR_FREE))
 
-#define	isbadpidalarm(x)	( ((pid32)(x) < 0) || \
-			  ((pid32)(x) >= 3*NPROC) || \
-			  (proctab[(x)].prstate == PR_FREE))
-
 /* Number of device descriptors a process can have open */
 
 #define NDESC		5	/* must be odd to make procent 4N bytes	*/

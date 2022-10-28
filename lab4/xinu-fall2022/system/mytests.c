@@ -10,19 +10,18 @@
 
 void func()
 {
+    kprintf("\n I was called \n");
     int i=0;
     while(i!=999999)
     {
         i++;
     }
-    kprintf("\n I was called \n");
-
 }
 
 void process1()
 {
     int i=0;
-    alarmx(3, func);
+    alarmx(1, func);
     while(i!=999999)
     {
         i++;
@@ -42,8 +41,8 @@ void test1()
 void lab4Tests()
 {
     #ifdef XINUDEBUG
-    // kprintf("\n###test1####\n");
-    // test1();
-    // sleep(1);
+    kprintf("\n###test1####\n");
+    test1();
+    sleep(1);
     #endif
 }

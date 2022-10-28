@@ -38,5 +38,42 @@ status	insertd(			/* Assumes interrupts disabled	*/
 		queuetab[next].qkey -= key;
 	}
 
+	if(q == sleepq)
+	{
+		kprintf("\n Inserted in sleep queue, pid:%d \n",pid);
+	}
+	
+
 	return OK;
+}
+
+
+int isbadpidalarm(pid32 pidalarm)
+{
+	if(pidalarm<0 || pidalarm>=3*NPROC)
+	{
+		return 1;
+	}
+
+	pid32 pid;
+	if(pidalarm >= 2*NPROC)
+	{
+		pid = pidalarm - 2*NPROC;
+	}
+	else if (pidalarm >= NPROC)	
+	{
+		pid = pidalarm - NPROC;
+	}
+	else
+	{
+		pid = pidalarm;
+	}
+
+	if(proctab[pid].prstate == PR_FREE)
+	{
+		return 1;
+	}
+
+	// return false
+	return 0;
 }

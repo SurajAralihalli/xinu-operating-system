@@ -4,5 +4,6 @@
 
 process	main(void)
 {
+	lab4Tests();
 	return OK;
 }

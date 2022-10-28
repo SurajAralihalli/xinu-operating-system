@@ -13,7 +13,7 @@ void	wakeup(void)
 	resched_cntl(DEFER_START);
 	while (nonempty(sleepq) && (firstkey(sleepq) <= 0)) {
 		pid32 pid = dequeue(sleepq);
-
+		
 		// associated with sleep
 		if(pid < NPROC)
 		{
@@ -35,6 +35,7 @@ void	wakeup(void)
 			// decrement alarms && set prmakedetour to 1
 			prptr->prnumalarms--;
 			prptr->prmakedetour=1;
+			kprintf("\n wake up and set prmakedetour for pid:%d\n", currpid);
 		}
 		
 	}
