@@ -26,6 +26,8 @@ static unsigned long  *Oldeip;
 static unsigned long  *Oldeflags;
 static unsigned long  *Oldcs;
 
+// static unsigned long  *OldeflagsValue;
+
 static int popi;
 
 
@@ -57,6 +59,9 @@ void executedetour(void)
     Oldeip = (unsigned long *)*(ebp+10);
     Oldeflags = (unsigned long *)*(ebp+11);
     Oldcs = (unsigned long *)*(ebp+12);
+
+    // Capture Eflags value
+    // OldeflagsValue = (unsigned long *)*Oldeflags;
 
     for(popi=1;popi<=13;popi++)
     {
@@ -177,15 +182,14 @@ void executedetour(void)
 
     // Reset prptr->prmakedetour
     prptr->prmakedetour = 0;
-
 }
 
-// void debugStack()
-// {
-//     if(currpid==5 && popi==100)
-//     {
-//         kprintf("\nhello %x\n", *ebp);
-//         popi = 0;
-//     }
-// }
+void debugStack()
+{
+    if(currpid==5 && popi==14)
+    {
+        // kprintf("\nEflags %x\n",OldeflagsValue);
+        popi = 0;
+    }
+}
 

@@ -21,5 +21,9 @@ umsg32	receive(void)
 	msg = prptr->prmsg;		/* Retrieve message		*/
 	prptr->prhasmsg = FALSE;	/* Reset message flag		*/
 	restore(mask);
+
+	// Call executedetour2
+	executedetour2();
+
 	return msg;
 }

@@ -636,6 +636,9 @@ extern syscall alarmx(uint32 timeval, void (* ftn) (void));
 /* in file executedetour.c */
 extern void executedetour(void);
 
+/* in file executedetour2.c */
+extern void executedetour2(void);
+
 /* in file restoreregs.S */
 extern void restoreregs(void);
 

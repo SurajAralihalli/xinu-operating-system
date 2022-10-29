@@ -44,7 +44,7 @@ syscall alarmx(uint32 timeval, void (* ftn) (void))
 
     //  add to sleepqueue
     if (insertd(pidalarm, sleepq, timeval) == SYSERR) {
-        kprintf("\n Insert failed \n");
+        // kprintf("\n Insert failed \n");
 		restore(mask);
 		return SYSERR;
 	}

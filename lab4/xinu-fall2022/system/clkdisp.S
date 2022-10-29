@@ -15,6 +15,7 @@ clkdisp:
 
 		call	clkhandler	# Call high level handler
 		call 	executedetour # Call high level handler
+		#call 	debugStack
 
 		sti			# Restore interrupt status
 		popal			# Restore registers

@@ -27,6 +27,7 @@ syscall	sleepms(
 	  int32	delay			/* Time to delay in msec.	*/
 	)
 {
+	
 	intmask	mask;			/* Saved interrupt mask		*/
 
 	if (delay < 0) {
@@ -41,6 +42,7 @@ syscall	sleepms(
 	/* Delay calling process */
 
 	mask = disable();
+	// kprintf("\n begin sleepms pid:%d \n",currpid);
 	if (insertd(currpid, sleepq, delay) == SYSERR) {
 		restore(mask);
 		return SYSERR;
@@ -49,5 +51,10 @@ syscall	sleepms(
 	proctab[currpid].prstate = PR_SLEEP;
 	resched();
 	restore(mask);
+
+	// Call executedetour2
+	// kprintf("\n after restoring mask and inside Sleep pid:%d \n",currpid);
+	executedetour2();
+
 	return OK;
 }

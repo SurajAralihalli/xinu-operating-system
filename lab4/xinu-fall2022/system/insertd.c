@@ -38,10 +38,10 @@ status	insertd(			/* Assumes interrupts disabled	*/
 		queuetab[next].qkey -= key;
 	}
 
-	if(q == sleepq)
-	{
-		kprintf("\n Inserted in sleep queue, pid:%d \n",pid);
-	}
+	// if(q == sleepq)
+	// {
+	// 	kprintf("\n Inserted in sleep queue, pid:%d \n",pid);
+	// }
 	
 
 	return OK;
