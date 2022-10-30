@@ -647,3 +647,12 @@ int isbadpidalarm(pid32 pidalarm);
 
 /* in file execdetour.c */
 extern void debugStack();
+
+/* in file sendx.c */
+syscall sendx(pid32 pid, char *buf, uint16 len); 
+
+/* in file receivex.c */
+syscall receivex(pid32 *pidptr, char *buf, uint16 len); 
+
+/* in file helperfunctions.c */
+int copyBuffer(char* toBuffer, char* fromBuffer, uint16 len);

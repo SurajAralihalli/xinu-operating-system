@@ -58,6 +58,10 @@ pid32	create(
 	prptr->prcbftn = NULL;
 	prptr->prmakedetour = 0;
 	prptr->lastpidalarm = -1;
+	prptr->prrecvlen = 0;
+	prptr->prsenderpid = 0;
+	prptr->prblockedsender = 0;
+	prptr->prblockonreceiver = 0;
 
 	/* Initialize stack as if the process was called		*/
 
