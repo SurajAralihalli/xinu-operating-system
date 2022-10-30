@@ -9,16 +9,15 @@
 
 syscall sendx(pid32 pid, char *buf, uint16 len)
 {
-    intmask mask;			/* Saved interrupt mask		*/
-
-	mask = disable();
 	if (isbadpid(pid)) {
-		restore(mask);
 		return SYSERR;
 	}
 
     // initialize
     struct procent *receiverptr = &proctab[pid];
+
+    // wait on semaphore
+    wait(receiverptr->pripc);
 
     // buffer is free
     if(receiverptr->prrecvlen==0)
@@ -27,7 +26,8 @@ syscall sendx(pid32 pid, char *buf, uint16 len)
         int countBytes = copyBuffer(receiverptr->prrecvbuf, buf, len);
         if(countBytes == -1)
         {
-            restore(mask);
+            // free the semaphore
+            signal(receiverptr->pripc);
             return SYSERR;
         }
         else
@@ -46,6 +46,9 @@ syscall sendx(pid32 pid, char *buf, uint16 len)
             unsleep(pid);
             ready(pid);
         }
+        // free the semaphore
+        signal(receiverptr->pripc);
+        return OK;
     }
     // buffer is not free && no sender is blocked
     else if(receiverptr->prblockedsender==0)
@@ -59,24 +62,26 @@ syscall sendx(pid32 pid, char *buf, uint16 len)
         int countBytes = copyBuffer(senderptr->prsndbuf, buf, len);
         if(countBytes == 0)
         {
-            restore(mask);
+            // free the semaphore
+            signal(receiverptr->pripc);
             return SYSERR;
         }
         
         // block the sender
         senderptr->prblockonreceiver = pid;
         senderptr->prstate = PR_SENDBLOCK;
+        // free the semaphore
+        signal(receiverptr->pripc);
         // call resched
         resched();
+        return OK;
 
     }
     // buffer is not free && some send is blocked
     else
     {
-        restore(mask);
+        // free the semaphore
+        signal(receiverptr->pripc);
         return SYSERR;
     }
-
-    restore(mask);
-    return OK;
 }

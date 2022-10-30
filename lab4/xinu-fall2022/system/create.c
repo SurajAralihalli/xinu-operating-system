@@ -62,6 +62,7 @@ pid32	create(
 	prptr->prsenderpid = 0;
 	prptr->prblockedsender = 0;
 	prptr->prblockonreceiver = 0;
+	prptr->pripc = semcreate(1);
 
 	/* Initialize stack as if the process was called		*/
 

@@ -9,16 +9,20 @@
 
 syscall receivex(pid32 *pidptr, char *buf, uint16 len)
 {
-    intmask	mask;			/* Saved interrupt mask		*/
-	struct	procent *receiverptr;		/* Ptr to process's table entry	*/
+    struct	procent *receiverptr = &proctab[currpid];
 
-	mask = disable();
-	receiverptr = &proctab[currpid];
+    // wait on semaphore
+    wait(receiverptr->pripc);
 
     // no message in receive buffer
 	if (receiverptr->prrecvlen==0) {
 		receiverptr->prstate = PR_RECV;
+
+        // free the semaphore
+        signal(receiverptr->pripc);
 		resched();		/* Block until message arrives	*/
+        // wait on semaphore
+        wait(receiverptr->pripc);
 	}
 
     // if message in receive buffer
@@ -45,6 +49,8 @@ syscall receivex(pid32 *pidptr, char *buf, uint16 len)
         // ready the sender
         ready(senderPid);
     }
-	restore(mask);
+    
+	// free the semaphore
+    signal(receiverptr->pripc);
 	return OK;
 }
