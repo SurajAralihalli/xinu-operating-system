@@ -20,8 +20,6 @@ void executedetour2(void)
 
     //set prmakedetour to 0
     prptr->prmakedetour=0;
-
-    // kprintf("\n ##Invoking prcbftn from executedetour2## \n");
     
     //invoke the function
     (proctab[currpid].prcbftn)();

@@ -30,15 +30,15 @@ void func2()
 void process1()
 {
     kprintf("\n @@process1 started@@ \n");
-    alarmx(3, func1);
-    alarmx(8, func2);
+    // alarmx(3, func1);
+    // alarmx(8, func2);
     keepAlive();
+    alarmx(1, func1);
     keepAlive();
-    keepAlive();
+    alarmx(4, func2);
     keepAlive();
     keepAlive();
     kprintf("\n @@process1 terminated@@ \n");
-
 }
 
 void test1()
@@ -67,8 +67,8 @@ void lab4Tests()
     // kprintf("\n###test1####\n");
     // test1();
     // sleep(1);
-    kprintf("\n###test2####\n");
-    test2();
-    sleep(1);
+    // kprintf("\n###test2####\n");
+    // test2();
+    // sleep(1);
     #endif
 }

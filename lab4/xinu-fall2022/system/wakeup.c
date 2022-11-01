@@ -14,7 +14,6 @@ void	wakeup(void)
 	while (nonempty(sleepq) && (firstkey(sleepq) <= 0)) {
 		pid32 pid = dequeue(sleepq);
 		
-		// kprintf("\n begin wake up pid:%d\n", pid);
 		// associated with sleep
 		if(pid < NPROC)
 		{
@@ -23,6 +22,8 @@ void	wakeup(void)
 		// associated with alarmx()
 		else
 		{
+			pid32 pidalarm = pid;
+			
 			if(pid >= 2*NPROC)
 			{
 				pid = pid - 2*NPROC;
@@ -31,12 +32,13 @@ void	wakeup(void)
 			{
 				pid = pid - NPROC;
 			}
-			
+
 			struct procent *prptr = &proctab[pid];
+			// update lastpidalarm
+    		prptr->lastpidalarmtriggered = pidalarm;
 			// decrement alarms && set prmakedetour to 1
 			prptr->prnumalarms--;
 			prptr->prmakedetour=1;
-			// kprintf("\n wake up and set prmakedetour for pid:%d\n", pid);
 		}
 		
 	}

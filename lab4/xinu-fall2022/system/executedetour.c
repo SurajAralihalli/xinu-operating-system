@@ -57,8 +57,9 @@ void executedetour(void)
     Oldeax = (unsigned long *)*(ebp+9);
 
     Oldeip = (unsigned long *)*(ebp+10);
-    Oldeflags = (unsigned long *)*(ebp+11);
-    Oldcs = (unsigned long *)*(ebp+12);
+    Oldcs = (unsigned long *)*(ebp+11);
+    Oldeflags = (unsigned long *)*(ebp+12);
+    
 
     // Capture Eflags value
     // OldeflagsValue = (unsigned long *)*Oldeflags;
@@ -125,11 +126,11 @@ void executedetour(void)
     // Push iret variables
     asm("pushl %0"
         :
-        : "r"(Oldcs)
+        : "r"(Oldeflags)
     );
     asm("pushl %0"
         :
-        : "r"(Oldeflags)
+        : "r"(Oldcs)
     );
     asm("pushl %0"
         :

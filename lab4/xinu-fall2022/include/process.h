@@ -58,7 +58,7 @@ struct procent {		/* Entry in the process table		*/
 	uint16 	prnumalarms;    /* Number of pending alarms	*/
 	void (* prcbftn) ();    /* handler function*/
 	uint16 	prmakedetour;    /* indicates alarm is triggered*/
-	pid32	lastpidalarm;
+	pid32	lastpidalarmtriggered;
 	char 	prrecvbuf[IPCX_MAXLEN];
 	char 	prsndbuf[IPCX_MAXLEN];
 	uint16 	prrecvlen;

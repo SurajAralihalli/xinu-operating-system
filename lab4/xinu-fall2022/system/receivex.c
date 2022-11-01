@@ -28,6 +28,11 @@ syscall receivex(pid32 *pidptr, char *buf, uint16 len)
     // if message in receive buffer
     // consume prrecvbuf and copy to user buffer
     copyBuffer(buf, receiverptr->prrecvbuf, len);
+    if(pidptr!=NULL)
+    {
+        // set the pidptr to sender's pid as discussed with prof
+        *pidptr = receiverptr->prsenderpid;
+    }
     // reset variables
     receiverptr->prsenderpid = 0;
     receiverptr->prrecvlen = 0;
