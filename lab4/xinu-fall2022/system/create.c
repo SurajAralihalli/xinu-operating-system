@@ -59,6 +59,7 @@ pid32	create(
 	prptr->prmakedetour = 0;
 	prptr->lastpidalarmtriggered = -1;
 	prptr->prrecvlen = 0;
+	prptr->prsendlen = 0;
 	prptr->prsenderpid = 0;
 	prptr->prblockedsender = 0;
 	prptr->prblockonreceiver = 0;

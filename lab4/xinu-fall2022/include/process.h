@@ -66,6 +66,7 @@ struct procent {		/* Entry in the process table		*/
 	pid32 	prblockedsender;
 	pid32 	prblockonreceiver;
 	sid32 	pripc;
+	uint16	prsendlen;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

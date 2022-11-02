@@ -66,6 +66,8 @@ syscall sendx(pid32 pid, char *buf, uint16 len)
             signal(receiverptr->pripc);
             return SYSERR;
         }
+        // set the length of buffer in the sender
+        senderptr->prsendlen = len;
         
         // block the sender
         senderptr->prblockonreceiver = pid;
@@ -77,7 +79,7 @@ syscall sendx(pid32 pid, char *buf, uint16 len)
         return OK;
 
     }
-    // buffer is not free && some send is blocked
+    // buffer is not free && some sender is blocked
     else
     {
         // free the semaphore

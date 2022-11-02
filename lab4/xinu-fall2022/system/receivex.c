@@ -43,7 +43,7 @@ syscall receivex(pid32 *pidptr, char *buf, uint16 len)
         pid32 senderPid = receiverptr->prblockedsender;
         struct procent *senderptr = &proctab[senderPid];
 
-        int countBytes = copyBuffer(receiverptr->prrecvbuf, senderptr->prsndbuf, strlen(senderptr->prsndbuf));
+        int countBytes = copyBuffer(receiverptr->prrecvbuf, senderptr->prsndbuf, senderptr->prsendlen);
         // set the len of receiver buffer
         receiverptr->prrecvlen = countBytes;
         // set the senderpid
@@ -51,6 +51,7 @@ syscall receivex(pid32 *pidptr, char *buf, uint16 len)
         // reset variables
         receiverptr->prblockedsender=0;
         senderptr->prblockonreceiver=0;
+        senderptr->prsendlen = 0;
         // ready the sender
         ready(senderPid);
     }
