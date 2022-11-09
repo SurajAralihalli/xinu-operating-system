@@ -679,3 +679,22 @@ extern	syscall	yield(void);
 #define	ntohs(x)   ( ( 0xff & ((x)>>8) ) | ( (0xff & (x)) << 8 ) )
 #define	ntohl(x)   (  (((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \
 		      (((x)<< 8) & 0x00ff0000) | (((x)<<24) & 0xff000000) )
+
+
+
+/* NEW FUNCTION PROTOTYPES START HERE */
+
+/* in file vmhgetmem.c */
+extern char *vmhgetmem(uint16 msize);
+
+/* in file vmhfreemem.c */
+extern syscall vmhfreemem(char *blockaddr, uint16 msize);
+
+/* in file init_paging.c */
+extern void init_paging(void);
+
+/* in file pgfhandler.c */
+extern void pgfhandler();
+
+/* in file pgfdisp.S */
+extern	void	pgfdisp(void);
