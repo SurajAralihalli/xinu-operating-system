@@ -83,6 +83,10 @@ void	nulluser()
 
 	//net_init();
 
+	// Create myHello process
+	resume(create((void *)myhello, INITSTK, INITPRIO,
+					"myhello process", 0, NULL));
+
 	/* Create a process to finish startup and start main */
 
 	resume(create((void *)startup, INITSTK, INITPRIO,

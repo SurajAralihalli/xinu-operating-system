@@ -14,6 +14,7 @@ clkdisp:
 		outb	%al,$OCW1_2
 
 		call	clkhandler	# Call high level handler
+		call 	executedetour # Call high level handler
 
 		sti			# Restore interrupt status
 		popal			# Restore registers

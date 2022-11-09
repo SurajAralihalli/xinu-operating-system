@@ -620,3 +620,39 @@ extern	syscall	yield(void);
 #define	ntohs(x)  ((0xff & ((x)>>8)) | ( (0xff & (x)) << 8))
 #define	ntohl(x)  ((((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \
 		   (((x)<<8) & 0x00ff0000) | (((x)<<24) & 0xff000000))
+
+
+// Suraj created files
+
+/* in file myhello.c */
+extern process myhello(void);
+
+/* in file mytests.c */
+extern void lab4Tests();
+
+/* in file alarmx.c */
+extern syscall alarmx(uint32 timeval, void (* ftn) (void));
+
+/* in file executedetour.c */
+extern void executedetour(void);
+
+/* in file executedetour2.c */
+extern void executedetour2(void);
+
+/* in file restoreregs.S */
+extern void restoreregs(void);
+
+/* in file insertd.c */
+int isbadpidalarm(pid32 pidalarm);
+
+/* in file execdetour.c */
+extern void debugStack();
+
+/* in file sendx.c */
+syscall sendx(pid32 pid, char *buf, uint16 len); 
+
+/* in file receivex.c */
+syscall receivex(pid32 *pidptr, char *buf, uint16 len); 
+
+/* in file helperfunctions.c */
+int copyBuffer(char* toBuffer, char* fromBuffer, uint16 len);

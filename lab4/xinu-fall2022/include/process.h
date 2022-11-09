@@ -1,5 +1,7 @@
 /* process.h - isbadpid */
 
+#include <ipcx.h>
+
 /* Maximum number of processes in the system */
 
 #ifndef NPROC
@@ -16,6 +18,7 @@
 #define	PR_SUSP		5	/* Process is suspended			*/
 #define	PR_WAIT		6	/* Process is on semaphore queue	*/
 #define	PR_RECTIM	7	/* Process is receiving with timeout	*/
+#define PR_SENDBLOCK 8  /* Process can't send because receive buffer is full*/
 
 /* Miscellaneous process definitions */
 
@@ -52,6 +55,18 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint16 	prnumalarms;    /* Number of pending alarms	*/
+	void (* prcbftn) ();    /* handler function*/
+	uint16 	prmakedetour;    /* indicates alarm is triggered*/
+	pid32	lastpidalarmtriggered;
+	char 	prrecvbuf[IPCX_MAXLEN];
+	char 	prsndbuf[IPCX_MAXLEN];
+	uint16 	prrecvlen;
+	pid32 	prsenderpid;
+	pid32 	prblockedsender;
+	pid32 	prblockonreceiver;
+	sid32 	pripc;
+	uint16	prsendlen;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
@@ -60,3 +75,7 @@ struct procent {		/* Entry in the process table		*/
 extern	struct	procent proctab[];
 extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
+
+
+#define XINUTEST 1
+#define XINUDEBUG 0
