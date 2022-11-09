@@ -15,7 +15,7 @@ status	insertd(			/* Assumes interrupts disabled	*/
 	int32	next;			/* Runs through the delta list	*/
 	int32	prev;			/* Follows next through the list*/
 
-	if (isbadqid(q) || isbadpid(pid)) {
+	if (isbadqid(q) || isbadpidalarm(pid)) {
 		return SYSERR;
 	}
 
@@ -39,4 +39,35 @@ status	insertd(			/* Assumes interrupts disabled	*/
 	}
 
 	return OK;
+}
+
+
+int isbadpidalarm(pid32 pidalarm)
+{
+	if(pidalarm<0 || pidalarm>=3*NPROC)
+	{
+		return 1;
+	}
+
+	pid32 pid;
+	if(pidalarm >= 2*NPROC)
+	{
+		pid = pidalarm - 2*NPROC;
+	}
+	else if (pidalarm >= NPROC)	
+	{
+		pid = pidalarm - NPROC;
+	}
+	else
+	{
+		pid = pidalarm;
+	}
+
+	if(proctab[pid].prstate == PR_FREE)
+	{
+		return 1;
+	}
+
+	// return false
+	return 0;
 }

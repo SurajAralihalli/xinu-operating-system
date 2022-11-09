@@ -54,6 +54,16 @@ pid32	create(
 	prptr->prdesc[0] = CONSOLE;
 	prptr->prdesc[1] = CONSOLE;
 	prptr->prdesc[2] = CONSOLE;
+	prptr->prnumalarms = 0;
+	prptr->prcbftn = NULL;
+	prptr->prmakedetour = 0;
+	prptr->lastpidalarmtriggered = -1;
+	prptr->prrecvlen = 0;
+	prptr->prsendlen = 0;
+	prptr->prsenderpid = 0;
+	prptr->prblockedsender = 0;
+	prptr->prblockonreceiver = 0;
+	prptr->pripc = semcreate(1);
 
 	/* Initialize stack as if the process was called		*/
 
