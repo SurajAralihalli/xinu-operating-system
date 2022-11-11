@@ -698,3 +698,17 @@ extern void pgfhandler();
 
 /* in file pgfdisp.S */
 extern	void	pgfdisp(void);
+
+/* in file helperFunctions.c */
+extern char* get_empty_frame_from_regionD(void);
+
+extern char* get_empty_frame_from_regionE1();
+
+extern void initialize_empty_page_directory(pg_dir_t* page_dir_addr);
+
+extern void initialize_empty_page_table(pg_tab_t* page_tab_addr);
+
+extern void identity_map(pg_tab_t* page_tab_addr, uint32 page_dir_index);
+
+extern void set_page_directory_entry(pd_t* page_dir_entry, uint32 page_tab_frame_number);
+

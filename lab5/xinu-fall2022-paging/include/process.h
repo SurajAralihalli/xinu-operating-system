@@ -25,6 +25,7 @@
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
+
 #define	INITPRIO	20	/* Initial process priority		*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
@@ -52,6 +53,7 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint32* prpg_dir_base;	/* Base address of page directory */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

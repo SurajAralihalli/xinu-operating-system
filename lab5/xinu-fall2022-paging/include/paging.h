@@ -36,6 +36,9 @@ typedef struct {
   unsigned int pt_base	: 20;		/* location of page?		*/
 } pt_t;
 
+typedef uint32 pg_dir_t;
+typedef uint32 pg_tab_t;
+
 /* Prototypes for required API calls */
 //SYSCALL xmmap(int, bsd_t, int);
 //SYSCALL xmunmap(int);
@@ -43,6 +46,8 @@ typedef struct {
 #define NBPG		4096	/* number of bytes per page	*/
 #define FRAME0		1024	/* zero-th frame		*/
 #define NFRAMES		3072	/* number of frames		*/
+
+#define ENTRIES_PER_FRAME 1024
 
 #define MAP_SHARED 1
 #define MAP_PRIVATE 2
@@ -52,3 +57,26 @@ typedef struct {
 
 #define MAX_ID		7		/* You get 8 mappings, 0 - 7 */
 #define MIN_ID          0
+
+
+
+#define NFRAMES_D		1000	/* number of frames		*/
+#define NFRAMES_E1		1024
+
+// NEW DATASTRUCTURES // 
+
+// struct to indicate which frames are free
+struct fholder{
+  unsigned int frame_pres	: 1;		/* frame is present?		*/
+  pid32  owner_process;
+};
+
+extern	struct	fholder fHolderListD[];
+extern	struct	fholder fHolderListE1[];
+
+struct identityMapAddr {
+  pg_tab_t* pg_tab_addr;
+  uint32    pg_dir_index;
+};
+
+extern struct identityMapAddr identityMapAddrList[]; 
