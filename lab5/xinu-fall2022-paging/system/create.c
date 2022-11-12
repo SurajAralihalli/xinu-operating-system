@@ -52,16 +52,16 @@ pid32	create(
 	prptr->prsem = -1;
 	prptr->prparent = (pid32)getpid();
 	prptr->prhasmsg = FALSE;
-	prptr->prpg_dir_base = (pg_dir_t*) get_empty_frame_from_regionD();
-	initialize_empty_page_directory(prptr->prpg_dir_base);
+	prptr->page_dir_addr = (pg_dir_t*) get_empty_frame_from_regionD();
+	initialize_empty_page_directory(prptr->page_dir_addr);
 
 	/* Load saved identity mapped page tables */
 	for(i = 0 ; i < 5; i++) {
-		uint32 pg_dir_index = identityMapAddrList[i].pg_dir_index;
+		uint32 pg_dir_index = identityMapAddrList[i].page_dir_index;
 
-		pd_t* page_dir_entry = &((prptr->prpg_dir_base)[pg_dir_index]);
+		pd_t* page_dir_entry = &((prptr->page_dir_addr)[pg_dir_index]);
 
-		set_page_directory_entry(page_dir_entry, identityMapAddrList[i].pg_tab_addr);
+		set_page_directory_entry(page_dir_entry, (p32addr_t)identityMapAddrList[i].page_table_addr);
 	}
 
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/

@@ -20,7 +20,7 @@ void init_paging(void)
 	initialize_empty_page_directory((pg_dir_t*) page_dir_addr);
 
 	/* Create shared page tables for regions A-E, G*/
-	uint32 pg_dir_indices[5] = {0, 1, 2, 3, 576};
+	p32addr_t pg_dir_indices[5] = {0, 1, 2, 3, 576};
 	uint32 i;
 	for(i = 0; i < 5; i++) {
 		pg_tab_t* page_table_addr = (pg_tab_t*) get_empty_frame_from_regionD();
@@ -32,21 +32,21 @@ void init_paging(void)
 
 		pd_t* page_dir_entry = &(page_dir_addr[pg_dir_index]);
 
-		set_page_directory_entry(page_dir_entry, ((uint32)page_table_addr) >> 12);
+		set_page_directory_entry(page_dir_entry, (p32addr_t)page_table_addr);
 
-		uint32 base_addr = (uint32) page_dir_entry->pd_base;
+		p32addr_t base_addr = (p32addr_t) page_dir_entry->pd_base;
 		
 		kprintf("%d page dir entry, page table addr: %d\n", pg_dir_index, page_table_addr);
 
-		kprintf("%d page dir entry addr: %d: %d\n", pg_dir_index, base_addr, ((uint32) page_table_addr) >> 12);
+		kprintf("%d page dir entry addr: %d: %d\n", pg_dir_index, base_addr, ((p32addr_t) page_table_addr) >> 12);
 
 		identity_map(page_table_addr, pg_dir_index);
 
 		kprintf("Identity map for %d successful: %d\n", pg_dir_index, page_dir_entry->pd_pres);
 
 		/* Save identity mapped page tables  */
-		identityMapAddrList[i].pg_tab_addr = ((uint32) page_table_addr) >> 12;
-		identityMapAddrList[i].pg_dir_index = pg_dir_index;
+		identityMapAddrList[i].page_table_addr = page_table_addr;
+		identityMapAddrList[i].page_dir_index = pg_dir_index;
 	}
 
 	int a=0;

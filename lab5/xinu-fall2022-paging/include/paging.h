@@ -36,8 +36,6 @@ typedef struct {
   unsigned int pt_base	: 20;		/* location of page?		*/
 } pt_t;
 
-typedef uint32 pg_dir_t;
-typedef uint32 pg_tab_t;
 
 /* Prototypes for required API calls */
 //SYSCALL xmmap(int, bsd_t, int);
@@ -65,6 +63,12 @@ typedef uint32 pg_tab_t;
 
 // NEW DATASTRUCTURES // 
 
+typedef uint32 pg_dir_t;
+typedef uint32 pg_tab_t;
+
+typedef uint32 v32addr_t;
+typedef uint32 p32addr_t;
+
 // struct to indicate which frames are free
 struct fholder{
   unsigned int frame_pres	: 1;		/* frame is present?		*/
@@ -75,8 +79,8 @@ extern	struct	fholder fHolderListD[];
 extern	struct	fholder fHolderListE1[];
 
 struct identityMapAddr {
-  pg_tab_t* pg_tab_addr;
-  uint32    pg_dir_index;
+  pg_tab_t* page_table_addr;
+  uint32   page_dir_index;
 };
 
 extern struct identityMapAddr identityMapAddrList[]; 

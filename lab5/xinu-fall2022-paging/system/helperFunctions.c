@@ -96,22 +96,22 @@ void initialize_empty_page_directory(pg_dir_t* page_dir_addr)
  * initialize_empty_page_table -  Initialize page table entries to default values
  *------------------------------------------------------------------------
  */
-void initialize_empty_page_table(pg_tab_t* page_tab_addr)
+void initialize_empty_page_table(pg_tab_t* page_table_addr)
 {
     int32 i;
 	for(i = 0; i < ENTRIES_PER_FRAME; i++) {
-        pt_t* page_tab_entry = &(page_tab_addr[i]);
-        page_tab_entry->pt_pres	= 0;		/* page is present?		*/
-        page_tab_entry->pt_write = 0;		/* page is writable?		*/
-        page_tab_entry->pt_user	= 0;		/* is use level protection?	*/
-        page_tab_entry->pt_pwt	= 0;		/* write through for this page? */
-        page_tab_entry->pt_pcd	= 0;		/* cache disable for this page? */
-        page_tab_entry->pt_acc	= 0;		/* page was accessed?		*/
-        page_tab_entry->pt_dirty = 0;		/* page was written?		*/
-        page_tab_entry->pt_mbz	= 0;		/* must be zero			*/
-        page_tab_entry->pt_global= 0;		/* should be zero in 586	*/
-        page_tab_entry->pt_avail = 0;		/* for programmer's use		*/
-        page_tab_entry->pt_base	= 0;		/* location of page?		*/
+        pt_t* page_table_entry = &(page_table_addr[i]);
+        page_table_entry->pt_pres	= 0;		/* page is present?		*/
+        page_table_entry->pt_write = 0;		/* page is writable?		*/
+        page_table_entry->pt_user	= 0;		/* is use level protection?	*/
+        page_table_entry->pt_pwt	= 0;		/* write through for this page? */
+        page_table_entry->pt_pcd	= 0;		/* cache disable for this page? */
+        page_table_entry->pt_acc	= 0;		/* page was accessed?		*/
+        page_table_entry->pt_dirty = 0;		/* page was written?		*/
+        page_table_entry->pt_mbz	= 0;		/* must be zero			*/
+        page_table_entry->pt_global= 0;		/* should be zero in 586	*/
+        page_table_entry->pt_avail = 0;		/* for programmer's use		*/
+        page_table_entry->pt_base	= 0;		/* location of page?		*/
 	}
 }
 
@@ -122,11 +122,11 @@ void initialize_empty_page_table(pg_tab_t* page_tab_addr)
                     of the null process
  *------------------------------------------------------------------------
  */
-void identity_map(pg_tab_t* page_tab_addr, uint32 page_dir_index)
+void identity_map(pg_tab_t* page_table_addr, uint32 page_dir_index)
 {
     uint32 i;
     for(i = 0 ; i < ENTRIES_PER_FRAME; i++) {
-        pt_t* page_tab_entry = &(page_tab_addr[i]);
+        pt_t* page_tab_entry = &(page_table_addr[i]);
         page_tab_entry->pt_pres = 1;
         page_tab_entry->pt_write = 1;		/* page is writable?		*/
         page_tab_entry->pt_user = 0;		/* is use level protection?	*/
@@ -148,11 +148,12 @@ void identity_map(pg_tab_t* page_tab_addr, uint32 page_dir_index)
                             of page directory entry
  *------------------------------------------------------------------------
  */
-void set_page_directory_entry(pd_t* page_dir_entry, uint32 page_tab_frame_number)
+void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_addr)
 {
+    
     /* Mark present bit to 1 */
     page_dir_entry->pd_pres = 1;
 
     /* Assign page table address to page directory entry */
-    page_dir_entry->pd_base = page_tab_frame_number;
+    page_dir_entry->pd_base = ((p32addr_t)page_table_addr) >> 12;
 }
