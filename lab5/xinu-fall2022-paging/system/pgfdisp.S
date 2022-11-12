@@ -11,7 +11,7 @@
 		.globl	pgfdisp		# Page Fault interrupt dispatcher
 pgfdisp:
     pushal			# Save registers
-	cli			# Disable further interrupts
+	cli				# Disable further interrupts
 	movb	$EOI,%al	# Reset interrupt
 	outb	%al,$OCW1_2
 
