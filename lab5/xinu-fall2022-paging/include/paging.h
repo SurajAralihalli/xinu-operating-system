@@ -61,6 +61,12 @@ typedef struct {
 #define NFRAMES_D		1000	/* number of frames		*/
 #define NFRAMES_E1		1024
 #define NFRAMES_E2		1048
+#define NFRAMES_F		1024
+
+#define REGIONSTART_D		1024	/* number of frames		*/
+#define REGIONSTART_E1		2024
+#define REGIONSTART_E2		3038
+#define REGIONSTART_F		4096
 
 
 // NEW DATASTRUCTURES // 
@@ -86,3 +92,11 @@ struct identityMapAddr {
 };
 
 extern struct identityMapAddr identityMapAddrList[]; 
+
+struct vmemblk {
+  uint32 npages;
+  vmemblk* mnext;
+  v32addr_t* addr;
+};
+
+extern vmemblk vmemlist;

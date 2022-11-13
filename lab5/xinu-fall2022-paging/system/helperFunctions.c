@@ -191,3 +191,22 @@ void set_page_dir_addr_cr3(p32addr_t page_dir_addr)
 		:
 		: "r"(cr3_val));
 }
+
+/*------------------------------------------------------------------------
+ * create_linkedlist_node -  Creates a new linked list node of type vmemblk
+ *------------------------------------------------------------------------
+ */
+struct vmemblk* create_linkedlist_node()
+{
+    struct vmemblk* vnode = getmem(sizeof(struct vmemblk));
+    return vnode;
+}
+
+/*------------------------------------------------------------------------
+ * free_linkedlist_node -  Free a new linked list node of type vmemblk
+ *------------------------------------------------------------------------
+ */
+struct vmemblk* free_linkedlist_node(struct vmemblk* nodeptr)
+{
+    freemem((char* )nodeptr, sizeof(struct vmemblk));
+}
