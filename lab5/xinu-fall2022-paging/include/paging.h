@@ -60,6 +60,8 @@ typedef struct {
 
 #define NFRAMES_D		1000	/* number of frames		*/
 #define NFRAMES_E1		1024
+#define NFRAMES_E2		1048
+
 
 // NEW DATASTRUCTURES // 
 
