@@ -157,3 +157,22 @@ void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_addr)
     /* Assign page table address to page directory entry */
     page_dir_entry->pd_base = ((p32addr_t)page_table_addr) >> 12;
 }
+
+/*------------------------------------------------------------------------
+ * create_linkedlist_node -  Creates a new linked list node of type vmemblk
+ *------------------------------------------------------------------------
+ */
+struct vmemblk* create_linkedlist_node()
+{
+    struct vmemblk* vnode = getmem(sizeof(struct vmemblk));
+    return vnode;
+}
+
+/*------------------------------------------------------------------------
+ * free_linkedlist_node -  Free a new linked list node of type vmemblk
+ *------------------------------------------------------------------------
+ */
+struct vmemblk* free_linkedlist_node(struct vmemblk* nodeptr)
+{
+    freemem((char* )nodeptr, sizeof(struct vmemblk));
+}
