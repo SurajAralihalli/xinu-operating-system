@@ -52,6 +52,8 @@ pid32	create(
 	prptr->prsem = -1;
 	prptr->prparent = (pid32)getpid();
 	prptr->prhasmsg = FALSE;
+
+	// new fields
 	prptr->page_dir_addr = (pg_dir_t*) get_empty_frame_from_regionD();
 	initialize_empty_page_directory(prptr->page_dir_addr);
 
@@ -63,6 +65,8 @@ pid32	create(
 
 		set_page_directory_entry(page_dir_entry, (p32addr_t)identityMapAddrList[i].page_table_addr);
 	}
+
+	prptr->hsize = -1;
 
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/
 	prptr->prdesc[0] = CONSOLE;

@@ -708,7 +708,10 @@ extern void initialize_empty_page_directory(pg_dir_t* page_dir_addr);
 
 extern void initialize_empty_page_table(pg_tab_t* page_tab_addr);
 
-extern void identity_map(pg_tab_t* page_tab_addr, uint32 page_dir_index);
+extern void build_identity_map_entry(pg_tab_t* page_tab_addr, uint32 page_dir_index);
 
-extern void set_page_directory_entry(pd_t* page_dir_entry, uint32 page_tab_frame_number);
+extern void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_addr);
 
+extern void set_page_table_entry(pt_t* page_table_entry, p32addr_t page_addr);
+
+extern v32addr_t get_page_faulted_addr_cr2();

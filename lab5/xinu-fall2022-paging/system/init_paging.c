@@ -34,38 +34,32 @@ void init_paging(void)
 
 		set_page_directory_entry(page_dir_entry, (p32addr_t)page_table_addr);
 
-		p32addr_t base_addr = (p32addr_t) page_dir_entry->pd_base;
+		// p32addr_t base_addr = (p32addr_t) page_dir_entry->pd_base;
 		
-		kprintf("%d page dir entry, page table addr: %d\n", pg_dir_index, page_table_addr);
+		// kprintf("%d page dir entry, page table addr: %d\n", pg_dir_index, page_table_addr);
 
-		kprintf("%d page dir entry addr: %d: %d\n", pg_dir_index, base_addr, ((p32addr_t) page_table_addr) >> 12);
+		// kprintf("%d page dir entry addr: %d: %d\n", pg_dir_index, base_addr, ((p32addr_t) page_table_addr) >> 12);
 
-		identity_map(page_table_addr, pg_dir_index);
+		build_identity_map_entry(page_table_addr, pg_dir_index);
 
-		kprintf("Identity map for %d successful: %d\n", pg_dir_index, page_dir_entry->pd_pres);
+		// kprintf("Identity map for %d successful: %d\n", pg_dir_index, page_dir_entry->pd_pres);
 
 		/* Save identity mapped page tables  */
 		identityMapAddrList[i].page_table_addr = page_table_addr;
 		identityMapAddrList[i].page_dir_index = pg_dir_index;
 	}
 
-	int a=0;
+	// set up page directory table for NULL process
+	struct	procent	*prptr = &proctab[NULLPROC];
+	prptr->page_dir_addr = (p32addr_t)page_dir_addr;
 
 	/* Update CR3 to setup null process page directory address */
-	uint32 cr3_val = 0;
-	asm("movl %%cr3, %0" 
-		: "=r"(cr3_val));
-	cr3_val = (cr3_val & 0x00000FFF) | ((uint32)page_dir_addr & 0xFFFFF000);
-	asm("movl %0, %%cr3" 
-		:
-		: "r"(cr3_val));
-
+	set_page_dir_addr_cr3(page_dir_addr); //20 MSB bits
 
 	/* Enable paging - Set PG bit of CR0 to 1 */
 	uint32 cr0_val = 0;
 	asm("movl %%cr0, %0" 
 		: "=r"(cr0_val));
-	uint32 cr0_val_pristine = cr0_val;
 	cr0_val = cr0_val | 1 << 31;
 	asm("movl %0, %%cr0" 
 		:

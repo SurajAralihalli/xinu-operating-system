@@ -62,7 +62,7 @@ char* get_empty_frame_from_regionE1()
         if(fHolderListE1[i].frame_pres == 0) {
             fHolderListE1[i].frame_pres = 1;
             fHolderListE1[i].owner_process = currpid;
-            absolute_addr = (i + FRAME0) * NBPG;
+            absolute_addr = (i + FRAME0 + NFRAMES_D) * NBPG; // FRAME0 + NFRAMES_D is starting frame in E1
             break;
         }
     }
@@ -116,13 +116,13 @@ void initialize_empty_page_table(pg_tab_t* page_table_addr)
 }
 
 /*------------------------------------------------------------------------
- * identity_map -  Perform identity mapping of entries in page table with
+ * build_identity_map_entry -  Perform identity mapping of entries in page table with
                     start address `page_tab_addr`. Mapping is performed for
                     page directory entry corresponding to `page_dir_index`
                     of the null process
  *------------------------------------------------------------------------
  */
-void identity_map(pg_tab_t* page_table_addr, uint32 page_dir_index)
+void build_identity_map_entry(pg_tab_t* page_table_addr, uint32 page_dir_index)
 {
     uint32 i;
     for(i = 0 ; i < ENTRIES_PER_FRAME; i++) {
@@ -138,8 +138,6 @@ void identity_map(pg_tab_t* page_table_addr, uint32 page_dir_index)
         page_tab_entry->pt_global= 0;		/* should be zero in 586	*/
         page_tab_entry->pt_avail = 0;		/* for programmer's use		*/
         page_tab_entry->pt_base = i | (page_dir_index << 10);		/* location of page?		*/
-
-
     }
 }
 
@@ -155,7 +153,43 @@ void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_addr)
     page_dir_entry->pd_pres = 1;
 
     /* Assign page table address to page directory entry */
-    page_dir_entry->pd_base = ((p32addr_t)page_table_addr) >> 12;
+    page_dir_entry->pd_base = (page_table_addr >> 12);
+}
+
+
+/*------------------------------------------------------------------------
+ * set_page_table_entry -  Set P bit  and page frame number 
+                            of page table entry
+ *------------------------------------------------------------------------
+ */
+void set_page_table_entry(pt_t* page_table_entry, p32addr_t page_addr)
+{
+    
+    /* Mark present bit to 1 */
+    page_table_entry->pt_pres = 1;
+
+    /* Assign page address to page table entry */
+    page_table_entry->pt_base = (page_addr >> 12);
+}
+
+v32addr_t get_page_faulted_addr_cr2()
+{
+    v32addr_t cr2_val = 0;
+	asm("movl %%cr2, %0" 
+		: "=r"(cr2_val));
+	
+    return cr2_val;
+}
+
+void set_page_dir_addr_cr3(p32addr_t page_dir_addr)
+{
+    p32addr_t cr3_val = 0;
+	asm("movl %%cr3, %0" 
+		: "=r"(cr3_val));
+	cr3_val = (cr3_val & 0x00000FFF) | (page_dir_addr & 0xFFFFF000);
+	asm("movl %0, %%cr3" 
+		:
+		: "r"(cr3_val));
 }
 
 /*------------------------------------------------------------------------
