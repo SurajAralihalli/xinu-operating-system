@@ -30,8 +30,12 @@ pid32	create(
 	mask = disable();
 	if (ssize < MINSTK)
 		ssize = MINSTK;
+
 	ssize = (uint32) roundew(ssize);
-	if (((saddr = (uint32 *)getstk(ssize)) ==
+
+	uint32 npages = (ssize+NBPG) / NBPG;
+
+	if (((saddr = (uint32 *)vmhgetstk(npages)) ==           // use virtual mem
 	    (uint32 *)SYSERR ) ||
 	    (pid=newpid()) == SYSERR || priority < 1 ) {
 		restore(mask);
@@ -54,19 +58,26 @@ pid32	create(
 	prptr->prhasmsg = FALSE;
 
 	// new fields
-	prptr->page_dir_addr = (pg_dir_t*) get_empty_frame_from_regionD();
+	prptr->page_dir_addr = (p32addr_t*) get_empty_frame_from_regionD();
 	initialize_empty_page_directory(prptr->page_dir_addr);
 
 	/* Load saved identity mapped page tables */
 	for(i = 0 ; i < 5; i++) {
 		uint32 pg_dir_index = identityMapAddrList[i].page_dir_index;
+		p32addr_t* page_dir_addr = prptr->page_dir_addr;
 
-		pd_t* page_dir_entry = &((prptr->page_dir_addr)[pg_dir_index]);
+		pd_t* page_dir_entry = (pd_t*)&(page_dir_addr[pg_dir_index]);
 
 		set_page_directory_entry(page_dir_entry, (p32addr_t)identityMapAddrList[i].page_table_addr);
 	}
 
 	prptr->hsize = -1;
+	prptr->vmemlist_ptr = NULL;
+	prptr->prstklen_pages = npages;
+
+	// setup private virtual heap memory
+	vmhalloc(MAXHSIZE);
+	setup_vmemlist();
 
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/
 	prptr->prdesc[0] = CONSOLE;

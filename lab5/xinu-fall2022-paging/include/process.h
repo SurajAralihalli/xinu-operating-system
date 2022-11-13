@@ -39,6 +39,20 @@
 
 #define NDESC		5	/* must be odd to make procent 4N bytes	*/
 
+
+//paging related definitions
+typedef uint32 v32addr_t;
+typedef uint32 p32addr_t;
+
+// struct to store vmemblk 
+struct vmemblk {
+  uint32 npages;
+  struct vmemblk* mnext;
+  v32addr_t start_addr;
+};
+
+
+
 /* Definition of the process table (multiple of 32 bits) */
 
 struct procent {		/* Entry in the process table		*/
@@ -53,8 +67,10 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
-	uint32* page_dir_addr;	/* Base address of page directory */
+	p32addr_t* page_dir_addr;	/* Base address of page directory */
+	struct vmemblk* vmemlist_ptr;   /* vmemlist to track v pages*/
 	uint32 	hsize; 	   /* max number of pages */
+	uint32  prstklen_pages;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
@@ -63,3 +79,5 @@ struct procent {		/* Entry in the process table		*/
 extern	struct	procent proctab[];
 extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
+
+

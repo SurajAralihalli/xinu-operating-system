@@ -29,7 +29,10 @@ syscall	kill(
 	for (i=0; i<3; i++) {
 		close(prptr->prdesc[i]);
 	}
-	freestk(prptr->prstkbase, prptr->prstklen);
+	
+	// freestk(prptr->prstkbase, prptr->prstklen);
+	vmhfreestk(prptr->prstkbase,prptr->prstklen_pages);
+	// deallocate page
 
 	switch (prptr->prstate) {
 	case PR_CURR:

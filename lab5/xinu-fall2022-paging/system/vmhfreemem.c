@@ -12,58 +12,70 @@
 syscall vmhfreemem(char *blockaddr, uint16 msize)
 {
 	intmask	mask;			/* Saved interrupt mask		*/
-	struct	vmemblk	*next, *prev, *block;
-    v32addr_t* addr;
-	uint32	top;
+	struct	vmemblk	*next, *prev, *block, *vmemlist_ptr;
+    v32addr_t vaddr;
+	v32addr_t	top;
+
+	uint32 hsize = (&proctab[currpid])->hsize;
 
 	mask = disable();
-	if ((nbytes == 0) || ((uint32) blkaddr < (uint32) minheap)
-			  || ((uint32) blkaddr > (uint32) maxheap)) {
+	if ((msize == 0) || ((uint32) blockaddr < (uint32) (REGIONSTART_F * NBPG))
+			  || ((uint32) blockaddr > (uint32) ((REGIONSTART_F + hsize) * NBPG))) {
 		restore(mask);
 		return SYSERR;
 	}
 
-	addr = (v32addr_t *)blockaddr;
+	vaddr = (v32addr_t)blockaddr;
 
-	prev = &memlist;			/* Walk along free list	*/
-	next = memlist.mnext;
-	while ((next != NULL) && (next < block)) {
+	struct	procent	*prptr =  &proctab[currpid];
+	vmemlist_ptr = prptr->vmemlist_ptr;
+
+	prev = vmemlist_ptr;			/* Walk along free list	*/
+	next = vmemlist_ptr->mnext;
+
+	while ((next != NULL) && (next->start_addr < vaddr)) {
 		prev = next;
 		next = next->mnext;
 	}
 
-	if (prev == &memlist) {		/* Compute top of previous block*/
+	if (prev == vmemlist_ptr) {		/* Compute top of previous block*/
 		top = (uint32) NULL;
 	} else {
-		top = (uint32) prev + prev->mlength;
+		top = prev->start_addr + (v32addr_t)(prev->npages * NBPG);
 	}
 
 	/* Ensure new block does not overlap previous or next blocks	*/
 
-	if (((prev != &memlist) && (uint32) block < top)
-	    || ((next != NULL)	&& (uint32) block+nbytes>(uint32)next)) {
+	if (((prev != vmemlist_ptr) && (uint32) vaddr < top)
+	    || ((next != NULL)	&& (uint32) (vaddr+msize*NBPG) > (v32addr_t)next->start_addr)) {
 		restore(mask);
 		return SYSERR;
 	}
 
-	memlist.mlength += nbytes;
+	vmemlist_ptr->npages += msize;
 
+
+	struct	vmemblk	*vmemblock;
 	/* Either coalesce with previous block or add to free list */
 
-	if (top == (uint32) block) { 	/* Coalesce with previous block	*/
-		prev->mlength += nbytes;
-		block = prev;
+	if (top == vaddr) { 	/* Coalesce with previous block	*/
+		prev->npages += msize;
+		vmemblock = prev;
 	} else {			/* Link into list as new node	*/
-		block->mnext = next;
-		block->mlength = nbytes;
-		prev->mnext = block;
+		vmemblock = create_vmemblk_node();
+		vmemblock->start_addr = vaddr;
+		vmemblock->mnext = next;
+		vmemblock->npages = msize;
+		prev->mnext = vmemblock;
 	}
 
 	/* Coalesce with next block if adjacent */
 
-	if (((uint32) block + block->mlength) == (uint32) next) {
-		block->mlength += next->mlength;
-		block->mnext = next->mnext;
+	if ( next!=NULL &&  ((vmemblock->start_addr + vmemblock->npages*NBPG) == next->start_addr)) {
+		vmemblock->npages += next->npages;
+		vmemblock->mnext = next->mnext;
+		/* Free linked list node */
+		free_vmemblk_node(next);
 	}
 	restore(mask);
 	return OK;

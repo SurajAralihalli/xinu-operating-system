@@ -14,16 +14,16 @@ void init_paging(void)
 {
 
     /* Create page directory */
-	pg_dir_t* page_dir_addr = (pg_dir_t*) get_empty_frame_from_regionD();
+	p32addr_t* page_dir_addr = (p32addr_t*) get_empty_frame_from_regionD();
 
 	/* Initialize page directory */
-	initialize_empty_page_directory((pg_dir_t*) page_dir_addr);
+	initialize_empty_page_directory((p32addr_t*) page_dir_addr);
 
 	/* Create shared page tables for regions A-E, G*/
 	p32addr_t pg_dir_indices[5] = {0, 1, 2, 3, 576};
 	uint32 i;
 	for(i = 0; i < 5; i++) {
-		pg_tab_t* page_table_addr = (pg_tab_t*) get_empty_frame_from_regionD();
+		p32addr_t* page_table_addr = (p32addr_t*) get_empty_frame_from_regionD();
 		
 		/* Initialize page table */
 		initialize_empty_page_table(page_table_addr);

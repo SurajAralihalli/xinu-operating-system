@@ -57,25 +57,16 @@ typedef struct {
 #define MIN_ID          0
 
 
+// NEW DATASTRUCTURES // 
 
 #define NFRAMES_D		1000	/* number of frames		*/
 #define NFRAMES_E1		1024
 #define NFRAMES_E2		1048
-#define NFRAMES_F		1024
 
 #define REGIONSTART_D		1024	/* number of frames		*/
 #define REGIONSTART_E1		2024
 #define REGIONSTART_E2		3038
 #define REGIONSTART_F		4096
-
-
-// NEW DATASTRUCTURES // 
-
-typedef uint32 pg_dir_t;
-typedef uint32 pg_tab_t;
-
-typedef uint32 v32addr_t;
-typedef uint32 p32addr_t;
 
 // struct to indicate which frames are free
 struct fholder{
@@ -87,16 +78,8 @@ extern	struct	fholder fHolderListD[];
 extern	struct	fholder fHolderListE1[];
 
 struct identityMapAddr {
-  pg_tab_t* page_table_addr;
+  p32addr_t* page_table_addr;
   uint32   page_dir_index;
 };
 
-extern struct identityMapAddr identityMapAddrList[]; 
-
-struct vmemblk {
-  uint32 npages;
-  vmemblk* mnext;
-  v32addr_t* addr;
-};
-
-extern vmemblk vmemlist;
+extern struct identityMapAddr identityMapAddrList[];

@@ -704,14 +704,24 @@ extern char* get_empty_frame_from_regionD(void);
 
 extern char* get_empty_frame_from_regionE1();
 
-extern void initialize_empty_page_directory(pg_dir_t* page_dir_addr);
+extern void initialize_empty_page_directory(p32addr_t* page_dir_addr);
 
-extern void initialize_empty_page_table(pg_tab_t* page_tab_addr);
+extern void initialize_empty_page_table(p32addr_t* page_tab_addr);
 
-extern void build_identity_map_entry(pg_tab_t* page_tab_addr, uint32 page_dir_index);
+extern void build_identity_map_entry(p32addr_t* page_tab_addr, uint32 page_dir_index);
 
 extern void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_addr);
 
 extern void set_page_table_entry(pt_t* page_table_entry, p32addr_t page_addr);
 
 extern v32addr_t get_page_faulted_addr_cr2();
+
+extern struct vmemblk* create_vmemblk_node();
+
+extern struct vmemblk* free_vmemblk_node(struct vmemblk* nodeptr);
+
+extern char* vmhgetstk(uint16 msize);
+
+extern syscall	vmhalloc(uint32 hsize);
+
+extern void setup_vmemlist();

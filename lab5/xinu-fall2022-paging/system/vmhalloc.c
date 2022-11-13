@@ -11,6 +11,7 @@ syscall	vmhalloc(
 	)
 {
 	intmask	mask;			/* Saved interrupt mask		*/
+    mask = disable();
     struct	procent	*prptr = &proctab[currpid];
 
     if(hsize<0 || hsize>=585727 || prptr->hsize!=-1) // assumption: hsize is fixed and cannot be changed

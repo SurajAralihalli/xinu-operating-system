@@ -13,7 +13,7 @@ void	pgfhandler()
     v32addr_t page_faulted_addr = get_page_faulted_addr_cr2();
 
     // find page directory entry
-    pg_dir_t* page_dir_addr = (pg_dir_t*)prptr->page_dir_addr;
+    p32addr_t* page_dir_addr = (p32addr_t*)prptr->page_dir_addr;
     uint32 page_dir_index = page_faulted_addr >> 22;
     pd_t* page_dir_entry = &(page_dir_addr[page_dir_index]);
 
@@ -32,7 +32,7 @@ void	pgfhandler()
     }
 
     // find page table entry
-    pg_tab_t* page_table_addr = (page_dir_entry->pd_base)<<12;  //base + "000000000000"
+    p32addr_t* page_table_addr = (page_dir_entry->pd_base)<<12;  //base + "000000000000"
     uint32 page_table_index = (page_faulted_addr & 0x003FF000) >> 12; //page table index + page index + offset
     pt_t* page_table_entry =  &(page_table_addr[page_table_index]);
 
