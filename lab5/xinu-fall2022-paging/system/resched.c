@@ -41,6 +41,12 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	ptnew = &proctab[currpid];
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
+
+	kprintf("Running process: %s\n", ptnew->prname);
+
+	/* Load saved value of page directory address into CR3 */
+	set_page_dir_addr_cr3((p32addr_t)ptnew->page_dir_addr); //20 MSB bits
+
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 
 	/* Old process returns here when resumed */

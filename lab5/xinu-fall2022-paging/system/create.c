@@ -26,16 +26,13 @@ pid32	create(
 	int32		i;
 	uint32		*a;		/* Points to list of args	*/
 	uint32		*saddr;		/* Stack address		*/
+	int32 page_dir_addr;
 
 	mask = disable();
 	if (ssize < MINSTK)
 		ssize = MINSTK;
 
-	ssize = (uint32) roundew(ssize);
-
-	uint32 npages = (ssize+NBPG) / NBPG;
-
-	if (((saddr = (uint32 *)vmhgetstk(npages)) ==           // use virtual mem
+	if (((saddr = (uint32 *)getstk(ssize)) ==           // use virtual mem
 	    (uint32 *)SYSERR ) ||
 	    (pid=newpid()) == SYSERR || priority < 1 ) {
 		restore(mask);
@@ -44,6 +41,14 @@ pid32	create(
 
 	prcount++;
 	prptr = &proctab[pid];
+
+	// new fields
+	page_dir_addr = (int32) get_empty_frame_from_regionD(pid);
+	if(page_dir_addr == SYSERR) {
+		return SYSERR;
+	}
+
+
 
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
@@ -56,9 +61,7 @@ pid32	create(
 	prptr->prsem = -1;
 	prptr->prparent = (pid32)getpid();
 	prptr->prhasmsg = FALSE;
-
-	// new fields
-	prptr->page_dir_addr = (p32addr_t*) get_empty_frame_from_regionD();
+	prptr->page_dir_addr = (p32addr_t*) page_dir_addr;
 	initialize_empty_page_directory(prptr->page_dir_addr);
 
 	/* Load saved identity mapped page tables */
@@ -73,9 +76,6 @@ pid32	create(
 
 	prptr->hsize = -1;
 	prptr->vmemlist_ptr = NULL;
-	prptr->prstklen_pages = npages;
-
-	// setup private virtual heap memory
 	vmhalloc(MAXHSIZE);
 	setup_vmemlist();
 

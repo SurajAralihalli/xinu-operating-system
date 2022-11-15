@@ -102,7 +102,7 @@ void	nulluser()
 
 
 	/* Create a process to execute function main() */
-	// resume (create((void *)main, INITSTK, INITPRIO, "Main process", 0, NULL));
+	resume (create((void *)main, INITSTK, INITPRIO, "Main process", 0, NULL));
 
 	while (TRUE) {
 		/* Do nothing */

@@ -41,13 +41,3 @@ extern	int	end;			/* End of program		*/
 
 // NEW DEFINITIONS
 #define MAXHSIZE 1024
-
-/*----------------------------------------------------------------------
- *  vmhfreestk  --  Free stack memory allocated by vmhgetmem
- *----------------------------------------------------------------------
- */
-
-#define vmhfreestk(blockaddr,msize) vmhfreemem((char *)((v32addr_t)(blockaddr) \
-				 - (msize*NBPG) \
-				 + (uint32)sizeof(uint32)), \
-				 (uint16)msize)
