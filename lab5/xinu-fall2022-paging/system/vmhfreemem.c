@@ -12,7 +12,7 @@
 syscall vmhfreemem(char *blockaddr, uint16 msize)
 {
 	intmask	mask;			/* Saved interrupt mask		*/
-	struct	vmemblk	*next, *prev, *block, *vmemlist_ptr;
+	struct	vmemblk	*next, *prev, *vmemlist_ptr;
     v32addr_t vaddr;
 	v32addr_t	top;
 
@@ -77,6 +77,13 @@ syscall vmhfreemem(char *blockaddr, uint16 msize)
 		/* Free linked list node */
 		free_vmemblk_node(next);
 	}
+
+	/* Deallocate frames in E1 */
+	deallocate_frames_E1(vaddr, msize);
+
+	/* Invalidate page table entries in VD */
+	invalidate_page_table_entries(vaddr, msize, (p32addr_t*)prptr->page_dir_addr);	
+
 	restore(mask);
 	return OK;
 }

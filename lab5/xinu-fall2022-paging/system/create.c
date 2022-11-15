@@ -31,11 +31,7 @@ pid32	create(
 	if (ssize < MINSTK)
 		ssize = MINSTK;
 
-	ssize = (uint32) roundew(ssize);
-
-	uint32 npages = (ssize+NBPG) / NBPG;
-
-	if (((saddr = (uint32 *)vmhgetstk(npages)) ==           // use virtual mem
+	if (((saddr = (uint32 *)getstk(ssize)) ==           // use virtual mem
 	    (uint32 *)SYSERR ) ||
 	    (pid=newpid()) == SYSERR || priority < 1 ) {
 		restore(mask);
@@ -73,9 +69,6 @@ pid32	create(
 
 	prptr->hsize = -1;
 	prptr->vmemlist_ptr = NULL;
-	prptr->prstklen_pages = npages;
-
-	// setup private virtual heap memory
 	vmhalloc(MAXHSIZE);
 	setup_vmemlist();
 

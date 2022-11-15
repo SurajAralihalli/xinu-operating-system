@@ -714,14 +714,36 @@ extern void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_
 
 extern void set_page_table_entry(pt_t* page_table_entry, p32addr_t page_addr);
 
-extern v32addr_t get_page_faulted_addr_cr2();
+extern void reset_page_table_entry(pt_t* page_table_entry);
+
+extern void initialize_fholderList();
+
+extern pt_t* get_page_table_entry(v32addr_t page_faulted_addr, pd_t* page_dir_entry);
+
+extern pd_t* get_page_directory_entry(v32addr_t page_faulted_addr, p32addr_t* page_dir_addr);
+
+extern void deallocate_frames_E1(v32addr_t start_vaddr, uint16 npages);
+
+extern void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr_t* page_dir_addr);
+
+extern void free_frame_in_regionD(v32addr_t vaddr);
+
+extern void free_frame_in_regionE1(v32addr_t vaddr);
+
+extern void increment_number_pages_allocated(uint16 frame_index);
+
+extern void decrement_number_pages_allocated(uint16 frame_index);
 
 extern struct vmemblk* create_vmemblk_node();
 
-extern struct vmemblk* free_vmemblk_node(struct vmemblk* nodeptr);
+extern void free_vmemblk_node(struct vmemblk* nodeptr);
 
 extern char* vmhgetstk(uint16 msize);
 
 extern syscall	vmhalloc(uint32 hsize);
 
 extern void setup_vmemlist();
+
+extern void set_page_dir_addr_cr3(p32addr_t page_dir_addr);
+
+extern v32addr_t get_page_faulted_addr_cr2();

@@ -70,7 +70,6 @@ struct procent {		/* Entry in the process table		*/
 	p32addr_t* page_dir_addr;	/* Base address of page directory */
 	struct vmemblk* vmemlist_ptr;   /* vmemlist to track v pages*/
 	uint32 	hsize; 	   /* max number of pages */
-	uint32  prstklen_pages;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

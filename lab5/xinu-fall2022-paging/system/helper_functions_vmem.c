@@ -20,7 +20,7 @@ struct vmemblk* create_vmemblk_node()
  * free_vmemblk_node -  Free a new linked list node of type vmemblk
  *------------------------------------------------------------------------
  */
-struct vmemblk* free_vmemblk_node(struct vmemblk* nodeptr)
+void free_vmemblk_node(struct vmemblk* nodeptr)
 {
     freemem((char* )nodeptr, sizeof(struct vmemblk));
 }

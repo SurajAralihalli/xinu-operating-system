@@ -12,8 +12,10 @@
 
 void init_paging(void)
 {
-
-    /* Create page directory */
+	/* Initialize fHolderList for regions D, E1 */
+	initialize_fholderList();
+    
+	/* Create page directory */
 	p32addr_t* page_dir_addr = (p32addr_t*) get_empty_frame_from_regionD();
 
 	/* Initialize page directory */
@@ -30,7 +32,7 @@ void init_paging(void)
 
 		uint32 pg_dir_index = pg_dir_indices[i];
 
-		pd_t* page_dir_entry = &(page_dir_addr[pg_dir_index]);
+		pd_t* page_dir_entry = (pd_t*) &(page_dir_addr[pg_dir_index]);
 
 		set_page_directory_entry(page_dir_entry, (p32addr_t)page_table_addr);
 
@@ -51,10 +53,14 @@ void init_paging(void)
 
 	// set up page directory table for NULL process
 	struct	procent	*prptr = &proctab[NULLPROC];
-	prptr->page_dir_addr = (p32addr_t)page_dir_addr;
+	prptr->page_dir_addr = page_dir_addr;
+
+    // Setup page fault handler
+	set_evec(14, (uint32)pgfdisp);
 
 	/* Update CR3 to setup null process page directory address */
-	set_page_dir_addr_cr3(page_dir_addr); //20 MSB bits
+	set_page_dir_addr_cr3((p32addr_t)page_dir_addr); //20 MSB bits
+
 
 	/* Enable paging - Set PG bit of CR0 to 1 */
 	uint32 cr0_val = 0;
@@ -65,6 +71,4 @@ void init_paging(void)
 		:
 		: "r"(cr0_val));
 
-    // Setup page fault handler
-	set_evec(14, (uint32)pgfdisp);
 }
