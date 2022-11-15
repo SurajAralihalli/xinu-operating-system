@@ -700,7 +700,7 @@ extern void pgfhandler();
 extern	void	pgfdisp(void);
 
 /* in file helperFunctions.c */
-extern char* get_empty_frame_from_regionD(void);
+extern char* get_empty_frame_from_regionD(pid32 pid);
 
 extern char* get_empty_frame_from_regionE1();
 
@@ -716,6 +716,8 @@ extern void set_page_table_entry(pt_t* page_table_entry, p32addr_t page_addr);
 
 extern void reset_page_table_entry(pt_t* page_table_entry);
 
+extern void reset_page_directory_entry(pd_t* page_directory_entry);
+
 extern void initialize_fholderList();
 
 extern pt_t* get_page_table_entry(v32addr_t page_faulted_addr, pd_t* page_dir_entry);
@@ -730,13 +732,21 @@ extern void free_frame_in_regionD(v32addr_t vaddr);
 
 extern void free_frame_in_regionE1(v32addr_t vaddr);
 
-extern void increment_number_pages_allocated(uint16 frame_index);
+extern void purge_frames_fHolderListE1(pid32 pid);
 
-extern void decrement_number_pages_allocated(uint16 frame_index);
+extern void purge_frames_fHolderListD(pid32 pid);
+
+extern void increment_number_entries_allocated(uint16 frame_index);
+
+extern void decrement_number_entries_allocated(uint16 frame_index);
+
+extern v32addr_t drop_offset_from_addr(v32addr_t vaddr);
 
 extern struct vmemblk* create_vmemblk_node();
 
 extern void free_vmemblk_node(struct vmemblk* nodeptr);
+
+extern void purge_vmemlist();
 
 extern char* vmhgetstk(uint16 msize);
 

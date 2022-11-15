@@ -32,6 +32,15 @@ syscall	kill(
 	
 	freestk(prptr->prstkbase, prptr->prstklen);
 
+	/* Deallocate frames corresponding to current process in E1 */
+	purge_frames_fHolderListE1(currpid);
+
+	/* Deallocate frames corresponding to current process in D */
+	purge_frames_fHolderListD(currpid);
+
+	/* Purge memory associated vmemlist */
+	purge_vmemlist();
+
 	switch (prptr->prstate) {
 	case PR_CURR:
 		prptr->prstate = PR_FREE;	/* Suicide */

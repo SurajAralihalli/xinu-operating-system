@@ -73,7 +73,7 @@ struct fholder{
     unsigned int frame_pres	: 1;		/* frame is present? */
     pid32  owner_process;           /* Owner process ID */
     v32addr_t vaddr;                /* Virtual address */
-    uint16 npages_allocated;        /* Number of pages allocated */
+    uint16 nentries_allocated;        /* Number of pages allocated */
 };
 
 extern	struct	fholder fHolderListD[];

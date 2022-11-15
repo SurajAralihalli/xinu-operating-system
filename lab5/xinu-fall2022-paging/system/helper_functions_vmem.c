@@ -43,5 +43,26 @@ void setup_vmemlist()
     prptr->vmemlist_ptr->mnext->npages = prptr->hsize;
     prptr->vmemlist_ptr->mnext->start_addr = REGIONSTART_F * NBPG; // (4096 * 4096)
     prptr->vmemlist_ptr->mnext->mnext = NULL;
+}
+
+/*------------------------------------------------------------------------
+ * purge_vmemlist -  purge vmemlist in process table
+ *------------------------------------------------------------------------
+ */
+void purge_vmemlist()
+{
+    struct	procent* prptr = &proctab[currpid];
+    struct vmemblk* curr, *next;
+
+
+    curr = prptr->vmemlist_ptr;
+	
+	while (curr != NULL) {			/* Search free list	*/
+        next = curr->mnext;
+
+        /* Free linked list node */
+        free_vmemblk_node(curr);
+        curr = next;
+	}
 
 }

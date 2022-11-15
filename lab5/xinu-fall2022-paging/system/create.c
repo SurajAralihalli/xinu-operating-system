@@ -26,6 +26,7 @@ pid32	create(
 	int32		i;
 	uint32		*a;		/* Points to list of args	*/
 	uint32		*saddr;		/* Stack address		*/
+	int32 page_dir_addr;
 
 	mask = disable();
 	if (ssize < MINSTK)
@@ -41,6 +42,14 @@ pid32	create(
 	prcount++;
 	prptr = &proctab[pid];
 
+	// new fields
+	page_dir_addr = (int32) get_empty_frame_from_regionD(pid);
+	if(page_dir_addr == SYSERR) {
+		return SYSERR;
+	}
+
+
+
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
 	prptr->prprio = priority;
@@ -52,9 +61,7 @@ pid32	create(
 	prptr->prsem = -1;
 	prptr->prparent = (pid32)getpid();
 	prptr->prhasmsg = FALSE;
-
-	// new fields
-	prptr->page_dir_addr = (p32addr_t*) get_empty_frame_from_regionD();
+	prptr->page_dir_addr = (p32addr_t*) page_dir_addr;
 	initialize_empty_page_directory(prptr->page_dir_addr);
 
 	/* Load saved identity mapped page tables */

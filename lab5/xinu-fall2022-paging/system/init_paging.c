@@ -16,7 +16,7 @@ void init_paging(void)
 	initialize_fholderList();
     
 	/* Create page directory */
-	p32addr_t* page_dir_addr = (p32addr_t*) get_empty_frame_from_regionD();
+	p32addr_t* page_dir_addr = (p32addr_t*) get_empty_frame_from_regionD(NULLPROC);
 
 	/* Initialize page directory */
 	initialize_empty_page_directory((p32addr_t*) page_dir_addr);
@@ -25,7 +25,7 @@ void init_paging(void)
 	p32addr_t pg_dir_indices[5] = {0, 1, 2, 3, 576};
 	uint32 i;
 	for(i = 0; i < 5; i++) {
-		p32addr_t* page_table_addr = (p32addr_t*) get_empty_frame_from_regionD();
+		p32addr_t* page_table_addr = (p32addr_t*) get_empty_frame_from_regionD(NULLPROC);
 		
 		/* Initialize page table */
 		initialize_empty_page_table(page_table_addr);

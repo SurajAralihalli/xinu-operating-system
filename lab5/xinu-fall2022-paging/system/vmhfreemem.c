@@ -27,6 +27,9 @@ syscall vmhfreemem(char *blockaddr, uint16 msize)
 
 	vaddr = (v32addr_t)blockaddr;
 
+	/* Ensure that vaddr starts at 4KB boundary */
+	vaddr = drop_offset_from_addr(vaddr);
+
 	struct	procent	*prptr =  &proctab[currpid];
 	vmemlist_ptr = prptr->vmemlist_ptr;
 
@@ -81,7 +84,7 @@ syscall vmhfreemem(char *blockaddr, uint16 msize)
 	/* Deallocate frames in E1 */
 	deallocate_frames_E1(vaddr, msize);
 
-	/* Invalidate page table entries in VD */
+	/* Invalidate page table entries in VD - Useful when all page table entries have P bit 0 */
 	invalidate_page_table_entries(vaddr, msize, (p32addr_t*)prptr->page_dir_addr);	
 
 	restore(mask);
