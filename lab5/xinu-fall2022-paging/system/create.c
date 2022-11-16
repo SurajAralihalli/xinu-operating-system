@@ -76,7 +76,6 @@ pid32	create(
 
 	prptr->hsize = MAXHSIZE;
 	prptr->vmemlist_ptr = NULL;
-	// vmhalloc(MAXHSIZE);
 	setup_vmemlist(pid);
 
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/

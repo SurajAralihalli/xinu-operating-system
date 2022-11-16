@@ -40,4 +40,46 @@ void test_vmhgetmem(int test_num)
         /* Basic test - Allocate one page, write 100 bytes and deallocate page */
         resume (create((void *)vmhgetmem_procA, INITSTK, INITPRIO, "vmhgetmem_procA process", 0, NULL));
     }
+
+    if(test_num == 2) {
+        /* Allocate one page, write 100 bytes and do not deallocate page. Deallocate should be done during process termination */
+
+    }
+
+    if(test_num == 3) {
+        /* Allocate 2 pages and write to both pages. 2 page faults must be generated. Deallocate pages using vmhfreemem. Access page again to verify in unallocated memory check has been implemented */
+    }
+
+    if(test_num == 4) {
+        /* Allocate 2 pages and write to both pages. 2 page faults must be generated. Deallocate pages using using 2 separate calls to vmhfreemem() */
+    }
+
+    if(test_num == 5) {
+        /* Allocate a page and write to it. Verify if R/W access violation check has been implemented - array indexing error */        
+    }
+
+    if(test_num == 6) {
+        /* Allocate a page and write to it. Verify if unallocated memory check has been implemented. Access a page that has been freed using vmhfreemem */        
+    }
+
+    if(test_num == 7) {
+        /* Spawn multiple process (of equal priority) each creating multiple pages in VF. Checks if processes can reuse same memory location in VF */       
+    }
+
+    if(test_num == 8) {
+        /* Verify if vmhgetmem() allocates msize contiguous pages */
+    }
+
+    if(test_num == 9) {
+        /* Verify if identity mapping for all regions works */
+    }
+
+    if(test_num == 10) {
+        /* Verify if SYSERR is returned at appropriate places */
+    }
+
+    if(test_num == 11) {
+        /* Verify if double vmhfreemem() fails */
+    }
+
 }
