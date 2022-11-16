@@ -16,7 +16,7 @@ process	main(void)
 
 	// Insert test code below
 
-	kprintf("Hello World\n");
+	kprintf("\n\n\nHello World\n");
 
 	/* Testing getmem() */
 	char* a_ptr = getmem(4);

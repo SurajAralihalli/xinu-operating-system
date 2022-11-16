@@ -50,7 +50,7 @@ void	pgfhandler()
 
     kprintf("page table addr: %x\n", page_table_addr);
 
-    // check if page is present
+    //check if page is present
     if(page_table_entry->pt_pres==0)
     {
         // Build a page
