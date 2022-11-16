@@ -31,8 +31,8 @@ pid32	create(
 	mask = disable();
 	if (ssize < MINSTK)
 		ssize = MINSTK;
-
-	if (((saddr = (uint32 *)getstk(ssize)) ==           // use virtual mem
+	ssize = (uint32) roundew(ssize);
+	if (((saddr = (uint32 *)getstk(ssize)) ==
 	    (uint32 *)SYSERR ) ||
 	    (pid=newpid()) == SYSERR || priority < 1 ) {
 		restore(mask);
