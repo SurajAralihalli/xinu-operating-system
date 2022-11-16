@@ -8,15 +8,12 @@
  */
 void	pgfhandler()
 {
-    static unsigned long* ebp;
-
-    static unsigned long* eip;
-
-    kprintf("Entered page fault handler!\n");
 
     struct	procent	*prptr = &proctab[currpid];
 
     v32addr_t page_faulted_addr = get_page_faulted_addr_cr2();
+
+    kprintf("Entered page fault handler: %x!\n", page_faulted_addr);
 
     page_faulted_addr = drop_offset_from_addr(page_faulted_addr);
 
@@ -50,6 +47,8 @@ void	pgfhandler()
 
     kprintf("page table addr: %x\n", page_table_addr);
 
+    kprintf("page_table_entry p bit: %d\n", page_table_entry->pt_pres);
+
     //check if page is present
     if(page_table_entry->pt_pres==0)
     {
@@ -68,11 +67,5 @@ void	pgfhandler()
     }
 
     kprintf("Allocated page table entry: %x!\n", page_table_entry);
-    asm("movl %%ebp, %0;"
-        : "=r"(ebp)
-        );
-    ebp += 11;
-    eip = *ebp;
-    kprintf("eip in pgfhandler: %x\n", eip);
 
 }

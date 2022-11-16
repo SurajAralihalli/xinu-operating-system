@@ -752,8 +752,11 @@ extern char* vmhgetstk(uint16 msize);
 
 extern syscall	vmhalloc(uint32 hsize);
 
-extern void setup_vmemlist();
+extern void setup_vmemlist(pid32 pid);
 
 extern void set_page_dir_addr_cr3(p32addr_t page_dir_addr);
 
 extern v32addr_t get_page_faulted_addr_cr2();
+
+/* in tests.c */
+extern void test_vmhgetmem(int test_num);

@@ -19,4 +19,5 @@ pgfdisp:
 
 	sti			# Restore interrupt status
 	popal			# Restore registers
+	addl $4, %esp		# Remove error code from stack
 	iret			# Return from interrupt

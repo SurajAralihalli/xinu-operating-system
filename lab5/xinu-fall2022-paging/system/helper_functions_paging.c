@@ -17,6 +17,7 @@ char* get_empty_frame_from_regionD(pid32 pid)
             fHolderListD[i].frame_pres = 1;
             fHolderListD[i].owner_process = pid;
             absolute_addr = (i + FRAME0) * NBPG;
+            fHolderListD[i].vaddr = absolute_addr;
             break;
         }
     }
