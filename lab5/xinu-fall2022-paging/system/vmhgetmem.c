@@ -13,6 +13,7 @@ char* vmhgetmem(uint16 msize)
     v32addr_t addr;
 
 	mask = disable();
+	kprintf("entered vmhgetmem()\n");
 	if (msize == 0) {
 		restore(mask);
 		return (char *)SYSERR;
@@ -23,7 +24,7 @@ char* vmhgetmem(uint16 msize)
 	
 	prev = vmemlist_ptr;
 	curr = vmemlist_ptr->mnext;
-	
+	kprintf("starting search  free list: %x: %x\n", vmemlist_ptr, vmemlist_ptr->mnext);
 	while (curr != NULL) {			/* Search free list	*/
 
 		if (curr->npages == msize) {	/* Block is exact match	*/
@@ -38,9 +39,11 @@ char* vmhgetmem(uint16 msize)
 			return (char *)(addr);
 
 		} else if (curr->npages > msize) { /* Split big block	*/
+			kprintf("curr->npages > msize\n");
             addr = curr->start_addr;
             curr->start_addr = curr->start_addr + (msize * NBPG);
 			curr->npages = curr->npages - msize;
+			kprintf("updated curr->npages\n");
 			vmemlist_ptr->npages -= msize;
 			restore(mask);
 			return (char *)(addr);
@@ -49,6 +52,7 @@ char* vmhgetmem(uint16 msize)
 			curr = curr->mnext;
 		}
 	}
+	kprintf("exited vmhgetmem()\n");
 	restore(mask);
 	return (char *)SYSERR;
 

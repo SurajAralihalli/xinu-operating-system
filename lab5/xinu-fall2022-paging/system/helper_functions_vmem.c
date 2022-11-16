@@ -8,6 +8,11 @@ struct vmemblk* create_vmemblk_node()
 {
     uint32 size = sizeof( struct vmemblk );
     struct vmemblk* vnode  =  (struct vmemblk*)getmem(size);
+    // if((int32)vnode == SYSERR) {
+    //     return NULL;
+    // } else {
+    //     kprintf("create_vmemblk_node: getmem return: %x\n", vnode);
+    // }
 
     vnode->start_addr = 0x0;
     vnode->mnext = NULL;
@@ -29,12 +34,15 @@ void free_vmemblk_node(struct vmemblk* nodeptr)
  * setup_vmemlist -  setup vmemlist in process table
  *------------------------------------------------------------------------
  */
-void setup_vmemlist()
+void setup_vmemlist(pid32 pid)
 {
-    struct	procent	*prptr = &proctab[currpid];
+    struct	procent	*prptr = &proctab[pid];
 
     //initialize the vmemlist
 	prptr->vmemlist_ptr = create_vmemblk_node();
+    // if(prptr->vmemlist_ptr == NULL) {
+    //     kprintf("create_vmemblk_node failed\n");
+    // }
 
     prptr->vmemlist_ptr->npages = prptr->hsize;
     prptr->vmemlist_ptr->start_addr = 0x0;

@@ -74,10 +74,10 @@ pid32	create(
 		set_page_directory_entry(page_dir_entry, (p32addr_t)identityMapAddrList[i].page_table_addr);
 	}
 
-	prptr->hsize = -1;
+	prptr->hsize = MAXHSIZE;
 	prptr->vmemlist_ptr = NULL;
-	vmhalloc(MAXHSIZE);
-	setup_vmemlist();
+	// vmhalloc(MAXHSIZE);
+	setup_vmemlist(pid);
 
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/
 	prptr->prdesc[0] = CONSOLE;
