@@ -19,7 +19,7 @@ void	pgfhandler()
 
     /* Check if page fault corresponds to unallocated memory */
     status = is_addr_allocated_by_vmhgetmem(page_faulted_addr);
-    if(status == 0) {
+    if(status == 0) { //status is false
         /* Terminate process */
         kill(currpid);
     }
@@ -79,13 +79,13 @@ void	pgfhandler()
         asm("movl %%ebp, %0;"
             :"=r"(ebp)
             );
-        ebp += 10;
+        ebp += 10; // (ebp + ret + general purpose registers)
 
         kprintf("error code: %d\n", *ebp);
 
         /* Check for access violation */
-        uint16 ret = is_read_write_access_violation(*ebp, page_table_entry);
-        if(ret == 1) {
+        status = is_read_write_access_violation(*ebp, page_table_entry);
+        if(status == 1) {
             /* Terminate process */
             kill(currpid);
         }

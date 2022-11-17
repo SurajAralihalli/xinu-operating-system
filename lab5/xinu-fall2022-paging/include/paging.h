@@ -76,12 +76,12 @@ struct fholder{
     uint16 nentries_allocated;        /* Number of pages allocated */
 };
 
-extern	struct	fholder fHolderListD[];
-extern	struct	fholder fHolderListE1[];
-
 struct identityMapAddr {
   p32addr_t* page_table_addr;
   uint32   page_dir_index;
 };
 
-extern struct identityMapAddr identityMapAddrList[];
+extern	struct	fholder *fHolderListD;
+extern	struct	fholder *fHolderListE1;
+
+extern struct identityMapAddr *identityMapAddrList;
