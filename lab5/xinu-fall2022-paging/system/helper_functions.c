@@ -29,3 +29,17 @@ void set_page_dir_addr_cr3(p32addr_t page_dir_addr)
 		:
 		: "r"(cr3_val));
 }
+
+/*------------------------------------------------------------------------
+ * flush_tlb -  Flush TLB by updating CR3
+ *------------------------------------------------------------------------
+ */
+void flush_tlb()
+{
+    p32addr_t cr3_val = 0;
+	asm("movl %%cr3, %0" 
+		: "=r"(cr3_val));
+	asm("movl %0, %%cr3" 
+		:
+		: "r"(cr3_val));
+}

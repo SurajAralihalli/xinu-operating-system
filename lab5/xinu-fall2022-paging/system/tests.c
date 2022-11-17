@@ -9,11 +9,12 @@ void vmhgetmem_procA()
 		kprintf("successfully allocated memory in VF: %x!\n", b_ptr);		
 	}
 	uint32 i;
+	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
 	for(i = 0; i < 100; i++) {
-		b_ptr[i] = '1';
+		b_ptr[i] = 'A';
 	}
 	b_ptr[100] = '\0';
-	kprintf("b_ptr: %s:\n", b_ptr);
+	kprintf("b_ptr: %s\n", b_ptr);
 
 	int ret = vmhfreemem(b_ptr, 1);
 	if(ret == OK) {

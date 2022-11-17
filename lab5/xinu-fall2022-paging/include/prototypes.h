@@ -742,6 +742,10 @@ extern void decrement_number_entries_allocated(uint16 frame_index);
 
 extern v32addr_t drop_offset_from_addr(v32addr_t vaddr);
 
+extern uint16 is_read_write_access_violation(uint32 page_fault_error_code, pt_t* page_table_entry);
+
+extern int is_addr_allocated_by_vmhgetmem(v32addr_t addr);
+
 extern struct vmemblk* create_vmemblk_node();
 
 extern void free_vmemblk_node(struct vmemblk* nodeptr);
@@ -757,6 +761,8 @@ extern void setup_vmemlist(pid32 pid);
 extern void set_page_dir_addr_cr3(p32addr_t page_dir_addr);
 
 extern v32addr_t get_page_faulted_addr_cr2();
+
+extern void flush_tlb();
 
 /* in tests.c */
 extern void test_vmhgetmem(int test_num);
