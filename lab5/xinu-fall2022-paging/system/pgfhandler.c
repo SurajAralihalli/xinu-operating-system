@@ -8,12 +8,21 @@
  */
 void	pgfhandler()
 {
+    static unsigned long* ebp = NULL;
+    int status;
 
     struct	procent	*prptr = &proctab[currpid];
 
     v32addr_t page_faulted_addr = get_page_faulted_addr_cr2();
 
     kprintf("Entered page fault handler: %x!\n", page_faulted_addr);
+
+    /* Check if page fault corresponds to unallocated memory */
+    status = is_addr_allocated_by_vmhgetmem(page_faulted_addr);
+    if(status == 0) {
+        /* Terminate process */
+        kill(currpid);
+    }
 
     page_faulted_addr = drop_offset_from_addr(page_faulted_addr);
 
@@ -24,7 +33,7 @@ void	pgfhandler()
     // check if page table is present
     if(page_dir_entry->pd_pres==0)
     {
-        //build a page table
+        // build a page table
         int32 page_table_addr_raw = (int32) get_empty_frame_from_regionD(currpid);
         if(page_table_addr_raw == SYSERR) {
             return; // TODO: What to do? Process will continue to page fault
@@ -32,10 +41,10 @@ void	pgfhandler()
 
         p32addr_t* page_table_addr = (p32addr_t*) page_table_addr_raw;
 
-        //Initialize page table
+        // Initialize page table
 		initialize_empty_page_table(page_table_addr);
 
-        //set pres bit to 1 and make page dir entry point to new page table
+        // Set pres bit to 1 and make page dir entry point to new page table
         set_page_directory_entry(page_dir_entry, (p32addr_t)page_table_addr);
 
     }
@@ -64,8 +73,25 @@ void	pgfhandler()
         set_page_table_entry(page_table_entry, (p32addr_t)page_addr);
 
         kprintf("page addr: %x\n", page_addr);
+    } else {
+        
+        /* Get error code */
+        asm("movl %%ebp, %0;"
+            :"=r"(ebp)
+            );
+        ebp += 10;
+
+        kprintf("error code: %d\n", *ebp);
+
+        /* Check for access violation */
+        uint16 ret = is_read_write_access_violation(*ebp, page_table_entry);
+        if(ret == 1) {
+            /* Terminate process */
+            kill(currpid);
+        }
+
+        ebp = NULL;
     }
 
     kprintf("Allocated page table entry: %x!\n", page_table_entry);
-
 }

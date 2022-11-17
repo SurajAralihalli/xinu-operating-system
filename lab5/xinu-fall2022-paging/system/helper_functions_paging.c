@@ -63,7 +63,7 @@ void initialize_empty_page_directory(p32addr_t* page_dir_addr)
 		page_dir_entry->pd_pres = 0;  	/* page table present?		*/
         page_dir_entry->pd_write =1;			/* page is writable?		*/
         page_dir_entry->pd_user= 0;		/* is use level protection?	*/
-        page_dir_entry->pd_pwt	=0;		/* write through cachine for pt?*/
+        page_dir_entry->pd_pwt	=1;		/* write through cachine for pt?*/
         page_dir_entry->pd_pcd	=1;		/* cache disable for this pt?	*/
         page_dir_entry->pd_acc	=0;		/* page table was accessed?	*/
         page_dir_entry->pd_mbz	=0;		/* must be zero			*/
@@ -72,6 +72,7 @@ void initialize_empty_page_directory(p32addr_t* page_dir_addr)
         page_dir_entry->pd_avail =0;		/* for programmer's use		*/
         page_dir_entry->pd_base	=0;	    /* location of page table?	*/
 	}
+    flush_tlb();
 }
 
 /*------------------------------------------------------------------------
@@ -86,7 +87,7 @@ void initialize_empty_page_table(p32addr_t* page_table_addr)
         page_table_entry->pt_pres	= 0;		/* page is present?		*/
         page_table_entry->pt_write = 1;		/* page is writable?		*/
         page_table_entry->pt_user	= 0;		/* is use level protection?	*/
-        page_table_entry->pt_pwt	= 0;		/* write through for this page? */
+        page_table_entry->pt_pwt	= 1;		/* write through for this page? */
         page_table_entry->pt_pcd	= 1;		/* cache disable for this page? */
         page_table_entry->pt_acc	= 0;		/* page was accessed?		*/
         page_table_entry->pt_dirty = 0;		/* page was written?		*/
@@ -95,6 +96,7 @@ void initialize_empty_page_table(p32addr_t* page_table_addr)
         page_table_entry->pt_avail = 0;		/* for programmer's use		*/
         page_table_entry->pt_base	= 0;		/* location of page?		*/
 	}
+    flush_tlb();
 }
 
 /*------------------------------------------------------------------------
@@ -112,7 +114,7 @@ void build_identity_map_entry(p32addr_t* page_table_addr, uint32 page_dir_index)
         page_tab_entry->pt_pres = 1;
         page_tab_entry->pt_write = 1;		/* page is writable?		*/
         page_tab_entry->pt_user = 0;		/* is use level protection?	*/
-        page_tab_entry->pt_pwt	= 0;		/* write through for this page? */
+        page_tab_entry->pt_pwt	= 1;		/* write through for this page? */
         page_tab_entry->pt_pcd	= 1;		/* cache disable for this page? */
         page_tab_entry->pt_acc	= 0;		/* page was accessed?		*/
         page_tab_entry->pt_dirty = 0;		/* page was written?		*/
@@ -121,6 +123,7 @@ void build_identity_map_entry(p32addr_t* page_table_addr, uint32 page_dir_index)
         page_tab_entry->pt_avail = 0;		/* for programmer's use		*/
         page_tab_entry->pt_base = i | (page_dir_index << 10);		/* location of page?		*/
     }
+    flush_tlb();
 }
 
 /*------------------------------------------------------------------------
@@ -137,6 +140,8 @@ void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_addr)
     /* Assign page table address to page directory entry */
     page_dir_entry->pd_base = (page_table_addr >> 12);
 
+    /* Invalidate TLB */
+    flush_tlb();
 }
 
 
@@ -154,6 +159,8 @@ void set_page_table_entry(pt_t* page_table_entry, p32addr_t page_addr)
     /* Assign page address to page table entry */
     page_table_entry->pt_base = (page_addr >> 12);
 
+    /* Invalidate TLB */
+    flush_tlb();
 }
 
 /*------------------------------------------------------------------------
@@ -164,6 +171,9 @@ void reset_page_table_entry(pt_t* page_table_entry)
 {
     /* Mark present bit to 0 */
     page_table_entry->pt_pres = 0;
+
+    /* Invalidate TLB */
+    flush_tlb();
 }
 
 /*------------------------------------------------------------------------
@@ -174,6 +184,9 @@ void reset_page_directory_entry(pd_t* page_directory_entry)
 {
     /* Mark present bit to 0 */
     page_directory_entry->pd_pres = 0;
+
+    /* Invalidate TLB */
+    flush_tlb();
 }
 
 
@@ -260,6 +273,7 @@ void purge_frames_fHolderListD(pid32 pid)
             fHolderListD[i].frame_pres = 0;
             fHolderListD[i].owner_process = -1;
             fHolderListD[i].vaddr = 0x0;
+            fHolderListD[i].nentries_allocated = 0;
         }
     }
 }
@@ -276,6 +290,7 @@ void purge_frames_fHolderListE1(pid32 pid)
             fHolderListE1[i].frame_pres = 0;
             fHolderListE1[i].owner_process = -1;
             fHolderListE1[i].vaddr = 0x0;
+            fHolderListE1[i].nentries_allocated = 0;
         }
     }
 }
@@ -377,4 +392,38 @@ void decrement_number_entries_allocated(uint16 index)
 v32addr_t drop_offset_from_addr(v32addr_t vaddr)
 {
     return (vaddr >> 12) << 12;
+}
+
+uint16 is_read_write_access_violation(uint32 page_fault_error_code, pt_t* page_table_entry)
+{
+    uint16 read_write_bit = (page_fault_error_code >> 1) & (0x00000001);
+    if(read_write_bit == 1 && page_table_entry->pt_write == 0) {
+        return 1;
+    }
+    return 0;
+}
+
+int is_addr_allocated_by_vmhgetmem(v32addr_t addr)
+{
+
+    int notFound = 1; //true
+    struct	procent* prptr = &proctab[currpid];
+    struct vmemblk* curr;
+
+    curr = prptr->vmemlist_ptr;
+	curr = curr->mnext;              // first addr node
+
+	while (curr != NULL) {			/* Search free list	*/
+        v32addr_t start_addr = curr->start_addr;
+        uint32 npages = curr->npages;
+
+        // check if addr lies in the node
+        if( addr >= start_addr && addr <= (start_addr + npages*NBPG))
+        {
+            notFound = 0; //false (addr is found in unassigned address space)
+            break;
+        }
+        curr = curr->mnext;
+	}
+    return notFound;
 }
