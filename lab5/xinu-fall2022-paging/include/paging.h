@@ -81,7 +81,11 @@ struct identityMapAddr {
   uint32   page_dir_index;
 };
 
-extern	struct	fholder *fHolderListD;
-extern	struct	fholder *fHolderListE1;
+// extern	struct	fholder *fHolderListD;
+// extern	struct	fholder *fHolderListE1;
+// extern struct identityMapAddr *identityMapAddrList;
 
-extern struct identityMapAddr *identityMapAddrList;
+
+extern	struct	fholder fHolderListD[];
+extern	struct	fholder fHolderListE1[];
+extern  struct  identityMapAddr identityMapAddrList[];

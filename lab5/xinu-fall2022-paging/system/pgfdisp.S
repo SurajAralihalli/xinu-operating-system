@@ -7,11 +7,13 @@
 
 
 #include <icu.s>
-		.text
-		.globl	pgfdisp		# Page Fault interrupt dispatcher
+    	   .text
+pferrcode: .long 0
+           .globl  pgfdisp,pferrcode 
 pgfdisp:
-    pushal			# Save registers
-	cli				# Disable further interrupts
+	popl     pferrcode
+	pushal			# Save registers
+	cli			# Disable further interrupts
 	movb	$EOI,%al	# Reset interrupt
 	outb	%al,$OCW1_2
 
@@ -19,5 +21,5 @@ pgfdisp:
 
 	sti			# Restore interrupt status
 	popal			# Restore registers
-	addl $4, %esp		# Remove error code from stack
+	#movl $0x1000004, %eax
 	iret			# Return from interrupt

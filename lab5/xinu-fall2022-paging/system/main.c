@@ -18,15 +18,25 @@ process	main(void)
 
 	kprintf("\n\n\nHello World\n");
 
-	/* Testing getmem() */
-	char* a_ptr = getmem(4);
-	a_ptr[0] = 'h';
-	a_ptr[1] = 'i';
-	a_ptr[2] = '\0'; 
+	// int* b_ptr = vmhgetmem(1);
 
-	kprintf("a_ptr: %s\n", a_ptr);
+	// if((uint32)b_ptr != SYSERR) {
+    // kprintf("successfully allocated memory in VF: %x!\n", b_ptr);
+	// }
 
-	test_vmhgetmem(1);
+	// b_ptr[1] = 0;
+	// unsigned long* eax = NULL;
+    // asm("movl %%eax, %0;"
+    //     :"=c"(eax)
+    //     );
+	// kprintf("eax is: %x\n", eax);
+	// kprintf("main: %x\n", main);
+	// kprintf("b_ptr: %d\n", b_ptr[0]);
+	// kprintf("b_ptr: %d\n", b_ptr[1]);
+	// kprintf("b_ptr: %d\n", b_ptr[100]);
+	// kprintf("b_ptr: %d\n", b_ptr[200]);
+
+	test_vmhgetmem(7);
 
 	return OK;
 }

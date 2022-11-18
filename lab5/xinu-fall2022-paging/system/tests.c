@@ -82,7 +82,7 @@ void vmhgetmem_procC()
 	for(i = 0; i < 5000; i++) {
         b_ptr[i] = 'A';
 	}
-	b_ptr[5000] = '\0';
+	b_ptr[10] = '\0';
 	kprintf("b_ptr: %s:\n", b_ptr);
 
 	int ret = vmhfreemem(b_ptr, 2);
@@ -126,7 +126,7 @@ void vmhgetmem_procD()
 	if(ret == OK) {
 		kprintf("Successfully freed memory - 1\n");
 	}
-
+    b_ptr += 4096;
 	ret = vmhfreemem(b_ptr, 1);
 	if(ret == OK) {
 		kprintf("Successfully freed memory - 2\n");
@@ -202,6 +202,7 @@ void vmhgetmem_procF()
 	for(i = 0; i < 4096; i++) {
 		b_ptr[i] = 'A';
 	}
+    kprintf("finished writing\n");
 	b_ptr[4096] = '\0'; // Should cause page fault leading to segmentation fault
 
 	kprintf("b_ptr: %s\n", b_ptr);
@@ -233,7 +234,9 @@ void vmhgetmem_procG()
     /* Testing vmhgetmem() */
 	char* b_ptr = vmhgetmem(2);
 	if((uint32)b_ptr != SYSERR) {
-		kprintf("G: successfully allocated memory in VF: %x!\n", b_ptr);		
+        intmask mask = disable();
+		kprintf("G: successfully allocated memory in VF: %x!\n", b_ptr);
+        restore(mask);		
 	}
 	uint32 i;
 	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
@@ -242,24 +245,32 @@ void vmhgetmem_procG()
 	}
 	b_ptr[10] = '\0'; // Should cause page fault leading to segmentation fault
 
+    intmask mask = disable();
 	kprintf("G: b_ptr: %s\n", b_ptr);
-
-	int ret = vmhfreemem(b_ptr, 2);
+    restore(mask);
+	
+    int ret = vmhfreemem(b_ptr, 2);
 	if(ret == OK) {
+        intmask mask = disable();
 		kprintf("Successfully freed memory in G\n");
+        restore(mask);
 	}
 
     /* All frames in E1 should be free */
     for(i = 0; i < NFRAMES_E1; i++) {
-        if(fHolderListE1[i].frame_pres == 1) {
+        if(fHolderListE1[i].frame_pres == 1 && fHolderListE1[i].owner_process == currpid) {
+            intmask mask = disable();
             kprintf("G:  %d not free!\n", i);
+            restore(mask);
         }
     }
 
     /* Only frames corresponding to page directory and page tables should be used */
     for(i = 0; i < NFRAMES_D; i++) {
-        if(fHolderListD[i].frame_pres == 1) {
+        if(fHolderListD[i].frame_pres == 1 && fHolderListD[i].owner_process == currpid) {
+            intmask mask = disable();
             kprintf("G: Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+            restore(mask);
         }
     }
 }
@@ -271,7 +282,9 @@ void vmhgetmem_procH()
     /* Testing vmhgetmem() */
 	char* b_ptr = vmhgetmem(1);
 	if((uint32)b_ptr != SYSERR) {
-		kprintf("H: successfully allocated memory in VF: %x!\n", b_ptr);		
+        intmask mask = disable();
+		kprintf("H: successfully allocated memory in VF: %x!\n", b_ptr);
+        restore(mask);		
 	}
 	uint32 i;
 	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
@@ -280,24 +293,32 @@ void vmhgetmem_procH()
 	}
 	b_ptr[10] = '\0'; // Should cause page fault leading to segmentation fault
 
+    intmask mask = disable();
 	kprintf("H: b_ptr: %s\n", b_ptr);
+    restore(mask);
 
 	int ret = vmhfreemem(b_ptr, 1);
 	if(ret == OK) {
+        intmask mask = disable();
 		kprintf("Successfully freed memory in H\n");
+        restore(mask);
 	}
 
     /* All frames in E1 should be free */
     for(i = 0; i < NFRAMES_E1; i++) {
-        if(fHolderListE1[i].frame_pres == 1) {
+        if(fHolderListE1[i].frame_pres == 1  && fHolderListE1[i].owner_process == currpid) {
+            intmask mask = disable();
             kprintf("H: Frame %d not free!\n", i);
+            restore(mask);
         }
     }
 
     /* Only frames corresponding to page directory and page tables should be used */
     for(i = 0; i < NFRAMES_D; i++) {
-        if(fHolderListD[i].frame_pres == 1) {
+        if(fHolderListD[i].frame_pres == 1 && fHolderListD[i].owner_process == currpid) {
+            intmask mask = disable();
             kprintf("H: Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+            restore(mask);
         }
     }
 }
@@ -309,7 +330,9 @@ void vmhgetmem_procI()
     /* Testing vmhgetmem() */
 	char* b_ptr = vmhgetmem(3);
 	if((uint32)b_ptr != SYSERR) {
-		kprintf("I: successfully allocated memory in VF: %x!\n", b_ptr);		
+        intmask mask = disable();
+		kprintf("I: successfully allocated memory in VF: %x!\n", b_ptr);
+        restore(mask);		
 	}
 	uint32 i;
 	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
@@ -322,20 +345,26 @@ void vmhgetmem_procI()
 
 	int ret = vmhfreemem(b_ptr, 1);
 	if(ret == OK) {
+        intmask mask = disable();
 		kprintf("Successfully freed memory in I\n");
+        restore(mask);
 	}
 
     /* All frames in E1 should be free */
     for(i = 0; i < NFRAMES_E1; i++) {
-        if(fHolderListE1[i].frame_pres == 1) {
+        if(fHolderListE1[i].frame_pres == 1  && fHolderListE1[i].owner_process == currpid) {
+            intmask mask = disable();
             kprintf("I: Frame %d not free!\n", i);
+            restore(mask);
         }
-    }
+    } 
 
     /* Only frames corresponding to page directory and page tables should be used */
     for(i = 0; i < NFRAMES_D; i++) {
-        if(fHolderListD[i].frame_pres == 1) {
+        if(fHolderListD[i].frame_pres == 1 && fHolderListD[i].owner_process == currpid) {
+            intmask mask = disable();
             kprintf("I: Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+            restore(mask);
         }
     }
 }
@@ -424,7 +453,7 @@ void test_vmhgetmem(int test_num)
 
     if(test_num == 4) {
         /* Allocate 2 pages and write to both pages. 2 page faults must be generated. Deallocate pages using using 2 separate calls to vmhfreemem() */
-        resume (create((void *)vmhgetmem_procD, INITSTK, INITPRIO, "vmhgetmem_procC process", 0, NULL));    
+        resume (create((void *)vmhgetmem_procD, INITSTK, INITPRIO, "vmhgetmem_procD process", 0, NULL));    
     }
 
     if(test_num == 5) {
@@ -441,15 +470,15 @@ void test_vmhgetmem(int test_num)
         /* Spawn multiple process (of equal priority) each creating multiple pages in VF. Checks if processes can reuse same memory location in VF */       
         resume (create((void *)vmhgetmem_procG, INITSTK, INITPRIO, "vmhgetmem_procG process", 0, NULL));    
         resume (create((void *)vmhgetmem_procH, INITSTK, INITPRIO, "vmhgetmem_procH process", 0, NULL));    
-        resume (create((void *)vmhgetmem_procI, INITSTK, INITPRIO, "vmhgetmem_procI process", 0, NULL));    
+        // resume (create((void *)vmhgetmem_procI, INITSTK, INITPRIO, "vmhgetmem_procI process", 0, NULL));    
     }
 
-    if(test_num == 9) {
+    if(test_num == 8) {
         /* Verify if identity mapping for all regions works */
         resume (create((void *)vmhgetmem_procJ, INITSTK, INITPRIO, "vmhgetmem_procJ process", 0, NULL));    
     }
 
-    if(test_num == 10) {
+    if(test_num == 9) {
         /* Verify if double vmhfreemem() fails */
         resume (create((void *)vmhgetmem_procK, INITSTK, INITPRIO, "vmhgetmem_procK process", 0, NULL));    
     }

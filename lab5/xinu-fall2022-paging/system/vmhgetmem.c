@@ -24,7 +24,6 @@ char* vmhgetmem(uint16 msize)
 	
 	prev = vmemlist_ptr;
 	curr = vmemlist_ptr->mnext;
-	kprintf("starting search  free list: %x: %x\n", vmemlist_ptr, vmemlist_ptr->mnext);
 	while (curr != NULL) {			/* Search free list	*/
 
 		if (curr->npages == msize) {	/* Block is exact match	*/
