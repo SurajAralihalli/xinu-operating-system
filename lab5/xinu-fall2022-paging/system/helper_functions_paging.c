@@ -64,7 +64,7 @@ void initialize_empty_page_directory(p32addr_t* page_dir_addr)
         page_dir_entry->pd_write =1;			/* page is writable?		*/
         page_dir_entry->pd_user= 0;		/* is use level protection?	*/
         page_dir_entry->pd_pwt	=1;		/* write through cachine for pt?*/
-        page_dir_entry->pd_pcd	=1;		/* cache disable for this pt?	*/
+        page_dir_entry->pd_pcd	=0;		/* cache disable for this pt?	*/
         page_dir_entry->pd_acc	=0;		/* page table was accessed?	*/
         page_dir_entry->pd_mbz	=0;		/* must be zero			*/
         page_dir_entry->pd_fmb	=0;		/* four MB pages?		*/
@@ -88,7 +88,7 @@ void initialize_empty_page_table(p32addr_t* page_table_addr)
         page_table_entry->pt_write = 1;		/* page is writable?		*/
         page_table_entry->pt_user	= 0;		/* is use level protection?	*/
         page_table_entry->pt_pwt	= 1;		/* write through for this page? */
-        page_table_entry->pt_pcd	= 1;		/* cache disable for this page? */
+        page_table_entry->pt_pcd	= 0;		/* cache disable for this page? */
         page_table_entry->pt_acc	= 0;		/* page was accessed?		*/
         page_table_entry->pt_dirty = 0;		/* page was written?		*/
         page_table_entry->pt_mbz	= 0;		/* must be zero			*/
@@ -115,7 +115,7 @@ void build_identity_map_entry(p32addr_t* page_table_addr, uint32 page_dir_index)
         page_tab_entry->pt_write = 1;		/* page is writable?		*/
         page_tab_entry->pt_user = 0;		/* is use level protection?	*/
         page_tab_entry->pt_pwt	= 1;		/* write through for this page? */
-        page_tab_entry->pt_pcd	= 1;		/* cache disable for this page? */
+        page_tab_entry->pt_pcd	= 0;		/* cache disable for this page? */
         page_tab_entry->pt_acc	= 0;		/* page was accessed?		*/
         page_tab_entry->pt_dirty = 0;		/* page was written?		*/
         page_tab_entry->pt_mbz	= 0;		/* must be zero			*/
@@ -312,6 +312,10 @@ void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr
 
         /* Get corresponding page table entry */
         pt_t* page_table_entry = get_page_table_entry(vaddr, page_dir_entry);
+
+        if(page_table_entry->pt_pres == 1) {
+            kprintf("Page table entry for vaddr %x is 1\n", vaddr);
+        }
 
         /* Invalidate page table entry - Sets P bit to 0     */
         reset_page_table_entry(page_table_entry);

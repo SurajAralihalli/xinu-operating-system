@@ -20,6 +20,7 @@ void	pgfhandler()
     /* Check if page fault corresponds to unallocated memory */
     status = is_addr_allocated_by_vmhgetmem(page_faulted_addr);
     if(status == 0) {
+        kprintf("Accessing unallocated memory. Segmentation fault!\n");
         /* Terminate process */
         kill(currpid);
     }

@@ -8,13 +8,19 @@ void vmhgetmem_procA()
 	if((uint32)b_ptr != SYSERR) {
 		kprintf("successfully allocated memory in VF: %x!\n", b_ptr);		
 	}
+    if((uint32)b_ptr % NBPG != 0) {
+        kprintf("Virtual address of b_ptr not aligned at 4KB boundary");
+    }
 	uint32 i;
+    b_ptr[0] = 'A';
+    b_ptr[1] = 'B';
 	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
-	for(i = 0; i < 100; i++) {
-		b_ptr[i] = 'A';
-	}
-	b_ptr[100] = '\0';
-	kprintf("b_ptr: %s\n", b_ptr);
+	// for(i = 0; i < 100; i++) {
+	// 	b_ptr[i] = 'A';
+	// }
+	// b_ptr[100] = '\0';
+	kprintf("b_ptr: %c%c\n", b_ptr[0], b_ptr[1]);
+	kprintf("b_ptr: %c%c\n", b_ptr[0], b_ptr[1]);
 
 	int ret = vmhfreemem(b_ptr, 1);
 	if(ret == OK) {
@@ -79,16 +85,22 @@ void vmhgetmem_procC()
 		kprintf("successfully allocated memory in VF: %x!\n", b_ptr);		
 	}
 	uint32 i;
+    kprintf("b_ptr[0]:%c\n", b_ptr[0]);
 	for(i = 0; i < 5000; i++) {
         b_ptr[i] = 'A';
 	}
-	b_ptr[5000] = '\0';
-	kprintf("b_ptr: %s:\n", b_ptr);
+	b_ptr[10] = '\0';
+	kprintf("b_ptr: %s\n", b_ptr);
+    b_ptr += 4096;
+    b_ptr[10] = '\0';
+	kprintf("b_ptr: %s\n", b_ptr);
+
+    b_ptr -= 4096;
 
 	int ret = vmhfreemem(b_ptr, 2);
 	if(ret == OK) {
 		kprintf("Successfully freed memory\n");
-	}
+	} 
 
     /* Segmentation fault check - Should fail */
     kprintf("b_ptr[0]: %c\n", b_ptr[0]);
