@@ -36,7 +36,7 @@ process	main(void)
 	// kprintf("b_ptr: %d\n", b_ptr[100]);
 	// kprintf("b_ptr: %d\n", b_ptr[200]);
 
-	test_vmhgetmem(7);
+	test_vmhgetmem(10);
 
 	return OK;
 }

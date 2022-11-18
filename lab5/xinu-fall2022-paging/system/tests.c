@@ -8,13 +8,19 @@ void vmhgetmem_procA()
 	if((uint32)b_ptr != SYSERR) {
 		kprintf("successfully allocated memory in VF: %x!\n", b_ptr);		
 	}
+    if((uint32)b_ptr % NBPG != 0) {
+        kprintf("Virtual address of b_ptr not aligned at 4KB boundary");
+    }
 	uint32 i;
+    b_ptr[0] = 'A';
+    b_ptr[1] = 'B';
 	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
-	for(i = 0; i < 100; i++) {
-		b_ptr[i] = 'A';
-	}
-	b_ptr[100] = '\0';
-	kprintf("b_ptr: %s\n", b_ptr);
+	// for(i = 0; i < 100; i++) {
+	// 	b_ptr[i] = 'A';
+	// }
+	// b_ptr[100] = '\0';
+	kprintf("b_ptr: %c%c\n", b_ptr[0], b_ptr[1]);
+	kprintf("b_ptr: %c%c\n", b_ptr[0], b_ptr[1]);
 
 	int ret = vmhfreemem(b_ptr, 1);
 	if(ret == OK) {
@@ -79,6 +85,7 @@ void vmhgetmem_procC()
 		kprintf("successfully allocated memory in VF: %x!\n", b_ptr);		
 	}
 	uint32 i;
+    kprintf("b_ptr[0]:%c\n", b_ptr[0]);
 	for(i = 0; i < 5000; i++) {
         b_ptr[i] = 'A';
 	}
@@ -88,7 +95,7 @@ void vmhgetmem_procC()
 	int ret = vmhfreemem(b_ptr, 2);
 	if(ret == OK) {
 		kprintf("Successfully freed memory\n");
-	}
+	} 
 
     /* Segmentation fault check - Should fail */
     kprintf("b_ptr[0]: %c\n", b_ptr[0]);
@@ -237,7 +244,11 @@ void vmhgetmem_procG()
         intmask mask = disable();
 		kprintf("G: successfully allocated memory in VF: %x!\n", b_ptr);
         restore(mask);		
-	}
+	} else {
+        intmask mask = disable();
+		kprintf("G: DId not allocate memory in VF: %x!\n", b_ptr);
+        restore(mask);		  
+    }
 	uint32 i;
 	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
 	for(i = 0; i < 5000; i++) {
@@ -260,7 +271,7 @@ void vmhgetmem_procG()
     for(i = 0; i < NFRAMES_E1; i++) {
         if(fHolderListE1[i].frame_pres == 1 && fHolderListE1[i].owner_process == currpid) {
             intmask mask = disable();
-            kprintf("G:  %d not free!\n", i);
+            kprintf("G:  Frame %d in E1 not free!\n", i);
             restore(mask);
         }
     }
@@ -269,7 +280,7 @@ void vmhgetmem_procG()
     for(i = 0; i < NFRAMES_D; i++) {
         if(fHolderListD[i].frame_pres == 1 && fHolderListD[i].owner_process == currpid) {
             intmask mask = disable();
-            kprintf("G: Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+            kprintf("G: Frame %d in D not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
             restore(mask);
         }
     }
@@ -285,7 +296,11 @@ void vmhgetmem_procH()
         intmask mask = disable();
 		kprintf("H: successfully allocated memory in VF: %x!\n", b_ptr);
         restore(mask);		
-	}
+	} else {
+        intmask mask = disable();
+		kprintf("H: DId not allocate memory in VF: %x!\n", b_ptr);
+        restore(mask);		  
+    }
 	uint32 i;
 	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
 	for(i = 0; i < 4000; i++) {
@@ -308,7 +323,7 @@ void vmhgetmem_procH()
     for(i = 0; i < NFRAMES_E1; i++) {
         if(fHolderListE1[i].frame_pres == 1  && fHolderListE1[i].owner_process == currpid) {
             intmask mask = disable();
-            kprintf("H: Frame %d not free!\n", i);
+            kprintf("H: Frame %d in E1 not free!\n", i);
             restore(mask);
         }
     }
@@ -317,7 +332,7 @@ void vmhgetmem_procH()
     for(i = 0; i < NFRAMES_D; i++) {
         if(fHolderListD[i].frame_pres == 1 && fHolderListD[i].owner_process == currpid) {
             intmask mask = disable();
-            kprintf("H: Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+            kprintf("H: Frame %d in D not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
             restore(mask);
         }
     }
@@ -333,7 +348,11 @@ void vmhgetmem_procI()
         intmask mask = disable();
 		kprintf("I: successfully allocated memory in VF: %x!\n", b_ptr);
         restore(mask);		
-	}
+	} else {
+        intmask mask = disable();
+		kprintf("I: DId not allocate memory in VF: %x!\n", b_ptr);
+        restore(mask);		  
+    }
 	uint32 i;
 	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
 	for(i = 0; i < 9000; i++) {
@@ -341,9 +360,11 @@ void vmhgetmem_procI()
 	}
 	b_ptr[10] = '\0'; // Should cause page fault leading to segmentation fault
 
+    intmask mask = disable();
 	kprintf("I: b_ptr: %s\n", b_ptr);
+    restore(mask);
 
-	int ret = vmhfreemem(b_ptr, 1);
+	int ret = vmhfreemem(b_ptr, 3);
 	if(ret == OK) {
         intmask mask = disable();
 		kprintf("Successfully freed memory in I\n");
@@ -354,7 +375,7 @@ void vmhgetmem_procI()
     for(i = 0; i < NFRAMES_E1; i++) {
         if(fHolderListE1[i].frame_pres == 1  && fHolderListE1[i].owner_process == currpid) {
             intmask mask = disable();
-            kprintf("I: Frame %d not free!\n", i);
+            kprintf("I: Frame %d in E1 not free!\n", i);
             restore(mask);
         }
     } 
@@ -363,7 +384,7 @@ void vmhgetmem_procI()
     for(i = 0; i < NFRAMES_D; i++) {
         if(fHolderListD[i].frame_pres == 1 && fHolderListD[i].owner_process == currpid) {
             intmask mask = disable();
-            kprintf("I: Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+            kprintf("I: Frame %d in D not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
             restore(mask);
         }
     }
@@ -417,9 +438,57 @@ void vmhgetmem_procK()
 	ret = vmhfreemem(b_ptr, 1);
 	if(ret == OK) {
 		kprintf("Successfully freed memory in I\n");
-	}
+	} else {
+        kprintf("vmhfreemem failed!\n");
+    }
 
     /* All frames in E1 should be free */
+    for(i = 0; i < NFRAMES_E1; i++) {
+        if(fHolderListE1[i].frame_pres == 1) {
+            kprintf("I: Frame %d not free!\n", i);
+        }
+    }
+
+    /* Only frames corresponding to page directory and page tables should be used */
+    for(i = 0; i < NFRAMES_D; i++) {
+        if(fHolderListD[i].frame_pres == 1) {
+            kprintf("I: Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+        }
+    }
+}
+
+void vmhgetmem_procL()
+{
+    kprintf("in vmhgetmem_procL\n");
+
+    char* pointers[10];
+
+    uint32 i;
+    for(i = 0; i < 10; i++) {
+        pointers[i] = vmhgetmem(i+1); 
+        if((uint32)pointers[i] == SYSERR) {
+            kprintf("Failed to allocate memory in VF: %x!\n", pointers[i]);		
+        } else {
+            kprintf("Successfully allocated memory in VF: %x\n", pointers[i]);
+        }
+    }
+
+    uint32 j;
+    for(i = 0; i < 10; i++) {
+        for(j = 0; j < (i+1) * 3000; j++) {
+            pointers[i][j] = i + '0';
+        }
+        pointers[i][100] = '\0';
+        kprintf("pointers[%d]: %s\n", i, pointers[i]);
+    }
+
+    for(i = 0; i < 10; i++) {
+        int ret = vmhfreemem(pointers[i], i+1); 
+        if(ret == SYSERR) {
+            kprintf("Failed to deallocate memory in VF: %x!\n", pointers[i]);		
+        }
+    }
+
     for(i = 0; i < NFRAMES_E1; i++) {
         if(fHolderListE1[i].frame_pres == 1) {
             kprintf("I: Frame %d not free!\n", i);
@@ -470,7 +539,7 @@ void test_vmhgetmem(int test_num)
         /* Spawn multiple process (of equal priority) each creating multiple pages in VF. Checks if processes can reuse same memory location in VF */       
         resume (create((void *)vmhgetmem_procG, INITSTK, INITPRIO, "vmhgetmem_procG process", 0, NULL));    
         resume (create((void *)vmhgetmem_procH, INITSTK, INITPRIO, "vmhgetmem_procH process", 0, NULL));    
-        // resume (create((void *)vmhgetmem_procI, INITSTK, INITPRIO, "vmhgetmem_procI process", 0, NULL));    
+        resume (create((void *)vmhgetmem_procI, INITSTK, INITPRIO, "vmhgetmem_procI process", 0, NULL));    
     }
 
     if(test_num == 8) {
@@ -481,6 +550,11 @@ void test_vmhgetmem(int test_num)
     if(test_num == 9) {
         /* Verify if double vmhfreemem() fails */
         resume (create((void *)vmhgetmem_procK, INITSTK, INITPRIO, "vmhgetmem_procK process", 0, NULL));    
+    }
+
+    if(test_num == 10) {
+        /* Series of vmhgetmem() followed by a series of vmhfreemem() */
+        resume (create((void *)vmhgetmem_procL, INITSTK, INITPRIO, "vmhgetmem_procL process", 0, NULL));    
     }
 
 }

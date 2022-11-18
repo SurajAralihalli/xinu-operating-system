@@ -83,10 +83,10 @@ syscall vmhfreemem(char *blockaddr, uint16 msize)
 	}
 
 	/* Deallocate frames in E1 */
-	deallocate_frames_E1(vaddr, msize);
+	deallocate_frames_E1(vaddr, msize, currpid);
 
 	/* Invalidate page table entries in VD - Useful when all page table entries have P bit 0 */
-	invalidate_page_table_entries(vaddr, msize, (p32addr_t*)prptr->page_dir_addr);	
+	invalidate_page_table_entries(vaddr, msize, (p32addr_t*)prptr->page_dir_addr, currpid);	
 
 	restore(mask);
 	return OK;

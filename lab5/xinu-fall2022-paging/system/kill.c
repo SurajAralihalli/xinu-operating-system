@@ -43,15 +43,15 @@ syscall	kill(
 
 	kprintf("---in kill----\n");
     for(i = 0; i < NFRAMES_E1; i++) {
-        if(fHolderListE1[i].frame_pres == 1) {
-            kprintf("Frame %d not free!\n", i);
+        if(fHolderListE1[i].frame_pres == 1 && fHolderListE1[i].owner_process == currpid) {
+            kprintf("Frame %d in E1 not free!\n", i);
         }
     }
 
     /* Only frames corresponding to page directory and page tables should be used */
     for(i = 0; i < NFRAMES_D; i++) {
-        if(fHolderListD[i].frame_pres == 1) {
-            kprintf("Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+        if(fHolderListD[i].frame_pres == 1 && fHolderListD[i].owner_process == currpid) {
+            kprintf("Frame %d in D not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
         }
     }
 
