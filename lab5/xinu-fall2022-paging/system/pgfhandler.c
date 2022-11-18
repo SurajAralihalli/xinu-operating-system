@@ -19,15 +19,15 @@ void	pgfhandler()
 
     /* Check if page fault corresponds to unallocated memory */
     status = is_addr_allocated_by_vmhgetmem(page_faulted_addr);
-    if(status == 0) {
-        kprintf("Accessing unallocated memory. Segmentation fault!\n");
+    if(status == 0) { //status is false
+        kprintf("Seg fault. Terminating process\n");
         /* Terminate process */
         kill(currpid);
     }
 
     page_faulted_addr = drop_offset_from_addr(page_faulted_addr);
 
-    kprintf("page directory addr: %x\n", (p32addr_t*)prptr->page_dir_addr);
+    // kprintf("page directory addr: %x\n", (p32addr_t*)prptr->page_dir_addr);
 
     pd_t* page_dir_entry = get_page_directory_entry(page_faulted_addr, (p32addr_t*)prptr->page_dir_addr);
 
@@ -49,15 +49,15 @@ void	pgfhandler()
         set_page_directory_entry(page_dir_entry, (p32addr_t)page_table_addr);
 
     }
-    kprintf("Allocated page directory entry: %x!\n", page_dir_entry);
+    // kprintf("Allocated page directory entry: %x!\n", page_dir_entry);
 
     pt_t* page_table_entry = get_page_table_entry(page_faulted_addr, page_dir_entry);
 
     p32addr_t* page_table_addr = (p32addr_t*) (page_dir_entry->pd_base << 12);
 
-    kprintf("page table addr: %x\n", page_table_addr);
+    // kprintf("page table addr: %x\n", page_table_addr);
 
-    kprintf("page_table_entry p bit: %d\n", page_table_entry->pt_pres);
+    // kprintf("page_table_entry p bit: %d\n", page_table_entry->pt_pres);
 
     //check if page is present
     if(page_table_entry->pt_pres==0)
@@ -73,26 +73,34 @@ void	pgfhandler()
         //set pres bit to 1 and make page table entry point to new page
         set_page_table_entry(page_table_entry, (p32addr_t)page_addr);
 
-        kprintf("page addr: %x\n", page_addr);
+        // kprintf("page addr: %x\n", page_addr);
     } else {
         
         /* Get error code */
         asm("movl %%ebp, %0;"
             :"=r"(ebp)
             );
-        ebp += 10;
+        ebp += 10; // (ebp + ret + general purpose registers) + errorcode + return addr to page faulted instruction
 
-        kprintf("error code: %d\n", *ebp);
+        // kprintf("error code: %d\n", *ebp);
 
         /* Check for access violation */
-        uint16 ret = is_read_write_access_violation(*ebp, page_table_entry);
-        if(ret == 1) {
+        status = is_read_write_access_violation(*ebp, page_table_entry);
+        if(status == 1) {
             /* Terminate process */
             kill(currpid);
         }
-
         ebp = NULL;
     }
 
-    kprintf("Allocated page table entry: %x!\n", page_table_entry);
+    // Debug work
+    asm("movl %%ebp, %0;"
+        :"=r"(ebp)
+        );
+    ebp += 9;
+    kprintf("eax value saved: %x\n", *ebp);
+    // *ebp = 0x102f91 + 0x47;
+    ebp = NULL;
+
+    // kprintf("Allocated page table entry: %x!\n", page_table_entry);
 }

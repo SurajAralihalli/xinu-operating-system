@@ -16,9 +16,10 @@ syscall vmhfreemem(char *blockaddr, uint16 msize)
     v32addr_t vaddr;
 	v32addr_t	top;
 
+	mask = disable();
+
 	uint32 hsize = (&proctab[currpid])->hsize;
 
-	mask = disable();
 	if ((msize == 0) || ((uint32) blockaddr < (uint32) (REGIONSTART_F * NBPG))
 			  || ((uint32) blockaddr > (uint32) ((REGIONSTART_F + hsize) * NBPG))) {
 		restore(mask);
@@ -82,10 +83,10 @@ syscall vmhfreemem(char *blockaddr, uint16 msize)
 	}
 
 	/* Deallocate frames in E1 */
-	deallocate_frames_E1(vaddr, msize);
+	deallocate_frames_E1(vaddr, msize, currpid);
 
 	/* Invalidate page table entries in VD - Useful when all page table entries have P bit 0 */
-	invalidate_page_table_entries(vaddr, msize, (p32addr_t*)prptr->page_dir_addr);	
+	invalidate_page_table_entries(vaddr, msize, (p32addr_t*)prptr->page_dir_addr, currpid);	
 
 	restore(mask);
 	return OK;

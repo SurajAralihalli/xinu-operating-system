@@ -724,13 +724,13 @@ extern pt_t* get_page_table_entry(v32addr_t page_faulted_addr, pd_t* page_dir_en
 
 extern pd_t* get_page_directory_entry(v32addr_t page_faulted_addr, p32addr_t* page_dir_addr);
 
-extern void deallocate_frames_E1(v32addr_t start_vaddr, uint16 npages);
+extern void deallocate_frames_E1(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid);
 
-extern void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr_t* page_dir_addr);
+extern void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr_t* page_dir_addr, pid32 owner_pid);
 
-extern void free_frame_in_regionD(v32addr_t vaddr);
+extern void free_frame_in_regionD(v32addr_t vaddr, pid32 owner_pid);
 
-extern void free_frame_in_regionE1(v32addr_t vaddr);
+extern void free_frame_in_regionE1(v32addr_t vaddr, pid32 owner_pid);
 
 extern void purge_frames_fHolderListE1(pid32 pid);
 

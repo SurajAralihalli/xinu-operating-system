@@ -249,7 +249,7 @@ pd_t* get_page_directory_entry(v32addr_t page_faulted_addr, p32addr_t* page_dir_
                                 `page_dir_addr`
  *------------------------------------------------------------------------
  */
-void deallocate_frames_E1(v32addr_t start_vaddr, uint16 npages)
+void deallocate_frames_E1(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid)
 {
     uint32 i;
     /* Deallocate frames related to the virtual address */
@@ -257,7 +257,7 @@ void deallocate_frames_E1(v32addr_t start_vaddr, uint16 npages)
         v32addr_t vaddr = start_vaddr + (i * NBPG);
 
 		/* Free frame in region E1 */
-		free_frame_in_regionE1(vaddr);
+		free_frame_in_regionE1(vaddr, owner_pid);
 	}
 }
 
@@ -301,9 +301,10 @@ void purge_frames_fHolderListE1(pid32 pid)
                                     virtual address `start_vaddr` and going up to `npages`
  *------------------------------------------------------------------------
  */
-void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr_t* page_dir_addr)
+void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr_t* page_dir_addr, pid32 owner_pid)
 {
     uint32 i;
+    struct procent* prptr = &proctab[currpid];
 	for(i = 0; i < npages; i++) {
         v32addr_t vaddr = start_vaddr + (i * NBPG);
 
@@ -314,7 +315,7 @@ void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr
         pt_t* page_table_entry = get_page_table_entry(vaddr, page_dir_entry);
 
         if(page_table_entry->pt_pres == 1) {
-            kprintf("Page table entry for vaddr %x is 1\n", vaddr);
+            kprintf("%s: Page table entry for vaddr %x is 1\n", prptr->prname,vaddr);
         }
 
         /* Invalidate page table entry - Sets P bit to 0     */
@@ -330,7 +331,7 @@ void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr
         // Check if page table has 0 used page table entries
         if(fHolderListD[index_fHolderListD].nentries_allocated == 0) {
             /* Free frame in region D */
-            free_frame_in_regionD((v32addr_t) page_table_addr);
+            free_frame_in_regionD((v32addr_t) page_table_addr, owner_pid);
 
             /* Make P bit in page directory entry 0 */
             reset_page_directory_entry(page_dir_entry);
@@ -344,11 +345,11 @@ void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr
  * free_frame_in_regionD -  Update fHolderListD to reuse frames
  *------------------------------------------------------------------------
  */
-void free_frame_in_regionD(v32addr_t vaddr)
+void free_frame_in_regionD(v32addr_t vaddr, pid32 owner_pid)
 {
     uint32 i;
     for(i = 0; i < NFRAMES_D; i++) {
-        if(fHolderListD[i].vaddr == vaddr) {
+        if(fHolderListD[i].vaddr == vaddr && fHolderListD[i].owner_process == owner_pid) {
             fHolderListD[i].frame_pres = 0;
             fHolderListD[i].owner_process = -1;
             fHolderListD[i].vaddr = 0x0;
@@ -361,14 +362,15 @@ void free_frame_in_regionD(v32addr_t vaddr)
  * free_frame_in_regionE1 -  Update fHolderListE1 to reuse frames
  *------------------------------------------------------------------------
  */
-void free_frame_in_regionE1(v32addr_t vaddr)
+void free_frame_in_regionE1(v32addr_t vaddr, pid32 owner_pid)
 {
     vaddr = drop_offset_from_addr(vaddr);
     uint32 i;
     for(i = 0; i < NFRAMES_E1; i++) {
-        if(fHolderListE1[i].vaddr == vaddr) {
+        if(fHolderListE1[i].vaddr == vaddr && fHolderListE1[i].owner_process == owner_pid) {
             fHolderListE1[i].frame_pres = 0;
             fHolderListE1[i].owner_process = -1;
+            fHolderListE1[i].vaddr = 0x0;
             break;
         }
     }
