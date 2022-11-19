@@ -8,19 +8,12 @@ void vmhgetmem_procA()
 	if((uint32)b_ptr != SYSERR) {
 		kprintf("successfully allocated memory in VF: %x!\n", b_ptr);		
 	}
-    if((uint32)b_ptr % NBPG != 0) {
-        kprintf("Virtual address of b_ptr not aligned at 4KB boundary");
-    }
 	uint32 i;
-    b_ptr[0] = 'A';
-    b_ptr[1] = 'B';
-	// kprintf("b_ptr: before: %c\n", b_ptr[0]);
-	// for(i = 0; i < 100; i++) {
-	// 	b_ptr[i] = 'A';
-	// }
-	// b_ptr[100] = '\0';
-	kprintf("b_ptr: %c%c\n", b_ptr[0], b_ptr[1]);
-	kprintf("b_ptr: %c%c\n", b_ptr[0], b_ptr[1]);
+	for(i = 0; i < 100; i++) {
+		b_ptr[i] = 'A';
+	}
+	b_ptr[100] = '\0';
+	kprintf("b_ptr: %s\n", b_ptr);
 
 	int ret = vmhfreemem(b_ptr, 1);
 	if(ret == OK) {
@@ -85,11 +78,10 @@ void vmhgetmem_procC()
 		kprintf("successfully allocated memory in VF: %x!\n", b_ptr);		
 	}
 	uint32 i;
-    kprintf("b_ptr[0]:%c\n", b_ptr[0]);
 	for(i = 0; i < 5000; i++) {
         b_ptr[i] = 'A';
 	}
-	b_ptr[10] = '\0';
+	b_ptr[5000] = '\0';
 	kprintf("b_ptr: %s:\n", b_ptr);
 
 	int ret = vmhfreemem(b_ptr, 2);
@@ -254,7 +246,7 @@ void vmhgetmem_procG()
 	for(i = 0; i < 5000; i++) {
 		b_ptr[i] = 'G';
 	}
-	b_ptr[10] = '\0'; // Should cause page fault leading to segmentation fault
+	b_ptr[5000] = '\0'; 
 
     intmask mask = disable();
 	kprintf("G: b_ptr: %s\n", b_ptr);
@@ -306,7 +298,7 @@ void vmhgetmem_procH()
 	for(i = 0; i < 4000; i++) {
 		b_ptr[i] = 'H';
 	}
-	b_ptr[10] = '\0'; // Should cause page fault leading to segmentation fault
+	b_ptr[4000] = '\0'; // Should cause page fault leading to segmentation fault
 
     intmask mask = disable();
 	kprintf("H: b_ptr: %s\n", b_ptr);
@@ -358,7 +350,7 @@ void vmhgetmem_procI()
 	for(i = 0; i < 9000; i++) {
 		b_ptr[i] = 'I';
 	}
-	b_ptr[10] = '\0'; // Should cause page fault leading to segmentation fault
+	b_ptr[9000] = '\0'; // Should cause page fault leading to segmentation fault
 
     intmask mask = disable();
 	kprintf("I: b_ptr: %s\n", b_ptr);
@@ -395,19 +387,22 @@ void vmhgetmem_procJ()
     /* Check if identity mapping is working correctly for Region G */
     kprintf("in vmhgetmem_procJ\n");
 
-    char* addr_G = 0x90000000;
+    char* addr_G = (char* )0x9000A000;
     kprintf("Accessing G: %d\n",addr_G[0]);
 
-    char* addr_B = 1052672;
+    char* addr_A = (char* )0xA0;
+    kprintf("Accessing A: %d\n",addr_A[0]);
+
+    char* addr_B = (char* )1052672;
     kprintf("Accessing B: %d\n",addr_B[0]);
 
-    char* addr_C = 1339395;
+    char* addr_C = (char* )1339395;
     kprintf("Accessing C: %d\n",addr_C[0]);
 
-    char* addr_D = 4194400;
+    char* addr_D = (char* )4194400;
     kprintf("Accessing D: %d\n",addr_D[0]);
 
-    char* addr_E = 12288000;
+    char* addr_E = (char* )12288000;
     kprintf("Accessing E: %d\n",addr_E[0]);
 }
 
@@ -503,6 +498,37 @@ void vmhgetmem_procL()
     }
 }
 
+void vmhgetmem_procM()
+{
+    kprintf("in vmhgetmem_procM\n");
+
+    /* Testing vmhgetmem() */
+
+    char* b_ptr = (char* )0x10000100;
+
+	int ret = vmhfreemem(b_ptr, 1);
+	if(ret == OK) {
+		kprintf("Successfully freed memory in I\n");
+	} else {
+        kprintf("vmhfreemem failed!\n");
+    }
+
+    uint32 i;
+    /* All frames in E1 should be free */
+    for(i = 0; i < NFRAMES_E1; i++) {
+        if(fHolderListE1[i].frame_pres == 1) {
+            kprintf("I: Frame %d not free!\n", i);
+        }
+    }
+
+    /* Only frames corresponding to page directory and page tables should be used */
+    for(i = 0; i < NFRAMES_D; i++) {
+        if(fHolderListD[i].frame_pres == 1) {
+            kprintf("I: Frame %d not free. owner process: %d!\n", i, fHolderListD[i].owner_process);
+        }
+    }
+}
+
 void test_vmhgetmem(int test_num)
 {
     if(test_num == 1) {
@@ -555,6 +581,11 @@ void test_vmhgetmem(int test_num)
     if(test_num == 10) {
         /* Series of vmhgetmem() followed by a series of vmhfreemem() */
         resume (create((void *)vmhgetmem_procL, INITSTK, INITPRIO, "vmhgetmem_procL process", 0, NULL));    
+    }
+
+    if(test_num == 11) {
+        /* Test if freeing unallocated memory fails */
+        resume (create((void *)vmhgetmem_procM, INITSTK, INITPRIO, "vmhgetmem_procM process", 0, NULL));    
     }
 
 }

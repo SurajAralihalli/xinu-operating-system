@@ -38,13 +38,7 @@ void init_paging(void)
 
 		// p32addr_t base_addr = (p32addr_t) page_dir_entry->pd_base;
 		
-		// kprintf("%d page dir entry, page table addr: %d\n", pg_dir_index, page_table_addr);
-
-		// kprintf("%d page dir entry addr: %d: %d\n", pg_dir_index, base_addr, ((p32addr_t) page_table_addr) >> 12);
-
 		build_identity_map_entry(page_table_addr, pg_dir_index);
-
-		// kprintf("Identity map for %d successful: %d\n", pg_dir_index, page_dir_entry->pd_pres);
 
 		/* Save identity mapped page tables  */
 		identityMapAddrList[i].page_table_addr = page_table_addr;
@@ -56,7 +50,7 @@ void init_paging(void)
 	prptr->page_dir_addr = page_dir_addr;
 
     // Setup page fault handler
-	set_evec(14, (uint32)pgfdisp);
+	// set_evec(14, (uint32)pgfdisp);
 
 	/* Update CR3 to setup null process page directory address */
 	set_page_dir_addr_cr3((p32addr_t)page_dir_addr); //20 MSB bits

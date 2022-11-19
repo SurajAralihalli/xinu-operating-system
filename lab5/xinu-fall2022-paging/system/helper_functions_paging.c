@@ -222,7 +222,6 @@ pt_t* get_page_table_entry(v32addr_t page_faulted_addr, pd_t* page_dir_entry)
     // find page table entry
     p32addr_t* page_table_addr = (p32addr_t*) ((page_dir_entry->pd_base) << 12);  //base + "000000000000"
     uint32 page_table_index = (page_faulted_addr & 0x003FF000) >> 12; //page table index + page index + offset
-    kprintf("page table index is: %d\n", page_table_index);
     pt_t* page_table_entry =  (pt_t*) &(page_table_addr[page_table_index]);
     return page_table_entry;
 }
@@ -238,7 +237,6 @@ pd_t* get_page_directory_entry(v32addr_t page_faulted_addr, p32addr_t* page_dir_
 {
     // find page directory entry
     uint32 page_dir_index = page_faulted_addr >> 22;
-    kprintf("page dir index is: %d\n", page_dir_index);
     pd_t* page_dir_entry = (pd_t*) &(page_dir_addr[page_dir_index]);
     return page_dir_entry;
 }
@@ -313,10 +311,6 @@ void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr
 
         /* Get corresponding page table entry */
         pt_t* page_table_entry = get_page_table_entry(vaddr, page_dir_entry);
-
-        if(page_table_entry->pt_pres == 1) {
-            kprintf("%s: Page table entry for vaddr %x is 1\n", prptr->prname,vaddr);
-        }
 
         /* Invalidate page table entry - Sets P bit to 0     */
         reset_page_table_entry(page_table_entry);

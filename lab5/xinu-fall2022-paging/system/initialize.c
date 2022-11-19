@@ -32,10 +32,6 @@ struct fholder fHolderListD[NFRAMES_D];
 struct fholder fHolderListE1[NFRAMES_E1];
 struct identityMapAddr identityMapAddrList[5];
 
-// struct fholder *fHolderListD;
-// struct fholder *fHolderListE1;
-// struct identityMapAddr *identityMapAddrList;
-
 bool8   PAGE_SERVER_STATUS;    /* Indicate the status of the page server */
 sid32   bs_init_sem;
 /*------------------------------------------------------------------------
