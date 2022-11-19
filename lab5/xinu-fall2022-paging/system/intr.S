@@ -239,13 +239,20 @@ _Xint13:
 
 	.globl  _Xint14			/* Page fault			*/
 _Xint14:
-	pushl	%ebp
-	movl	%esp,%ebp
+	pushal			# Save registers
 	pushal
-	movl	%esp, %eax
-	pushl	%eax
-	pushl	$14
-	jmp	Xtrap
+	pushfl
+	cli			# Disable further interrupts
+	movb	$EOI,%al	/* Clear the interrupt		*/
+	outb	%al,$OCW1_2
+	
+	call	pgfhandler	# Call high level handler
+
+	popfl
+	popal
+	popal
+	addl $4, %esp
+	iret			# Return from interrupt
 
 	.globl  _Xint15			/* (reserved)			*/
 _Xint15:

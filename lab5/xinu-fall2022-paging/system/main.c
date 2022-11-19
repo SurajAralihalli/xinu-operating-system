@@ -16,12 +16,14 @@ process	main(void)
 
 	// Insert test code below
 
-	kprintf("\n\n\nHello World\n");
+	#ifdef XINUTEST
+		kprintf("\n\n\nHello World\n");
+	#endif
 
-	// int* b_ptr = vmhgetmem(1);
+	// int* b_ptr = (int*) vmhgetmem(1);
 
 	// if((uint32)b_ptr != SYSERR) {
-    // kprintf("successfully allocated memory in VF: %x!\n", b_ptr);
+    // 	kprintf("successfully allocated memory in VF: %x!\n", b_ptr);
 	// }
 
 	// b_ptr[1] = 0;
@@ -36,7 +38,7 @@ process	main(void)
 	// kprintf("b_ptr: %d\n", b_ptr[100]);
 	// kprintf("b_ptr: %d\n", b_ptr[200]);
 
-	test_vmhgetmem(10);
+	// test_vmhgetmem(3);
 
 	return OK;
 }

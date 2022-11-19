@@ -8,19 +8,17 @@
  */
 void	pgfhandler()
 {
-    static unsigned long* ebp = NULL;
+    unsigned long* ebp = NULL;
     int status;
 
     struct	procent	*prptr = &proctab[currpid];
 
     v32addr_t page_faulted_addr = get_page_faulted_addr_cr2();
 
-    kprintf("Entered page fault handler: %x!\n", page_faulted_addr);
 
     /* Check if page fault corresponds to unallocated memory */
     status = is_addr_allocated_by_vmhgetmem(page_faulted_addr);
     if(status == 0) { //status is false
-        kprintf("Seg fault. Terminating process\n");
         /* Terminate process */
         kill(currpid);
     }
@@ -90,17 +88,6 @@ void	pgfhandler()
             /* Terminate process */
             kill(currpid);
         }
-        ebp = NULL;
     }
 
-    // Debug work
-    asm("movl %%ebp, %0;"
-        :"=r"(ebp)
-        );
-    ebp += 9;
-    kprintf("eax value saved: %x\n", *ebp);
-    // *ebp = 0x102f91 + 0x47;
-    ebp = NULL;
-
-    // kprintf("Allocated page table entry: %x!\n", page_table_entry);
 }
