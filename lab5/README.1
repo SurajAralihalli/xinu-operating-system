@@ -1,0 +1,243 @@
+/*------------------------------------------------------------------------
+ * get_empty_frame_from_regionD  -  Return absolute address of empty frame 
+                                    from region D and mark frame as used and update
+                                    owner process of the frame to `pid`
+ *------------------------------------------------------------------------
+ */
+char* get_empty_frame_from_regionD(pid32 pid);
+
+
+/*------------------------------------------------------------------------
+ * get_empty_frame_from_regionE1 -  Return absolute address of empty frame from region E1
+                                    Update frame as used, update virtual address that the frame 
+                                    corresponds to to `vaddr` and owner PID to currpid
+ *------------------------------------------------------------------------
+ */
+char* get_empty_frame_from_regionE1(v32addr_t vaddr);
+
+/*------------------------------------------------------------------------
+ * initialize_empty_page_directory -  Initialize page directory entries to default values
+ *------------------------------------------------------------------------
+ */
+void initialize_empty_page_directory(p32addr_t* page_dir_addr);
+
+/*------------------------------------------------------------------------
+ * initialize_empty_page_table -  Initialize page table entries to default values
+ *------------------------------------------------------------------------
+ */
+void initialize_empty_page_table(p32addr_t* page_table_addr);
+
+/*------------------------------------------------------------------------
+ * build_identity_map_entry -  Perform identity mapping of entries in page table with
+                                start address `page_table_addr`. Mapping is performed for
+                                page directory entry corresponding to `page_dir_index`
+                                of the null process
+ *------------------------------------------------------------------------
+ */
+void build_identity_map_entry(p32addr_t* page_table_addr, uint32 page_dir_index);
+
+/*------------------------------------------------------------------------
+ * set_page_directory_entry -  Set P bit to 1 and page table frame number 
+                            of page directory entry using `page_table_addr`
+ *------------------------------------------------------------------------
+ */
+void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_addr);
+
+/*------------------------------------------------------------------------
+ * set_page_table_entry -  Set P bit to 1 and page frame number 
+                            of page table entry using `page_addr`
+ *------------------------------------------------------------------------
+ */
+void set_page_table_entry(pt_t* page_table_entry, p32addr_t page_addr);
+
+/*------------------------------------------------------------------------
+ * reset_page_table_entry -  Set P bit to 0 in page table entry
+ *------------------------------------------------------------------------
+ */
+void reset_page_table_entry(pt_t* page_table_entry);
+
+/*------------------------------------------------------------------------
+ * reset_page_directory_entry -  Set P bit to 0 in page directory entry
+ *------------------------------------------------------------------------
+ */
+void reset_page_directory_entry(pd_t* page_directory_entry);
+
+/*------------------------------------------------------------------------
+ * initialize_fholderList -  Initialize kernel data structure to keep track of
+                            frames used in region D (i.e used as page tables/directories)
+                            and in region E
+ *------------------------------------------------------------------------
+ */
+void initialize_fholderList();
+
+
+/*------------------------------------------------------------------------
+ * get_page_table_entry -  Get pointer to page table entry given a virtual address
+                            `page_faulted_addr` and page directory entry 
+                            `page_dir_entry`
+ *------------------------------------------------------------------------
+ */
+pt_t* get_page_table_entry(v32addr_t page_faulted_addr, pd_t* page_dir_entry);
+
+/*------------------------------------------------------------------------
+ * get_page_directory_entry -  Get pointer to page directory entry given a virtual address
+                                `page_faulted_addr` and base address of page directory
+                                `page_dir_addr`
+ *------------------------------------------------------------------------
+ */
+pd_t* get_page_directory_entry(v32addr_t page_faulted_addr, p32addr_t* page_dir_addr);
+
+/*------------------------------------------------------------------------
+ * deallocate_frames_E1 -  Deallocate/free `npages` frames in region E1 which are mapped to pages 
+                            in VF starting from virtual address `start_vaddr`
+                            and belonging to process with pid `owner_pid`
+ *------------------------------------------------------------------------
+ */
+void deallocate_frames_E1(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid);
+
+/*------------------------------------------------------------------------
+ * purge_frames_D -  Purge all frames in region D whose `owner_process` matches pid.
+                    This involves marking them as free, setting default values to 
+                    other fields of the kernel data structure `fHolderListD`
+ *------------------------------------------------------------------------
+ */
+void purge_frames_fHolderListD(pid32 pid);
+
+/*------------------------------------------------------------------------
+ * purge_frames_E1 -  Purge all frames in E1 whose `owner_process` matches pid
+                    This involves marking them as free, setting default values to 
+                    other fields of the kernel data structure `fHolderListE1`
+ *------------------------------------------------------------------------
+ */
+void purge_frames_fHolderListE1(pid32 pid);
+
+
+/*------------------------------------------------------------------------
+ * invalidate_page_table_entries -  Invalidate page table entries corresponding to 
+                                    virtual address `start_vaddr` and going up to `npages`
+                                    Invalidation includes setting P bit of corresponding page
+                                    table entries to 0 and freeing a page table
+                                    if all its page table entries are unused.
+                                    Page table entries are found by using page directory
+                                    address `page_dir_addr`
+ *------------------------------------------------------------------------
+ */
+void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr_t* page_dir_addr, pid32 owner_pid);
+
+/*------------------------------------------------------------------------
+ * free_frame_in_regionD -  Update kernel data structure 
+                            fHolderListD to mark all frames owner by process
+                            `owner_pid` with a virtual address mapped to `vaddr`
+                             as being free
+ *------------------------------------------------------------------------
+ */
+void free_frame_in_regionD(v32addr_t vaddr, pid32 owner_pid);
+
+/*------------------------------------------------------------------------
+ * free_frame_in_regionE1 -  Update kernel data structure 
+                            fHolderListE1 to mark all frames owner by process
+                            `owner_pid` with a virtual address mapped to `vaddr`
+                             as being free
+ *------------------------------------------------------------------------
+ */
+void free_frame_in_regionE1(v32addr_t vaddr, pid32 owner_pid);
+
+/*------------------------------------------------------------------------
+ * increment_number_entries_allocated -  Increment number of frames allocated
+                                        (i.e number of page table entries with 
+                                        P bit set to 1) in kernel data structure
+                                        fHolderListD. The page table is stored in a frame in 
+                                        region D indexed by `index`
+ *------------------------------------------------------------------------
+ */
+void increment_number_entries_allocated(uint16 index);
+
+/*------------------------------------------------------------------------
+ * decrement_number_entries_allocated -  Increment number of frames allocated
+                                        (i.e number of page table entries with 
+                                        P bit set to 1) in kernel data structure
+                                        fHolderListD. The page table is stored in a frame in 
+                                        region D indexed by `index`
+ *------------------------------------------------------------------------
+ */
+void decrement_number_entries_allocated(uint16 index);
+
+/*------------------------------------------------------------------------
+ * drop_offset_from_addr -  Set offset part of virtual address `vaddr`
+                            and return the corresponding 32-bit address 
+ *------------------------------------------------------------------------
+ */
+v32addr_t drop_offset_from_addr(v32addr_t vaddr);
+
+
+/*------------------------------------------------------------------------
+ * is_read_write_access_violation -  Check if access to a page given by 
+                                    `page_table_entry` with page fault 
+                                    error code `page_fault_error_code`
+                                    has a read/write access violation
+ *------------------------------------------------------------------------
+ */
+uint16 is_read_write_access_violation(uint32 page_fault_error_code, pt_t* page_table_entry);
+
+
+/*------------------------------------------------------------------------
+ * is_addr_allocated_by_vmhgetmem -  Check if virtual address `addr`
+                                    has been allocated by vmhgetmem()
+ *------------------------------------------------------------------------
+ */
+int is_addr_allocated_by_vmhgetmem(v32addr_t addr);
+
+
+/*------------------------------------------------------------------------
+ * create_vmemblk_node -  Creates a new linked list node of type vmemblk
+                           This is used to maintain a per-process kernel 
+                           data structure for allocation and deallocations in VF
+ *------------------------------------------------------------------------
+ */
+struct vmemblk* create_vmemblk_node();
+
+/*------------------------------------------------------------------------
+ * free_vmemblk_node -  Free a new linked list node of type vmemblk.
+                        This is used to maintain a per-process kernel 
+                        data structure for allocation and deallocations in VF
+ *------------------------------------------------------------------------
+ */
+void free_vmemblk_node(struct vmemblk* nodeptr);
+
+/*------------------------------------------------------------------------
+ * setup_vmemlist -  setup vmemlist in process table of process corresponding
+                    to `pid`. This is used to maintain a per-process kernel 
+                        data structure for managing allocation and deallocations in VF.
+                        vmemlist represents the head of a linked list, 
+                        with each node representing a certain number of pages
+                        available for allocation in VF
+ *------------------------------------------------------------------------
+ */
+void setup_vmemlist(pid32 pid);
+
+/*------------------------------------------------------------------------
+ * purge_vmemlist -  purge vmemlist in process table. Delete all nodes 
+                    in the linked list pointed to by vmemlist. 
+                    This is used to maintain a per-process kernel 
+                    data structure for managing allocation and deallocations in VF
+ *------------------------------------------------------------------------
+ */
+void purge_vmemlist();
+
+/*------------------------------------------------------------------------
+ * get_page_faulted_addr_cr2 -  Get page faulted addr (virtual address) from cr2 register
+ *------------------------------------------------------------------------
+ */
+v32addr_t get_page_faulted_addr_cr2();
+
+/*------------------------------------------------------------------------
+ * set_page_dir_addr_cr3 -  Set page dir addr in cr3 register
+ *------------------------------------------------------------------------
+ */
+void set_page_dir_addr_cr3(p32addr_t page_dir_addr);
+
+/*------------------------------------------------------------------------
+ * flush_tlb -  Flush TLB by updating CR3
+ *------------------------------------------------------------------------
+ */
+void flush_tlb();

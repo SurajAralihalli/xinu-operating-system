@@ -25,8 +25,6 @@ void	pgfhandler()
 
     page_faulted_addr = drop_offset_from_addr(page_faulted_addr);
 
-    // kprintf("page directory addr: %x\n", (p32addr_t*)prptr->page_dir_addr);
-
     pd_t* page_dir_entry = get_page_directory_entry(page_faulted_addr, (p32addr_t*)prptr->page_dir_addr);
 
     // check if page table is present
@@ -47,15 +45,10 @@ void	pgfhandler()
         set_page_directory_entry(page_dir_entry, (p32addr_t)page_table_addr);
 
     }
-    // kprintf("Allocated page directory entry: %x!\n", page_dir_entry);
 
     pt_t* page_table_entry = get_page_table_entry(page_faulted_addr, page_dir_entry);
 
     p32addr_t* page_table_addr = (p32addr_t*) (page_dir_entry->pd_base << 12);
-
-    // kprintf("page table addr: %x\n", page_table_addr);
-
-    // kprintf("page_table_entry p bit: %d\n", page_table_entry->pt_pres);
 
     //check if page is present
     if(page_table_entry->pt_pres==0)
@@ -79,8 +72,6 @@ void	pgfhandler()
             :"=r"(ebp)
             );
         ebp += 10; // (ebp + ret + general purpose registers) + errorcode + return addr to page faulted instruction
-
-        // kprintf("error code: %d\n", *ebp);
 
         /* Check for access violation */
         status = is_read_write_access_violation(*ebp, page_table_entry);
