@@ -36,6 +36,7 @@ typedef struct {
   unsigned int pt_base	: 20;		/* location of page?		*/
 } pt_t;
 
+
 /* Prototypes for required API calls */
 //SYSCALL xmmap(int, bsd_t, int);
 //SYSCALL xmunmap(int);
@@ -43,6 +44,8 @@ typedef struct {
 #define NBPG		4096	/* number of bytes per page	*/
 #define FRAME0		1024	/* zero-th frame		*/
 #define NFRAMES		3072	/* number of frames		*/
+
+#define ENTRIES_PER_FRAME 1024
 
 #define MAP_SHARED 1
 #define MAP_PRIVATE 2
@@ -52,3 +55,37 @@ typedef struct {
 
 #define MAX_ID		7		/* You get 8 mappings, 0 - 7 */
 #define MIN_ID          0
+
+
+// NEW DATASTRUCTURES // 
+
+#define NFRAMES_D		1000	/* number of frames		*/
+#define NFRAMES_E1		1024
+#define NFRAMES_E2		1048
+
+#define REGIONSTART_D		1024	/* number of frames		*/
+#define REGIONSTART_E1		2024
+#define REGIONSTART_E2		3038
+#define REGIONSTART_F		4096
+
+// struct to indicate which frames are free
+struct fholder{
+    unsigned int frame_pres	: 1;		/* frame is present? */
+    pid32  owner_process;           /* Owner process ID */
+    v32addr_t vaddr;                /* Virtual address */
+    uint16 nentries_allocated;        /* Number of pages allocated */
+};
+
+struct identityMapAddr {
+  p32addr_t* page_table_addr;
+  uint32   page_dir_index;
+};
+
+// extern	struct	fholder *fHolderListD;
+// extern	struct	fholder *fHolderListE1;
+// extern struct identityMapAddr *identityMapAddrList;
+
+
+extern	struct	fholder fHolderListD[];
+extern	struct	fholder fHolderListE1[];
+extern  struct  identityMapAddr identityMapAddrList[];

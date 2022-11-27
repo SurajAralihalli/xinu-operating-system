@@ -679,3 +679,90 @@ extern	syscall	yield(void);
 #define	ntohs(x)   ( ( 0xff & ((x)>>8) ) | ( (0xff & (x)) << 8 ) )
 #define	ntohl(x)   (  (((x)>>24) & 0x000000ff) | (((x)>> 8) & 0x0000ff00) | \
 		      (((x)<< 8) & 0x00ff0000) | (((x)<<24) & 0xff000000) )
+
+
+
+/* NEW FUNCTION PROTOTYPES START HERE */
+
+/* in file vmhgetmem.c */
+extern char *vmhgetmem(uint16 msize);
+
+/* in file vmhfreemem.c */
+extern syscall vmhfreemem(char *blockaddr, uint16 msize);
+
+/* in file init_paging.c */
+extern void init_paging(void);
+
+/* in file pgfhandler.c */
+extern void pgfhandler();
+
+/* in file pgfdisp.S */
+extern	void	pgfdisp(void);
+
+/* in file helperFunctions.c */
+extern char* get_empty_frame_from_regionD(pid32 pid);
+
+extern char* get_empty_frame_from_regionE1();
+
+extern void initialize_empty_page_directory(p32addr_t* page_dir_addr);
+
+extern void initialize_empty_page_table(p32addr_t* page_tab_addr);
+
+extern void build_identity_map_entry(p32addr_t* page_tab_addr, uint32 page_dir_index);
+
+extern void set_page_directory_entry(pd_t* page_dir_entry, p32addr_t page_table_addr);
+
+extern void set_page_table_entry(pt_t* page_table_entry, p32addr_t page_addr);
+
+extern void reset_page_table_entry(pt_t* page_table_entry);
+
+extern void reset_page_directory_entry(pd_t* page_directory_entry);
+
+extern void initialize_fholderList();
+
+extern pt_t* get_page_table_entry(v32addr_t page_faulted_addr, pd_t* page_dir_entry);
+
+extern pd_t* get_page_directory_entry(v32addr_t page_faulted_addr, p32addr_t* page_dir_addr);
+
+extern void deallocate_frames_E1(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid);
+
+extern void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr_t* page_dir_addr, pid32 owner_pid);
+
+extern void free_frame_in_regionD(v32addr_t vaddr, pid32 owner_pid);
+
+extern void free_frame_in_regionE1(v32addr_t vaddr, pid32 owner_pid);
+
+extern void purge_frames_fHolderListE1(pid32 pid);
+
+extern void purge_frames_fHolderListD(pid32 pid);
+
+extern void increment_number_entries_allocated(uint16 frame_index);
+
+extern void decrement_number_entries_allocated(uint16 frame_index);
+
+extern v32addr_t drop_offset_from_addr(v32addr_t vaddr);
+
+extern uint16 is_read_write_access_violation(uint32 page_fault_error_code, pt_t* page_table_entry);
+
+extern int is_addr_allocated_by_vmhgetmem(v32addr_t addr);
+
+extern struct vmemblk* create_vmemblk_node();
+
+extern void free_vmemblk_node(struct vmemblk* nodeptr);
+
+extern void purge_vmemlist();
+
+extern char* vmhgetstk(uint16 msize);
+
+extern syscall	vmhalloc(uint32 hsize);
+
+extern void setup_vmemlist(pid32 pid);
+
+extern void set_page_dir_addr_cr3(p32addr_t page_dir_addr);
+
+extern v32addr_t get_page_faulted_addr_cr2();
+
+extern void flush_tlb();
+
+/* in tests.c */
+extern void test_vmhgetmem(int test_num);

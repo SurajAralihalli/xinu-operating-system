@@ -16,6 +16,9 @@ process	main(void)
 
 	// Insert test code below
 
-	kprintf("Hello World\n");
+	#ifdef XINUTEST
+		kprintf("\nHello World\n");
+	#endif
+
 	return OK;
 }

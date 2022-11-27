@@ -26,6 +26,12 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
 
+// NEW INITIALIZATIONS //
+
+struct fholder fHolderListD[NFRAMES_D];
+struct fholder fHolderListE1[NFRAMES_E1];
+struct identityMapAddr identityMapAddrList[5];
+
 bool8   PAGE_SERVER_STATUS;    /* Indicate the status of the page server */
 sid32   bs_init_sem;
 /*------------------------------------------------------------------------
@@ -46,10 +52,21 @@ void	nulluser()
 {	
 	struct	memblk	*memptr;	/* Ptr to memory block		*/
 	uint32	free_mem;		/* Total amount of free memory	*/
+
+	// assign memory in region C to kernel data structures
+	// fHolderListD = getmem(sizeof(struct fholder) * NFRAMES_D);
+	// fHolderListE1 = getmem(sizeof(struct fholder) * NFRAMES_E1);
+	// identityMapAddrList = getmem(sizeof(struct identityMapAddr) * 5);
 	
 	/* Initialize the system */
 		
 	sysinit();
+
+	/* Become the Null process (i.e., guarantee that the CPU has	*/
+	/*  something to run when no other process is ready to execute)	*/
+
+	/* Setup paging */
+	init_paging();
 
 	kprintf("\n\r%s\n\n\r", VERSION);
 	
@@ -88,17 +105,12 @@ void	nulluser()
 
 	enable();
 
+
 	/* Create a process to execute function main() */
-
-	resume (
-	   create((void *)main, INITSTK, INITPRIO, "Main process", 0,
-           NULL));
-
-	/* Become the Null process (i.e., guarantee that the CPU has	*/
-	/*  something to run when no other process is ready to execute)	*/
+	resume (create((void *)main, INITSTK, INITPRIO, "Main process", 0, NULL));
 
 	while (TRUE) {
-		;		/* Do nothing */
+		/* Do nothing */
 	}
 
 }
@@ -202,3 +214,4 @@ int32	delay(int n)
 	DELAY(n);
 	return OK;
 }
+

@@ -36,3 +36,8 @@ extern	int	edata;			/* End of data segment		*/
 extern	int	bss;			/* Start of bss segment		*/
 extern	int	ebss;			/* End of bss segment		*/
 extern	int	end;			/* End of program		*/
+
+
+
+// NEW DEFINITIONS
+#define MAXHSIZE 1024
