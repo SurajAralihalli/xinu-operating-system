@@ -128,21 +128,45 @@ void	pgfhandler()
         else
         {
 
-            // if E1 is free (add new frame to E1)
-            // if E1 is full && E2 is not full (evict page from E1 into E2 and add new frame to E1)
-            // if E1 is full && E2 is full (add the process to PR_FRAME state)
-
-
-            // Build a page
             p32addr_t* page_addr = (p32addr_t*) get_empty_frame_from_regionE1(page_faulted_addr);
+            // if E1 is free (add new frame to E1)
+            if((int) page_addr != -1)
+            {
+                // Translate page table address into index for fHolderListD
+                uint16 index_fHolderListD = (p32addr_t)page_table_addr/NBPG - FRAME0;
 
-            // Translate page table address into index for fHolderListD
-            uint16 index_fHolderListD = (p32addr_t)page_table_addr/NBPG - FRAME0;
+                increment_number_entries_allocated(index_fHolderListD);
 
-            increment_number_entries_allocated(index_fHolderListD);
+                //set pres bit to 1 and make page table entry point to new page
+                set_page_table_entry(page_table_entry, (p32addr_t)page_addr);
+            }
+            else
+            {
+                int oldest_frame_index_E1 = get_index_oldest_frame_regionE1();
+    
+                v32addr_t oldest_frame_vaddr = fHolderListE1[oldest_frame_index_E1].vaddr;
+                pid32 oldest_frame_pid = fHolderListE1[oldest_frame_index_E1].owner_process;
 
-            //set pres bit to 1 and make page table entry point to new page
-            set_page_table_entry(page_table_entry, (p32addr_t)page_addr);
+                p32addr_t oldest_frame_paddr_E1 = (oldest_frame_index_E1 + REGIONSTART_E1) * NBPG;
+
+                char* empty_frame_addr_E2 = get_empty_frame_from_regionE2(oldest_frame_vaddr, oldest_frame_pid);
+
+                // if E1 is full && E2 is not full (evict page from E1 into E2 and add new frame to E1)
+                if((int) empty_frame_addr_E2 != -1)
+                {
+                    // update E2 (already done by get_empty_frame_from_regionE2)
+                    memcpy((char*)empty_frame_addr_E2, (char*)oldest_frame_paddr_E1, PAGE_SIZE);
+                    
+                    
+
+
+                }
+                // if E1 is full && E2 is full (add the process to PR_FRAME state)
+                else
+                {
+
+                }         
+            }            
         }
         
     } else {
