@@ -764,5 +764,15 @@ extern v32addr_t get_page_faulted_addr_cr2();
 
 extern void flush_tlb();
 
+/* in file helper_functions_swapping.c */
+extern int get_index_oldest_frame_regionE1();
+
+extern int get_matching_frame_from_regionE2(v32addr_t vaddr);
+
+extern void free_frame_in_regionE2(v32addr_t vaddr, pid32 owner_pid);
+
+extern char* get_empty_frame_from_regionE2(v32addr_t vaddr, pid32 pid);
+
+
 /* in tests.c */
 extern void test_vmhgetmem(int test_num);

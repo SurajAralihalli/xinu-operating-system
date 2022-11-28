@@ -25,11 +25,13 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
+uint32	frame_counter;
 
 // NEW INITIALIZATIONS //
 
-struct fholder fHolderListD[NFRAMES_D];
-struct fholder fHolderListE1[NFRAMES_E1];
+struct fholderD fHolderListD[NFRAMES_D];
+struct fholderE1 fHolderListE1[NFRAMES_E1];
+struct fholderE2 fHolderListE2[NFRAMES_E2];
 struct identityMapAddr identityMapAddrList[5];
 
 bool8   PAGE_SERVER_STATUS;    /* Indicate the status of the page server */
@@ -126,6 +128,9 @@ static	void	sysinit()
 	int32	i;
 	struct	procent	*prptr;		/* Ptr to process table entry	*/
 	struct	sentry	*semptr;	/* Ptr to semaphore table entry	*/
+
+	/* counter to track the history/time of alocation of frames in E1 */
+	frame_counter = 1;
 
 	/* Platform Specific Initialization */
 

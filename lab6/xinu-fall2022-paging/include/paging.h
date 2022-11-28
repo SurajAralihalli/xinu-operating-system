@@ -65,16 +65,30 @@ typedef struct {
 
 #define REGIONSTART_D		1024	/* number of frames		*/
 #define REGIONSTART_E1		2024
-#define REGIONSTART_E2		3038
+#define REGIONSTART_E2		3048
 #define REGIONSTART_F		4096
 
 // struct to indicate which frames are free
-struct fholder{
+struct fholderD{
     unsigned int frame_pres	: 1;		/* frame is present? */
     pid32  owner_process;           /* Owner process ID */
     v32addr_t vaddr;                /* Virtual address */
-    uint16 nentries_allocated;        /* Number of pages allocated */
+    uint16 nentries_allocated;        /* Number of pages allocated*/  
 };
+
+struct fholderE1{
+    unsigned int frame_pres	: 1;		/* frame is present? */
+    pid32  owner_process;           /* Owner process ID */
+    v32addr_t vaddr;                /* Virtual address */
+    uint32 time_counter;
+};
+
+struct fholderE2{
+    unsigned int frame_pres	: 1;		/* frame is present? */
+    pid32  owner_process;           /* Owner process ID */
+    v32addr_t vaddr;                /* Virtual address */
+};
+
 
 struct identityMapAddr {
   p32addr_t* page_table_addr;
@@ -86,6 +100,7 @@ struct identityMapAddr {
 // extern struct identityMapAddr *identityMapAddrList;
 
 
-extern	struct	fholder fHolderListD[];
-extern	struct	fholder fHolderListE1[];
+extern	struct	fholderD fHolderListD[];
+extern	struct	fholderE1 fHolderListE1[];
+extern	struct	fholderE2 fHolderListE2[];
 extern  struct  identityMapAddr identityMapAddrList[];

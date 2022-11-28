@@ -53,18 +53,98 @@ void	pgfhandler()
     //check if page is present
     if(page_table_entry->pt_pres==0)
     {
-        // Build a page
-        p32addr_t* page_addr = (p32addr_t*) get_empty_frame_from_regionE1(page_faulted_addr);
 
-        // Translate page table address into index for fHolderListD
-        uint16 index_fHolderListD = (p32addr_t)page_table_addr/NBPG - FRAME0;
+        int index_fHolderListE2 = get_matching_frame_from_regionE2(page_faulted_addr);
+        //page present in E2
+        if(index_fHolderListE2 != -1)
+        {
 
-        increment_number_entries_allocated(index_fHolderListD);
+            p32addr_t* page_addr = (p32addr_t*) get_empty_frame_from_regionE1(page_faulted_addr);
 
-        //set pres bit to 1 and make page table entry point to new page
-        set_page_table_entry(page_table_entry, (p32addr_t)page_addr);
+            // if E1 is free (bring frame from E2 to E1)
+            if((int) page_addr != -1)
+            {
+                p32addr_t absolute_addr = (index_fHolderListE2 + REGIONSTART_E2) * NBPG;
 
-        // kprintf("page addr: %x\n", page_addr);
+                // copy contents of E2 into E1;
+                memcpy((char *)page_addr, (char *)absolute_addr, PAGE_SIZE);
+
+                // Translate page table address into index for fHolderListD
+                uint16 index_fHolderListD = (p32addr_t)page_table_addr/NBPG - FRAME0;
+                increment_number_entries_allocated(index_fHolderListD);
+
+                //set pres bit to 1 and make page table entry point to new page
+                set_page_table_entry(page_table_entry, (p32addr_t)page_addr);
+
+                // remove page from E2
+                free_frame_in_regionE2(page_faulted_addr, currpid);
+            }
+
+            // if E1 is full (swap frames E2 and E1)
+            else
+            {
+                int oldest_frame_index_E1 = get_index_oldest_frame_regionE1();
+    
+                v32addr_t oldest_frame_vaddr = fHolderListE1[oldest_frame_index_E1].vaddr;
+                pid32 oldest_frame_pid = fHolderListE1[oldest_frame_index_E1].owner_process;
+
+                p32addr_t oldest_frame_paddr_E1 = (oldest_frame_index_E1 + REGIONSTART_E1) * NBPG;
+                p32addr_t matching_frame_paddr_E2 = (index_fHolderListE2 + REGIONSTART_E2) * NBPG;
+
+                // swap contents of E1 and E2
+                char* temp_area = getmem(PAGE_SIZE);
+                memcpy((char *)temp_area, (char *)matching_frame_paddr_E2, PAGE_SIZE);
+                memcpy((char *)matching_frame_paddr_E2, (char *)oldest_frame_paddr_E1, PAGE_SIZE);
+                memcpy((char *)oldest_frame_paddr_E1, (char *)temp_area, PAGE_SIZE);
+                freemem(temp_area, PAGE_SIZE);
+
+
+                // update contents E1
+                fHolderListE1[oldest_frame_index_E1].vaddr = fHolderListE2[index_fHolderListE2].vaddr;
+                fHolderListE1[oldest_frame_index_E1].owner_process = fHolderListE2[index_fHolderListE2].owner_process;
+                fHolderListE1[oldest_frame_index_E1].time_counter = frame_counter++;
+
+                    // Translate page table address into index for fHolderListD
+                    uint16 index_fHolderListD = (p32addr_t)page_table_addr/NBPG - FRAME0;
+                    increment_number_entries_allocated(index_fHolderListD);
+
+                    //set pres bit to 1 and make page table entry point to new page
+                    set_page_table_entry(page_table_entry, fHolderListE1[oldest_frame_index_E1].vaddr);
+
+
+                // update contents E2
+                fHolderListE2[index_fHolderListE2].vaddr = oldest_frame_vaddr;
+                fHolderListE2[index_fHolderListE2].owner_process = oldest_frame_pid;
+
+                    // get page directory addr and page directory entry
+                    struct procent *evicted_prptr = &proctab[fHolderListE2[index_fHolderListE2].owner_process];
+                    invalidate_page_table_entries(fHolderListE2[index_fHolderListE2].vaddr, 1, (p32addr_t*)evicted_prptr->page_dir_addr, fHolderListE2[index_fHolderListE2].owner_process);
+                    // needs to be investigated removing the page table when its the last page
+
+            }
+        }
+
+        // first time access
+        else
+        {
+
+            // if E1 is free (add new frame to E1)
+            // if E1 is full && E2 is not full (evict page from E1 into E2 and add new frame to E1)
+            // if E1 is full && E2 is full (add the process to PR_FRAME state)
+
+
+            // Build a page
+            p32addr_t* page_addr = (p32addr_t*) get_empty_frame_from_regionE1(page_faulted_addr);
+
+            // Translate page table address into index for fHolderListD
+            uint16 index_fHolderListD = (p32addr_t)page_table_addr/NBPG - FRAME0;
+
+            increment_number_entries_allocated(index_fHolderListD);
+
+            //set pres bit to 1 and make page table entry point to new page
+            set_page_table_entry(page_table_entry, (p32addr_t)page_addr);
+        }
+        
     } else {
         
         /* Get error code */

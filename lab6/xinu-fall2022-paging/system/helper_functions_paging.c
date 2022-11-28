@@ -18,13 +18,11 @@ char* get_empty_frame_from_regionD(pid32 pid)
             fHolderListD[i].owner_process = pid;
             absolute_addr = (i + FRAME0) * NBPG;
             fHolderListD[i].vaddr = absolute_addr;
-            break;
+            
+            return (char*) absolute_addr;  
         }
     }
-    if(absolute_addr == 0) {
-        return (char*) SYSERR;
-    }
-    return (char*) absolute_addr;   
+    return (char*) SYSERR;  
 }
 
 
@@ -42,13 +40,12 @@ char* get_empty_frame_from_regionE1(v32addr_t vaddr)
             fHolderListE1[i].owner_process = currpid;
             fHolderListE1[i].vaddr = vaddr;
             absolute_addr = (i + FRAME0 + NFRAMES_D) * NBPG; // FRAME0 + NFRAMES_D is starting frame in E1
-            break;
+            fHolderListE1[i].time_counter = frame_counter++;
+
+            return (char*) absolute_addr;  
         }
     }
-    if(absolute_addr == 0) {
-        return (char*) SYSERR;
-    }
-    return (char*) absolute_addr;  
+    return (char*) SYSERR;
 }
 
 /*------------------------------------------------------------------------
@@ -172,6 +169,9 @@ void reset_page_table_entry(pt_t* page_table_entry)
     /* Mark present bit to 0 */
     page_table_entry->pt_pres = 0;
 
+    /* Make the base 0 */
+    page_table_entry->pt_base = 0;
+
     /* Invalidate TLB */
     flush_tlb();
 }
@@ -206,8 +206,16 @@ void initialize_fholderList()
         fHolderListE1[i].frame_pres = 0;
         fHolderListE1[i].owner_process = -1;
         fHolderListE1[i].vaddr = 0x0;
-        fHolderListE1[i].nentries_allocated = 0;
+        fHolderListE1[i].time_counter = 0;
     }
+
+    /* Initialize fHolderListE1 */
+    for(i = 0; i < NFRAMES_E2; i++) {
+        fHolderListE2[i].frame_pres = 0;
+        fHolderListE2[i].owner_process = -1;
+        fHolderListE2[i].vaddr = 0x0;
+    }
+
 }
 
 
@@ -288,7 +296,6 @@ void purge_frames_fHolderListE1(pid32 pid)
             fHolderListE1[i].frame_pres = 0;
             fHolderListE1[i].owner_process = -1;
             fHolderListE1[i].vaddr = 0x0;
-            fHolderListE1[i].nentries_allocated = 0;
         }
     }
 }
@@ -302,7 +309,6 @@ void purge_frames_fHolderListE1(pid32 pid)
 void invalidate_page_table_entries(v32addr_t start_vaddr, uint16 npages, p32addr_t* page_dir_addr, pid32 owner_pid)
 {
     uint32 i;
-    struct procent* prptr = &proctab[currpid];
 	for(i = 0; i < npages; i++) {
         v32addr_t vaddr = start_vaddr + (i * NBPG);
 
@@ -365,6 +371,7 @@ void free_frame_in_regionE1(v32addr_t vaddr, pid32 owner_pid)
             fHolderListE1[i].frame_pres = 0;
             fHolderListE1[i].owner_process = -1;
             fHolderListE1[i].vaddr = 0x0;
+            fHolderListE1[i].time_counter = 0;
             break;
         }
     }
