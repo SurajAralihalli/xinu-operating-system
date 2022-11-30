@@ -104,3 +104,6 @@ extern	struct	fholderD fHolderListD[];
 extern	struct	fholderE1 fHolderListE1[];
 extern	struct	fholderE2 fHolderListE2[];
 extern  struct  identityMapAddr identityMapAddrList[];
+
+/* Queue for blocked processes waiting on free frames in E1 when E2 is also full */
+extern qid16 framewait;

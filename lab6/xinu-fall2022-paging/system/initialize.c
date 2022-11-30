@@ -34,6 +34,8 @@ struct fholderE1 fHolderListE1[NFRAMES_E1];
 struct fholderE2 fHolderListE2[NFRAMES_E2];
 struct identityMapAddr identityMapAddrList[5];
 
+qid16 framewait;
+
 bool8   PAGE_SERVER_STATUS;    /* Indicate the status of the page server */
 sid32   bs_init_sem;
 /*------------------------------------------------------------------------
@@ -131,6 +133,10 @@ static	void	sysinit()
 
 	/* counter to track the history/time of alocation of frames in E1 */
 	frame_counter = 1;
+
+	/* Queue representing processes blocked for free frames in E1 when E2 is full */
+	framewait = newqueue();
+
 
 	/* Platform Specific Initialization */
 

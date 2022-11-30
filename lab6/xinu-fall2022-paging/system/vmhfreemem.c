@@ -82,11 +82,18 @@ syscall vmhfreemem(char *blockaddr, uint16 msize)
 		free_vmemblk_node(next);
 	}
 
+	/* Add logic to deallocate frames in E2 */
+	deallocate_frames_E2(vaddr, msize, currpid);
+
 	/* Deallocate frames in E1 */
 	deallocate_frames_E1(vaddr, msize, currpid);
 
 	/* Invalidate page table entries in VD - Useful when all page table entries have P bit 0 */
 	invalidate_page_table_entries(vaddr, msize, (p32addr_t*)prptr->page_dir_addr, currpid);	
+
+
+	// Check if framewait queue is empty
+	ready_framewait_process();
 
 	restore(mask);
 	return OK;
