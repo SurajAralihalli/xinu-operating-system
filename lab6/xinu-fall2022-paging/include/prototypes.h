@@ -780,5 +780,13 @@ extern uint32 purge_frames_fHolderListE2(pid32 pid);
 extern void deallocate_frames_E2(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid);
 
 
+/* Used only for testing */
+extern uint32 get_number_allocated_frames_E1();
+
+extern uint32 get_number_allocated_frames_E2();
+
 /* in tests.c */
 extern void test_vmhgetmem(int test_num);
+
+/* in tests_swapping.c */
+extern void test_swapping(int test_num);

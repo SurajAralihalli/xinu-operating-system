@@ -137,3 +137,40 @@ void deallocate_frames_E2(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid)
 		free_frame_in_regionE2(vaddr, owner_pid);
 	}
 }
+
+/*------------------------------------------------------------------------
+ * get_number_allocated_frames_E1 -  Get number of allocated frames in E1 (used only in tests_swapping.c)
+ *------------------------------------------------------------------------
+ */
+uint32 get_number_allocated_frames_E1()
+{
+    uint32 counter;
+    int32 i;
+
+    counter = 0;
+    for(i = 0; i < NFRAMES_E1; i++) {
+        if(fHolderListE1[i].frame_pres == 1) {
+            counter++;
+        }
+    }
+    return counter;
+}
+
+
+/*------------------------------------------------------------------------
+ * get_number_allocated_frames_E2 -  Get number of allocated frames in E2 (used only in tests_swapping.c)
+ *------------------------------------------------------------------------
+ */
+uint32 get_number_allocated_frames_E2()
+{
+    uint32 counter;
+    int32 i;
+
+    counter = 0;
+    for(i = 0; i < NFRAMES_E2; i++) {
+        if(fHolderListE2[i].frame_pres == 1) {
+            counter++;
+        }
+    }
+    return counter;
+}
