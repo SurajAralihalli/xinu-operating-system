@@ -50,7 +50,7 @@ int get_matching_frame_from_regionE2(v32addr_t vaddr)
 
 
 /*------------------------------------------------------------------------
- * free_frame_in_regionE2 -  Update fHolderListE1 to reuse frames
+ * free_frame_in_regionE2 -  Update fHolderListE2 to reuse frames
  *------------------------------------------------------------------------
  */
 void free_frame_in_regionE2(v32addr_t vaddr, pid32 owner_pid)
@@ -87,4 +87,53 @@ char* get_empty_frame_from_regionE2(v32addr_t vaddr, pid32 pid)
         }
     }
     return (char*) SYSERR;
+}
+
+/*------------------------------------------------------------------------
+ * purge_frames_E2 -  Purge all frames in E2 whose `owner_process` matches pid
+ *------------------------------------------------------------------------
+ */
+uint32 purge_frames_fHolderListE2(pid32 pid)
+{
+    uint32 i;
+    uint32 counter;
+    counter = 0;
+    for(i = 0; i < NFRAMES_E2; i++) {
+        if(fHolderListE2[i].owner_process == pid) {
+            fHolderListE2[i].frame_pres = 0;
+            fHolderListE2[i].owner_process = -1;
+            fHolderListE2[i].vaddr = 0x0;
+            counter++;
+        }
+    }
+    return counter;
+}
+
+/*------------------------------------------------------------------------
+ * ready_framewait_process -  Make framewait processes ready
+ *------------------------------------------------------------------------
+ */
+void ready_framewait_process()
+{
+    // Check if framewait queue is empty
+    if(nonempty(framewait)) {
+        ready(dequeue(framewait));
+    }
+}
+
+
+/*------------------------------------------------------------------------
+ * deallocate_frames_E2 -  Deallocating frames in E2
+ *------------------------------------------------------------------------
+ */
+void deallocate_frames_E2(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid)
+{
+    uint32 i;
+    /* Deallocate frames related to the virtual address */
+	for(i = 0; i < npages; i++) {
+        v32addr_t vaddr = start_vaddr + (i * NBPG);
+
+		/* Free frame in region E2 */
+		free_frame_in_regionE2(vaddr, owner_pid);
+	}
 }

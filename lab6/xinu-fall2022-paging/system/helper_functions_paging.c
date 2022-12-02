@@ -288,16 +288,21 @@ void purge_frames_fHolderListD(pid32 pid)
  * purge_frames_E1 -  Purge all frames in E1 whose `owner_process` matches pid
  *------------------------------------------------------------------------
  */
-void purge_frames_fHolderListE1(pid32 pid)
+uint32 purge_frames_fHolderListE1(pid32 pid)
 {
     uint32 i;
+    uint32 counter;
+    counter = 0;
     for(i = 0; i < NFRAMES_E1; i++) {
         if(fHolderListE1[i].owner_process == pid) {
             fHolderListE1[i].frame_pres = 0;
             fHolderListE1[i].owner_process = -1;
             fHolderListE1[i].vaddr = 0x0;
+            fHolderListE1[i].time_counter = 0;
+            counter++;
         }
     }
+    return counter;
 }
 
 

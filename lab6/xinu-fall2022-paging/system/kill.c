@@ -32,14 +32,21 @@ syscall	kill(
 	
 	freestk(prptr->prstkbase, prptr->prstklen);
 
+	/* Add logic to deallocate frames in E2 */
+	uint32 num_frames_removed_E2 = purge_frames_fHolderListE2(currpid);
+
 	/* Deallocate frames corresponding to current process in E1 */
-	purge_frames_fHolderListE1(currpid);
+	uint32 num_frames_removed_E1 = purge_frames_fHolderListE1(currpid);
 
 	/* Deallocate frames corresponding to current process in D */
 	purge_frames_fHolderListD(currpid);
 
 	/* Purge memory associated vmemlist */
 	purge_vmemlist();
+
+	if(num_frames_removed_E1 > 0 || num_frames_removed_E2 > 0) {
+		ready_framewait_process();
+	}
 
 	switch (prptr->prstate) {
 	case PR_CURR:

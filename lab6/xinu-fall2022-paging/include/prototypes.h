@@ -732,7 +732,7 @@ extern void free_frame_in_regionD(v32addr_t vaddr, pid32 owner_pid);
 
 extern void free_frame_in_regionE1(v32addr_t vaddr, pid32 owner_pid);
 
-extern void purge_frames_fHolderListE1(pid32 pid);
+extern uint32 purge_frames_fHolderListE1(pid32 pid);
 
 extern void purge_frames_fHolderListD(pid32 pid);
 
@@ -772,6 +772,12 @@ extern int get_matching_frame_from_regionE2(v32addr_t vaddr);
 extern void free_frame_in_regionE2(v32addr_t vaddr, pid32 owner_pid);
 
 extern char* get_empty_frame_from_regionE2(v32addr_t vaddr, pid32 pid);
+
+extern void ready_framewait_process();
+
+extern uint32 purge_frames_fHolderListE2(pid32 pid);
+
+extern void deallocate_frames_E2(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid);
 
 
 /* in tests.c */

@@ -157,14 +157,35 @@ void	pgfhandler()
                     // update E2 (already done by get_empty_frame_from_regionE2)
                     memcpy((char*)empty_frame_addr_E2, (char*)oldest_frame_paddr_E1, PAGE_SIZE);
                     
-                    
+                    // update E1
+                    fHolderListE1[oldest_frame_index_E1].vaddr = page_faulted_addr;
+                    fHolderListE1[oldest_frame_index_E1].owner_process = currpid;
+                    fHolderListE1[oldest_frame_index_E1].time_counter = frame_counter++;
 
+                    uint16 index_fHolderListD = (p32addr_t)page_table_addr/NBPG - FRAME0;
+                    increment_number_entries_allocated(index_fHolderListD);
+
+                    // update page table entry of E1
+                    set_page_table_entry(page_table_entry, oldest_frame_paddr_E1);
+
+                    // update page table entry of E2
+                    uint16 index_fHolderListE2 = (p32addr_t)empty_frame_addr_E2/NBPG - REGIONSTART_E2;
+                    struct procent *evicted_prptr = &proctab[fHolderListE2[index_fHolderListE2].owner_process];
+                    invalidate_page_table_entries(fHolderListE2[index_fHolderListE2].vaddr, 1, (p32addr_t*)evicted_prptr->page_dir_addr, fHolderListE2[index_fHolderListE2].owner_process);
 
                 }
                 // if E1 is full && E2 is full (add the process to PR_FRAME state)
                 else
                 {
+                    // Insert process into framewait queue
+                    insert(currpid, framewait, -1 * frame_counter);
 
+                    // Call resched()
+                    prptr->prstate = PR_FRAME;
+                    resched();
+
+                    // If it returns, there MAYBE a free frame available either in E1 or E2
+                    return;
                 }         
             }            
         }
