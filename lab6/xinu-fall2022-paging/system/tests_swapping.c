@@ -4,6 +4,7 @@
 void test_swapping_procA()
 {
     struct procent* prptr;
+    uint32 num_frames_allocated_E1, num_frames_allocated_E2;
     uint32 num_pages_allocated = 512;
 
     // Allocate 1024 pages
@@ -38,8 +39,8 @@ void test_swapping_procA()
 
 
     // Check size of E1 and E2
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
+    num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
+    num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("E1, E2 size: %d, %d\n", num_frames_allocated_E1, num_frames_allocated_E2);
 
     // Allocate another page n VF
@@ -57,6 +58,11 @@ void test_swapping_procA()
         break;
     }
     kprintf("\n");
+
+    num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
+    num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
+    kprintf("E1, E2 size: %d, %d\n", num_frames_allocated_E1, num_frames_allocated_E2);
+
 
     // Check if fHolderListE1[older_frame_index] has correct entries - start of E1
     display_E1_oldest_frame_details(oldest_frame_index_E1, currpid);
@@ -282,6 +288,7 @@ void test_swapping_procC()
     // Allocate 1024 pages
     int* ptr = (int* )vmhgetmem(num_pages_allocated);
     uint32 i, j;
+    uint32 num_frames_allocated_E1, num_frames_allocated_E2;
 
     // Make E1 full
     for(i = 0; i < num_pages_allocated; i++) {
@@ -304,12 +311,12 @@ void test_swapping_procC()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("C: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("C: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     sleep(7);
@@ -349,11 +356,11 @@ void test_swapping_procD()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("D: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("D: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     sleep(7);
@@ -416,12 +423,12 @@ void test_swapping_procF()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("F: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("F: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     sleep(7);
@@ -478,11 +485,11 @@ void test_swapping_procG()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("G: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("G: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     sleep(10);
@@ -521,12 +528,12 @@ void test_swapping_procH()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("H: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("H: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     sleep(10);
@@ -576,11 +583,11 @@ void test_swapping_procI()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("I: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("I: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     kprintf("\n#####\n");
