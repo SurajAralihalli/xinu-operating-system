@@ -20,7 +20,7 @@ process	main(void)
 		kprintf("\nHello World\n");
 	#endif
 
-	test_swapping(1);
+	test_swapping(3);
 
 	return OK;
 }

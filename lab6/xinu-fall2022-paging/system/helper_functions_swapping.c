@@ -76,7 +76,7 @@ char* get_empty_frame_from_regionE2(v32addr_t vaddr, pid32 pid)
 {
     uint32 absolute_addr = 0;
     int32 i;
-    for(i = 0; i < NFRAMES_E1; i++) {
+    for(i = 0; i < NFRAMES_E2; i++) {
         if(fHolderListE2[i].frame_pres == 0) {
             fHolderListE2[i].frame_pres = 1;
             fHolderListE2[i].owner_process = pid;
@@ -173,4 +173,28 @@ uint32 get_number_allocated_frames_E2()
         }
     }
     return counter;
+}
+
+
+
+/*------------------------------------------------------------------------
+ * proctab status - print the status of proctab
+ *------------------------------------------------------------------------
+ */
+void display_proctab()
+{
+
+    intmask	mask;			/* Saved interrupt mask		*/
+	mask = disable();
+	
+    uint32 i;
+    for(i=0;i<NPROC;i++)
+    {
+        if(proctab[i].prstate != PR_FREE)
+        {
+            kprintf("\npid: %d, prname:%s, prstate:%d\n", i, proctab[i].prname, proctab[i].prstate);
+        }
+    }
+
+    restore(mask);
 }

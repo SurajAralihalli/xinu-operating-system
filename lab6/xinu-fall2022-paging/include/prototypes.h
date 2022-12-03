@@ -785,6 +785,8 @@ extern uint32 get_number_allocated_frames_E1();
 
 extern uint32 get_number_allocated_frames_E2();
 
+extern void display_proctab();
+
 /* in tests.c */
 extern void test_vmhgetmem(int test_num);
 
