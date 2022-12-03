@@ -140,16 +140,17 @@ void deallocate_frames_E2(v32addr_t start_vaddr, uint16 npages, pid32 owner_pid)
 
 /*------------------------------------------------------------------------
  * get_number_allocated_frames_E1 -  Get number of allocated frames in E1 (used only in tests_swapping.c)
+                                    for process `pid`
  *------------------------------------------------------------------------
  */
-uint32 get_number_allocated_frames_E1()
+uint32 get_number_allocated_frames_E1(pid32 pid)
 {
     uint32 counter;
     int32 i;
 
     counter = 0;
     for(i = 0; i < NFRAMES_E1; i++) {
-        if(fHolderListE1[i].frame_pres == 1) {
+        if(fHolderListE1[i].frame_pres == 1 && fHolderListE1[i].owner_process == pid) {
             counter++;
         }
     }
@@ -159,18 +160,30 @@ uint32 get_number_allocated_frames_E1()
 
 /*------------------------------------------------------------------------
  * get_number_allocated_frames_E2 -  Get number of allocated frames in E2 (used only in tests_swapping.c)
+                                    for process `pid`
  *------------------------------------------------------------------------
  */
-uint32 get_number_allocated_frames_E2()
+uint32 get_number_allocated_frames_E2(pid32 pid)
 {
     uint32 counter;
     int32 i;
 
     counter = 0;
     for(i = 0; i < NFRAMES_E2; i++) {
-        if(fHolderListE2[i].frame_pres == 1) {
+        if(fHolderListE2[i].frame_pres == 1 && fHolderListE2[i].owner_process == pid) {
             counter++;
         }
     }
     return counter;
+}
+
+/*------------------------------------------------------------------------
+ * display_E1_oldest_frame_details -  Display fHolderList details of oldest frame in E1 (used only in tests_swapping.c)
+ *------------------------------------------------------------------------
+ */
+void display_E1_oldest_frame_details(uint32 oldest_frame_index_E1, pid32 pid)
+{
+    kprintf("%d: fHolderListE1[oldest_frame_index_E1].vaddr: %d\n", pid, fHolderListE1[oldest_frame_index_E1].vaddr);
+    kprintf("%d: fHolderListE1[oldest_frame_index_E1].owner_process: %d\n", pid, fHolderListE1[oldest_frame_index_E1].owner_process);
+    kprintf("%d: fHolderListE1[oldest_frame_index_E1].time_counter: %d\n", pid, fHolderListE1[oldest_frame_index_E1].time_counter);
 }
