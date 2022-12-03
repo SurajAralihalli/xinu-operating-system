@@ -20,7 +20,5 @@ process	main(void)
 		kprintf("\nHello World\n");
 	#endif
 
-	test_swapping(4);
-
 	return OK;
 }
