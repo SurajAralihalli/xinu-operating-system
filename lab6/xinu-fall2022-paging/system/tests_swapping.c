@@ -403,6 +403,145 @@ void test_swapping_procI()
 
 
 
+void test_swapping_procJ()
+{
+    uint32 num_pages_allocated = 1024;
+
+    // Allocate 1024 pages
+    int* ptr = (int* )vmhgetmem(num_pages_allocated);
+    uint32 i, j;
+
+    // Make E1 full
+    for(i = 0; i < num_pages_allocated; i++) {
+        for(j = 0; j < NBPG/4; j++) {
+            ptr[(i*NBPG)/4 + j] = i;
+        }
+    }
+
+    // Print content of oldest page
+    for(i = 0; i < NBPG/4; i++) {
+        kprintf("J: page0:%d\t", ptr[i]);
+        break;
+    }
+    kprintf("\n");
+
+    for(i = 0; i < NBPG/4; i++) {
+        kprintf("J: page%d:%d\t",i/1024, ptr[((num_pages_allocated - 1)*NBPG)/4 + i]);
+        break;
+    }
+    kprintf("\n");
+
+    // Check size of E1
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    kprintf("H: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
+
+
+    // Check size of E2
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    kprintf("H: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
+
+    sleep(7);
+    
+    kprintf("\n#####\n");
+    display_proctab();
+
+    // Print content of oldest page
+    for(i = (1024 * 500); i < (1024 * 500) + 5; i++) {
+        kprintf("H: page%d:%d\t",i/1024, ptr[i]);
+    }
+
+    for(i = (1024 * 600); i < (1024 * 600) + 5; i++) {
+        kprintf("H: page%d:%d\t",i/1024, ptr[i]);
+    }
+    kprintf("\n");
+
+}
+
+
+void test_swapping_procK()
+{
+    uint32 num_pages_allocated = 1024;
+
+    // Allocate 1024 pages
+    int* ptr = (int* )vmhgetmem(num_pages_allocated);
+    uint32 i, j;
+
+    // Make E1 full
+    for(i = 0; i < num_pages_allocated; i++) {
+        for(j = 0; j < NBPG/4; j++) {
+            ptr[(i*NBPG)/4 + j] = i;
+        }
+    }
+
+    // Print content of oldest page
+    for(i = 0; i < NBPG/4; i++) {
+        kprintf("K: page0:%d\t", ptr[i]);
+        break;
+    }
+    kprintf("\n");
+
+    for(i = 0; i < NBPG/4; i++) {
+        kprintf("K: page%d:%d\t",i/1024, ptr[((num_pages_allocated - 1)*NBPG)/4 + i]);
+        break;
+    }
+    kprintf("\n");
+
+    // Check size of E1
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    kprintf("K: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
+
+    // Check size of E2
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    kprintf("K: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
+
+    kprintf("\n#####\n");
+
+    sleep(7);
+}
+
+
+void test_swapping_procL()
+{
+    uint32 num_pages_allocated = 24;
+
+    // Allocate 1024 pages
+    int* ptr = (int* )vmhgetmem(num_pages_allocated);
+    uint32 i, j;
+
+    // Make E1 full
+    for(i = 0; i < num_pages_allocated; i++) {
+        for(j = 0; j < NBPG/4; j++) {
+            ptr[(i*NBPG)/4 + j] = i;
+        }
+    }
+
+    // Print content of oldest page
+    for(i = 0; i < NBPG/4; i++) {
+        kprintf("L: page0:%d\t", ptr[i]);
+        break;
+    }
+    kprintf("\n");
+
+    for(i = 0; i < NBPG/4; i++) {
+        kprintf("L: page%d:%d\t",i/1024, ptr[((num_pages_allocated - 1)*NBPG)/4 + i]);
+        break;
+    }
+    kprintf("\n");
+
+    // Check size of E1
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    kprintf("K: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
+
+    // Check size of E2
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    kprintf("K: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
+
+    kprintf("\n#####\n");
+
+    sleep(7);
+}
+
+
 
 void test_swapping(int test_num)
 {
@@ -428,6 +567,9 @@ void test_swapping(int test_num)
 
     if(test_num == 4) {
         /* Access a frame in E2 when E1 and E2 are full */
+        resume (create((void *)test_swapping_procJ, INITSTK, INITPRIO + 2, "procJ", 0, NULL));
+        resume (create((void *)test_swapping_procK, INITSTK, INITPRIO + 1, "procK", 0, NULL));
+        resume (create((void *)test_swapping_procL, INITSTK, INITPRIO, "procL", 0, NULL));
     }
 
     if(test_num == 5) {

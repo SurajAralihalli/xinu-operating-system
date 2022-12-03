@@ -84,6 +84,7 @@ void	pgfhandler()
             // if E1 is full (swap frames E2 and E1)
             else
             {
+                kprintf("\nif E1 is full (swap frames E2 and E1)\n");
                 int oldest_frame_index_E1 = get_index_oldest_frame_regionE1();
     
                 v32addr_t oldest_frame_vaddr = fHolderListE1[oldest_frame_index_E1].vaddr;
