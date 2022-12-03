@@ -186,6 +186,7 @@ void display_E1_oldest_frame_details(uint32 oldest_frame_index_E1, pid32 pid)
     kprintf("%d: fHolderListE1[oldest_frame_index_E1].vaddr: %d\n", pid, fHolderListE1[oldest_frame_index_E1].vaddr);
     kprintf("%d: fHolderListE1[oldest_frame_index_E1].owner_process: %d\n", pid, fHolderListE1[oldest_frame_index_E1].owner_process);
     kprintf("%d: fHolderListE1[oldest_frame_index_E1].time_counter: %d\n", pid, fHolderListE1[oldest_frame_index_E1].time_counter);
+}
 
 
 /*------------------------------------------------------------------------

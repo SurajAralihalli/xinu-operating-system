@@ -593,15 +593,9 @@ void test_swapping(int test_num)
 {
     if(test_num == 1) {
         /* E1 becomes full and memory is not allocated in E1. A new page allocated in VF (when E1 is full) results in page eviction 
-<<<<<<< HEAD
-            from E1 to E2 and allocation of page in E1. New page is allocated for the same process for which frame from E1 is evicted */
-        resume (create((void *)test_swapping_procA, INITSTK, INITPRIO + 1, "procA process", 0, NULL));
-        resume (create((void *)test_swapping_procB, INITSTK, INITPRIO, "procB process", 0, NULL));
-=======
             from E1 to E2 and allocation of page in E1 */
         resume (create((void *)test_swapping_procA, INITSTK, INITPRIO + 1, "procA", 0, NULL));
         resume (create((void *)test_swapping_procB, INITSTK, INITPRIO, "procB", 0, NULL));
->>>>>>> 03491a621f4344aa683d3c8aa7e543926753e4a4
     }
 
     if(test_num == 2) {
@@ -622,23 +616,17 @@ void test_swapping(int test_num)
     }
 
     if(test_num == 5) {
-<<<<<<< HEAD
         /* E1 becomes full and memory is not allocated in E1. A new page allocated in VF (when E1 is full) results in page eviction 
             from E1 to E2 and allocation of page in E1. New page is allocated for a different process for which frame from E1 is evicted */
         resume (create((void *)test_swapping_procB, INITSTK, INITPRIO + 1, "procB process", 0, NULL));
         resume (create((void *)test_swapping_procX, INITSTK, INITPRIO, "procX process", 0, NULL));
     }
     
-=======
-        /* Access a frame in E2 when E1 and E2 are full */
-    }
-
     if(test_num == 6) {
         // E1 is free (bring frame from E2 to E1)
         resume (create((void *)test_swapping_procH, INITSTK, INITPRIO + 2, "procH", 0, NULL));
         resume (create((void *)test_swapping_procI, INITSTK, INITPRIO + 1, "procI", 0, NULL));
     }
 
->>>>>>> 03491a621f4344aa683d3c8aa7e543926753e4a4
 
 }
