@@ -781,9 +781,11 @@ extern void deallocate_frames_E2(v32addr_t start_vaddr, uint16 npages, pid32 own
 
 
 /* Used only for testing */
-extern uint32 get_number_allocated_frames_E1();
+extern uint32 get_number_allocated_frames_E1(pid32 pid);
 
-extern uint32 get_number_allocated_frames_E2();
+extern uint32 get_number_allocated_frames_E2(pid32 pid);
+
+extern void display_E1_oldest_frame_details(uint32 oldest_frame_index_E1, pid32 pid);
 
 extern void display_proctab();
 
