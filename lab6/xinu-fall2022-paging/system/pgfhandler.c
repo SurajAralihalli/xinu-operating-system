@@ -64,6 +64,7 @@ void	pgfhandler()
             // if E1 is free (bring frame from E2 to E1)
             if((int) page_addr != -1)
             {
+                kprintf("\nE1 is free (bring frame from E2 to E1)\n");
                 p32addr_t absolute_addr = (index_fHolderListE2 + REGIONSTART_E2) * NBPG;
 
                 // copy contents of E2 into E1;
