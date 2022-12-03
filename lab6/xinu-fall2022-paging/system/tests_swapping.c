@@ -624,12 +624,12 @@ void test_swapping_procJ()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("H: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("H: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     sleep(7);
@@ -679,11 +679,11 @@ void test_swapping_procK()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("K: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("K: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     kprintf("\n#####\n");
@@ -721,11 +721,11 @@ void test_swapping_procL()
     kprintf("\n");
 
     // Check size of E1
-    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1();
+    uint32 num_frames_allocated_E1 = get_number_allocated_frames_E1(currpid);
     kprintf("K: Num allocated frames in E1: %d\n", num_frames_allocated_E1);
 
     // Check size of E2
-    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2();
+    uint32 num_frames_allocated_E2 = get_number_allocated_frames_E2(currpid);
     kprintf("K: Num allocated frames in E2: %d\n", num_frames_allocated_E2);
 
     kprintf("\n#####\n");

@@ -64,7 +64,6 @@ void	pgfhandler()
             // if E1 is free (bring frame from E2 to E1)
             if((int) page_addr != -1)
             {
-                kprintf("\nE1 is free (bring frame from E2 to E1)\n");
                 p32addr_t absolute_addr = (index_fHolderListE2 + REGIONSTART_E2) * NBPG;
 
                 // copy contents of E2 into E1;
@@ -84,7 +83,6 @@ void	pgfhandler()
             // if E1 is full (swap frames E2 and E1)
             else
             {
-                kprintf("\nif E1 is full (swap frames E2 and E1)\n");
                 int oldest_frame_index_E1 = get_index_oldest_frame_regionE1();
     
                 v32addr_t oldest_frame_vaddr = fHolderListE1[oldest_frame_index_E1].vaddr;
@@ -135,7 +133,6 @@ void	pgfhandler()
             // if E1 is free (add new frame to E1)
             if((int) page_addr != -1)
             {
-                // kprintf("%d in E1\n", currpid);
                 // Translate page table address into index for fHolderListD
                 uint16 index_fHolderListD = (p32addr_t)page_table_addr/NBPG - FRAME0;
 
@@ -147,26 +144,18 @@ void	pgfhandler()
             else
             {
                 int oldest_frame_index_E1 = get_index_oldest_frame_regionE1();
-
-                // kprintf("Oldest frame index in E1: %d\n", oldest_frame_index_E1);
     
                 v32addr_t oldest_frame_vaddr = fHolderListE1[oldest_frame_index_E1].vaddr;
                 pid32 oldest_frame_pid = fHolderListE1[oldest_frame_index_E1].owner_process;
-
-                // kprintf("Oldest frame vaddr in E1: %d\n", oldest_frame_vaddr);
-                // kprintf("Oldest frame pid in E1: %d\n", oldest_frame_pid);
 
                 p32addr_t oldest_frame_paddr_E1 = (oldest_frame_index_E1 + REGIONSTART_E1) * NBPG;
 
                 char* empty_frame_addr_E2 = get_empty_frame_from_regionE2(oldest_frame_vaddr, oldest_frame_pid);
 
-                // kprintf("Empty frame paddr in E2: %d\n", empty_frame_addr_E2);
-
                 // if E1 is full && E2 is not full (evict page from E1 into E2 and add new frame to E1)
                 if((int) empty_frame_addr_E2 != -1)
                 {
 
-                    // kprintf("E1 is full and E2 is not full\n");
                     // update E2 (already done by get_empty_frame_from_regionE2)
                     memcpy((char*)empty_frame_addr_E2, (char*)oldest_frame_paddr_E1, PAGE_SIZE);
                     
@@ -190,8 +179,6 @@ void	pgfhandler()
                 // if E1 is full && E2 is full (add the process to PR_FRAME state)
                 else
                 {
-                    kprintf("E1 is full and E2 is full\n");
-
                     // Insert process into framewait queue
                     insert(currpid, framewait, -1 * frame_counter);
 
