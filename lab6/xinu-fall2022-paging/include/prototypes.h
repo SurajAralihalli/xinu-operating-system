@@ -787,6 +787,8 @@ extern uint32 get_number_allocated_frames_E2(pid32 pid);
 
 extern void display_E1_oldest_frame_details(uint32 oldest_frame_index_E1, pid32 pid);
 
+extern void display_proctab();
+
 /* in tests.c */
 extern void test_vmhgetmem(int test_num);
 

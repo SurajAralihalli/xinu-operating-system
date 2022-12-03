@@ -38,6 +38,7 @@ syscall	kill(
 	/* Deallocate frames corresponding to current process in E1 */
 	uint32 num_frames_removed_E1 = purge_frames_fHolderListE1(currpid);
 
+	kprintf("\nKilling proc name: %s, Frames freed E1:%d, E2:%d\n",proctab[currpid].prname, num_frames_removed_E1, num_frames_removed_E2);
 	/* Deallocate frames corresponding to current process in D */
 	purge_frames_fHolderListD(currpid);
 
