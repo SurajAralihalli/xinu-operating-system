@@ -1,6 +1,4 @@
-# CS503
-Operating Systems
-
+# XINU Operating System
 
 ## Lab1
 
